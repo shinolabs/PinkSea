@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PinkSea", "PinkSea\PinkSea.csproj", "{97A189EF-BED5-4DA3-9B42-0BAA42AA7C17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PinkSea.AtProto", "PinkSea.AtProto\PinkSea.AtProto.csproj", "{9F2FAD88-9F75-4B32-B6A5-C4C334EF3095}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{97A189EF-BED5-4DA3-9B42-0BAA42AA7C17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97A189EF-BED5-4DA3-9B42-0BAA42AA7C17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97A189EF-BED5-4DA3-9B42-0BAA42AA7C17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97A189EF-BED5-4DA3-9B42-0BAA42AA7C17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F2FAD88-9F75-4B32-B6A5-C4C334EF3095}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F2FAD88-9F75-4B32-B6A5-C4C334EF3095}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F2FAD88-9F75-4B32-B6A5-C4C334EF3095}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F2FAD88-9F75-4B32-B6A5-C4C334EF3095}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
