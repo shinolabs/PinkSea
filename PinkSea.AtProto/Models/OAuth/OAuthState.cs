@@ -1,0 +1,27 @@
+namespace PinkSea.AtProto.Models.OAuth;
+
+/// <summary>
+/// The OAuth state.
+/// </summary>
+public class OAuthState
+{
+    /// <summary>
+    /// The issuer.
+    /// </summary>
+    public required string Issuer { get; set; }
+    
+    /// <summary>
+    /// The user DID.
+    /// </summary>
+    public required string Did { get; set; }
+    
+    /// <summary>
+    /// The OAuth DPoP keypair.
+    /// </summary>
+    public required DpopKeyPair KeyPair { get; set; }
+    
+    /// <summary>
+    /// The PKCE string.
+    /// </summary>
+    public required string PkceString { get; set; }
+}

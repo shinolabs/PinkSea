@@ -42,6 +42,21 @@ public class OAuthController(
         
         return Redirect(authorizationServer);
     }
+
+    /// <summary>
+    /// The OAuth callback.
+    /// </summary>
+    /// <param name="iss">The issuer.</param>
+    /// <param name="state">The state.</param>
+    /// <param name="code">The code.</param>
+    [Route("callback")]
+    public async Task<IActionResult> Callback(
+        [FromQuery] string iss,
+        [FromQuery] string state,
+        [FromQuery] string code)
+    {
+        return Ok(code);
+    }
     
     /// <summary>
     /// Returns the client metadata.
@@ -78,7 +93,7 @@ public class OAuthController(
     /// <returns>The client metadata.</returns>
     private ClientMetadata GetMetadata()
     {
-        const string baseUrl = "https://99e96d659f271b.lhr.life";
+        const string baseUrl = "https://1fc7efe4e3b866.lhr.life";
         return new ClientMetadata
         {
             ClientId = $"{baseUrl}/oauth/client-metadata.json",

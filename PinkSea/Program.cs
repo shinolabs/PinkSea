@@ -1,10 +1,12 @@
 using PinkSea.AtProto;
+using PinkSea.AtProto.Providers.Storage;
 using PinkSea.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<IOAuthStateStorageProvider, MemoryOAuthStateStorageProvider>();
 builder.Services.AddSingleton<SigningKeyService>();
 builder.Services.AddAtProtoServices();
 
