@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PinkSea.AtProto.Lexicons.Bluesky.Records;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.OAuth;
+using PinkSea.AtProto.Xrpc;
 using PinkSea.Services;
 
 namespace PinkSea.Controllers;
@@ -13,7 +15,8 @@ namespace PinkSea.Controllers;
 [Route("/oauth")]
 public class OAuthController(
     SigningKeyService signingKeyService,
-    IAtProtoOAuthClient oAuthClient) : Controller
+    IAtProtoOAuthClient oAuthClient,
+    IXrpcClient xrpcClient) : Controller
 {
     /// <summary>
     /// Begins the OAuth login flow.
@@ -81,7 +84,16 @@ public class OAuthController(
         if (token is null)
             return BadRequest();
 
-        token.AccessToken = "[redacted]";
+        var profile = xrpcClient.Query<Profile>(
+            "https://matsutake.us-west.host.bsky.network",
+            "com.atproto.repo.getRecord",
+            new
+            {
+                Repo = "did:plc:2edipcwcjiezjtanjs5vmrlw",
+                Collection = "app.bsky.actor.profile",
+                Rkey = "self",
+            },
+            token.AccessToken);
         return Ok(token);
     }
     
