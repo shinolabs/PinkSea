@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Org.BouncyCastle.Pqc.Crypto.Lms;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.Services;
 
@@ -12,7 +11,7 @@ public class OAuthController(SigningKeyService signingKeyService) : Controller
     [Route("client-metadata.json")]
     public async Task<ActionResult<ClientMetadata>> ClientMetadata()
     {
-        const string baseUrl = "https://012ce02769236b.lhr.life";
+        const string baseUrl = "https://237bb8170e6e72.lhr.life";
         return Ok(new ClientMetadata
         {
             ClientId = $"{baseUrl}/oauth/client-metadata.json",
@@ -40,8 +39,10 @@ public class OAuthController(SigningKeyService signingKeyService) : Controller
         var set = new JsonWebKeySet();
         var key = JsonWebKeyConverter.ConvertFromECDsaSecurityKey(signingKeyService.SecurityKey);
         key.D = null;
+        key.X = Base64UrlEncoder.Encode(signingKeyService.KeyParameters.Q.X!);
+        key.Y = Base64UrlEncoder.Encode(signingKeyService.KeyParameters.Q.Y!);
         key.KeyOps.Add("verify");
-        key.KeyId = Base64UrlEncoder.Encode(signingKeyService.KeyParameters.Q.Y!.ToString() + signingKeyService.KeyParameters.Q.X!.ToString());
+        key.KeyId = signingKeyService.KeyId;
         set.Keys.Add(key);
         
         return Ok(set);

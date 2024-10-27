@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Web;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.Providers;
 using PinkSea.AtProto.Resolvers.Did;
@@ -34,13 +35,13 @@ public class AtProtoOAuthClient(
         var authorizationServer = await GetOAuthAuthorizationServerDataForAuthorizationServer(authServer);
         var assertion = jwtSigningProvider.GetToken(
             did,
-            authorizationServer!.PushedAuthorizationRequestEndpoint!);
+            authorizationServer!.Issuer);
         var body = new AuthorizationRequest()
         {
-            ClientId = "https://012ce02769236b.lhr.life/oauth/client-metadata.json",
+            ClientId = "https://237bb8170e6e72.lhr.life/oauth/client-metadata.json",
             ResponseType = "code",
             Scope = "atproto transition:generic",
-            RedirectUrl = "https://012ce02769236b.lhr.life/oauth/callback",
+            RedirectUrl = "https://237bb8170e6e72.lhr.life/oauth/callback",
             State = "sdsfsrewr",
             CodeChallenge = "a",
             CodeChallengeMethod = "S256",
@@ -48,7 +49,18 @@ public class AtProtoOAuthClient(
             ClientAssertion = assertion
         };
         var resp = await _client.PostAsJsonAsync(authorizationServer!.PushedAuthorizationRequestEndpoint!, body);
-        return resp.ToString() + "\n" + resp.Content.ReadAsStringAsync().Result + "\n" + JsonSerializer.Serialize(body);
+        if (!resp.IsSuccessStatusCode)
+            return null;
+
+        var parResponse = await resp.Content.ReadFromJsonAsync<PushedAuthorizationRequestResponse>();
+
+        var finalUrl = new UriBuilder(authorizationServer!.AuthorizationEndpoint!);
+        var query = HttpUtility.ParseQueryString(finalUrl.Query);
+        query["client_id"] = body.ClientId;
+        query["request_uri"] = parResponse!.RequestUri;
+        finalUrl.Query = query.ToString();
+        
+        return finalUrl.ToString();
     }
 
     public async Task<ProtectedResource?> GetOAuthProtectedResourceForPds(string pds)

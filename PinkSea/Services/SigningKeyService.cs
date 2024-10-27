@@ -1,4 +1,4 @@
-using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
@@ -17,12 +17,23 @@ public class SigningKeyService : IJwtSigningProvider
     /// The current key parameters for the curve.
     /// </summary>
     public ECParameters KeyParameters { get; private set; }
-    
+
     /// <summary>
     /// The current security key.
     /// </summary>
     public ECDsaSecurityKey SecurityKey { get; private set; } = null!;
-    
+
+    /// <summary>
+    /// The key id of this key.
+    /// </summary>
+    public string KeyId
+    {
+        get
+        {
+            return Base64UrlEncoder.Encode(SecurityKey.ComputeJwkThumbprint());
+        }
+    }
+
     public SigningKeyService()
     {
         GenerateKeyPair();
@@ -45,18 +56,23 @@ public class SigningKeyService : IJwtSigningProvider
     {
         var descriptor = new SecurityTokenDescriptor()
         {
-            Issuer = "https://012ce02769236b.lhr.life/oauth/client-metadata.json",
+            Issuer = "https://237bb8170e6e72.lhr.life/oauth/client-metadata.json",
             Audience = audience,
             IssuedAt = DateTime.UtcNow,
             NotBefore = DateTime.UtcNow,
+            Claims = new Dictionary<string, object>()
+            {
+                { "sub", "https://237bb8170e6e72.lhr.life/oauth/client-metadata.json" },
+                { "jti", DateTime.Now.ToString() }
+            },
             Expires = DateTime.UtcNow.AddMinutes(5),
             SigningCredentials = new SigningCredentials(SecurityKey, SecurityAlgorithms.EcdsaSha256)
         };
 
-        var handler = new JsonWebTokenHandler
-        {
-            SetDefaultTimesOnTokenCreation = false
-        };
-        return handler.CreateToken(descriptor);
+        var handler = new JwtSecurityTokenHandler();
+        var token = handler.CreateJwtSecurityToken(descriptor);
+
+        token.Header.Add("kid", KeyId);
+        return handler.WriteToken(token);
     }
 }
