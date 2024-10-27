@@ -6,7 +6,7 @@ public interface IAtProtoOAuthClient
 {
     Task<string?> GetOAuthRequestUriForHandle(
         string handle,
-        string redirectUrl);
+        OAuthClientData clientData);
     
     Task<ProtectedResource?> GetOAuthProtectedResourceForPds(string pds);
     

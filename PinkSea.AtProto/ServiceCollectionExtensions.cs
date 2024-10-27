@@ -1,6 +1,7 @@
 using DnsClient;
 using Microsoft.Extensions.DependencyInjection;
 using PinkSea.AtProto.OAuth;
+using PinkSea.AtProto.Providers.OAuth;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Resolvers.Domain;
 
@@ -12,6 +13,7 @@ public static class ServiceCollectionExtensions
     {
         collection.AddSingleton<LookupClient>();
         collection.AddTransient<IDomainDidResolver, DomainDidResolver>();
+        collection.AddTransient<IJwtSigningProvider, JwtSigningProvider>();
         collection.AddScoped<IDidResolver, DidResolver>();
         collection.AddScoped<IAtProtoOAuthClient, AtProtoOAuthClient>();
 

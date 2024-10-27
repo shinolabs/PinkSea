@@ -1,8 +1,7 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Web;
 using PinkSea.AtProto.Models.OAuth;
-using PinkSea.AtProto.Providers;
+using PinkSea.AtProto.Providers.OAuth;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Resolvers.Domain;
 
@@ -16,7 +15,7 @@ public class AtProtoOAuthClient(
 {
     private readonly HttpClient _client = httpClientFactory.CreateClient("oauth-client");
 
-    public async Task<string?> GetOAuthRequestUriForHandle(string handle, string redirectUrl)
+    public async Task<string?> GetOAuthRequestUriForHandle(string handle, OAuthClientData clientData)
     {
         var did = await domainDidResolver.GetDidForDomainHandle(handle);
         if (did is null)
@@ -33,15 +32,19 @@ public class AtProtoOAuthClient(
             return null;
 
         var authorizationServer = await GetOAuthAuthorizationServerDataForAuthorizationServer(authServer);
-        var assertion = jwtSigningProvider.GetToken(
-            did,
-            authorizationServer!.Issuer);
+        var assertion = jwtSigningProvider.GenerateClientAssertion(new JwtSigningData()
+        {
+            ClientId = clientData.ClientId,
+            Audience = authorizationServer!.Issuer,
+            Key = clientData.Key
+        });
+        
         var body = new AuthorizationRequest()
         {
-            ClientId = "https://237bb8170e6e72.lhr.life/oauth/client-metadata.json",
+            ClientId = clientData.ClientId,
             ResponseType = "code",
-            Scope = "atproto transition:generic",
-            RedirectUrl = "https://237bb8170e6e72.lhr.life/oauth/callback",
+            Scope = clientData.Scope,
+            RedirectUrl = clientData.RedirectUri,
             State = "sdsfsrewr",
             CodeChallenge = "a",
             CodeChallengeMethod = "S256",

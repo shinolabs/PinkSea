@@ -1,12 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using PinkSea.AtProto.Providers;
+using PinkSea.AtProto.Providers.OAuth;
 
 namespace PinkSea.Services;
 
-public class SigningKeyService : IJwtSigningProvider
+public class SigningKeyService
 {
     /// <summary>
     /// The current elliptic curve used.
@@ -47,32 +46,5 @@ public class SigningKeyService : IJwtSigningProvider
         Curve = ECDsa.Create(ECCurve.CreateFromFriendlyName("nistp256"));
         SecurityKey = new ECDsaSecurityKey(Curve);
         KeyParameters = Curve.ExportParameters(true);
-    }
-
-    /// <inheritdocs />
-    public string GetToken(
-        string did,
-        string audience)
-    {
-        var descriptor = new SecurityTokenDescriptor()
-        {
-            Issuer = "https://237bb8170e6e72.lhr.life/oauth/client-metadata.json",
-            Audience = audience,
-            IssuedAt = DateTime.UtcNow,
-            NotBefore = DateTime.UtcNow,
-            Claims = new Dictionary<string, object>()
-            {
-                { "sub", "https://237bb8170e6e72.lhr.life/oauth/client-metadata.json" },
-                { "jti", DateTime.Now.ToString() }
-            },
-            Expires = DateTime.UtcNow.AddMinutes(5),
-            SigningCredentials = new SigningCredentials(SecurityKey, SecurityAlgorithms.EcdsaSha256)
-        };
-
-        var handler = new JwtSecurityTokenHandler();
-        var token = handler.CreateJwtSecurityToken(descriptor);
-
-        token.Header.Add("kid", KeyId);
-        return handler.WriteToken(token);
     }
 }
