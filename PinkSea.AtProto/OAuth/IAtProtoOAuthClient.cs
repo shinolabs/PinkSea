@@ -4,7 +4,9 @@ namespace PinkSea.AtProto.OAuth;
 
 public interface IAtProtoOAuthClient
 {
-    Task<string?> GetOAuthRequestUriForHandle(string handle);
+    Task<string?> GetOAuthRequestUriForHandle(
+        string handle,
+        string redirectUrl);
     
     Task<ProtectedResource?> GetOAuthProtectedResourceForPds(string pds);
     

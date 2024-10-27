@@ -38,7 +38,7 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Test([FromQuery] string handle)
     {
-        var authorizationServer = await _atProtoOAuthClient.GetOAuthRequestUriForHandle(handle);
+        var authorizationServer = await _atProtoOAuthClient.GetOAuthRequestUriForHandle(handle, "");
         return Ok(authorizationServer);
     }
 

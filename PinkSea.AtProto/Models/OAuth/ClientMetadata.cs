@@ -30,4 +30,7 @@ public class ClientMetadata
     
     [JsonPropertyName("token_endpoint_auth_signing_alg")]
     public string? TokenEndpointAuthSigningAlgorithm { get; init; }
+    
+    [JsonPropertyName("jwks_uri")]
+    public string? JwksUri { get; init; }
 }

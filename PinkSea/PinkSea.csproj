@@ -10,4 +10,9 @@
       <ProjectReference Include="..\PinkSea.AtProto\PinkSea.AtProto.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
+      <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.1.2" />
+    </ItemGroup>
+
 </Project>

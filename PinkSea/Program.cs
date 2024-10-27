@@ -1,9 +1,13 @@
 using PinkSea.AtProto;
+using PinkSea.AtProto.Providers;
+using PinkSea.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<SigningKeyService>();
+builder.Services.AddSingleton<IJwtSigningProvider>(x => x.GetService<SigningKeyService>()!);
 builder.Services.AddAtProtoServices();
 
 var app = builder.Build();
