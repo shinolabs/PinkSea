@@ -29,4 +29,9 @@ public class OAuthState
     /// The token endpoint.
     /// </summary>
     public required string TokenEndpoint { get; set; }
+    
+    /// <summary>
+    /// The authorization code.
+    /// </summary>
+    public string? AuthorizationCode { get; set; }
 }

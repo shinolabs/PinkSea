@@ -18,13 +18,13 @@ public interface IAtProtoOAuthClient
         OAuthClientData clientData);
 
     /// <summary>
-    /// Gets a token for a previous state.
+    /// Completes authorization for a user.
     /// </summary>
     /// <param name="stateId">The state id.</param>
     /// <param name="authCode">The authorization code.</param>
     /// <param name="clientData">The OAuth client data.</param>
-    /// <returns>The user token.</returns>
-    Task<TokenResponse?> GetTokenForPreviousState(
+    /// <returns>Whether the state is now bound to a properly working authorization code.</returns>
+    Task<bool> CompleteAuthorization(
         string stateId,
         string authCode,
         OAuthClientData clientData);

@@ -1,9 +1,9 @@
-using System.Net;
 using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using Microsoft.IdentityModel.Tokens;
+using PinkSea.AtProto.Http;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.Providers.OAuth;
 using PinkSea.AtProto.Providers.Storage;
@@ -25,7 +25,9 @@ public class AtProtoOAuthClient(
     /// <summary>
     /// The HTTP client used for the OAuth client.
     /// </summary>
-    private readonly HttpClient _client = httpClientFactory.CreateClient("oauth-client");
+    private readonly DpopHttpClient _client = new(
+        httpClientFactory.CreateClient("oauth-client"),
+        jwtSigningProvider);
 
     /// <inheritdoc />
     public async Task<string?> GetOAuthRequestUriForHandle(string handle, OAuthClientData clientData)
@@ -60,10 +62,11 @@ public class AtProtoOAuthClient(
             CodeChallenge = codeChallenge,
             CodeChallengeMethod = "S256",
             ClientAssertionType = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
-            ClientAssertion = assertion
+            ClientAssertion = assertion,
+            LoginHint = handle
         };
         
-        var resp = await SendWithDpop(authServer!.PushedAuthorizationRequestEndpoint!, body, clientData, keyPair);
+        var resp = await _client.Post(authServer!.PushedAuthorizationRequestEndpoint!, body, clientData, keyPair);
         if (!resp.IsSuccessStatusCode)
         {
             Console.WriteLine($"Failed to send a PAR: {await resp.Content.ReadAsStringAsync()}");
@@ -92,14 +95,14 @@ public class AtProtoOAuthClient(
     }
 
     /// <inheritdoc />
-    public async Task<TokenResponse?> GetTokenForPreviousState(
+    public async Task<bool> CompleteAuthorization(
         string stateId,
         string authCode,
         OAuthClientData clientData)
     {
         var oauthState = await oAuthStateStorageProvider.GetForStateId(stateId);
         if (oauthState is null)
-            return null;
+            return false;
         
         var assertion = jwtSigningProvider.GenerateClientAssertion(new JwtSigningData
         {
@@ -119,28 +122,33 @@ public class AtProtoOAuthClient(
             ClientAssertion = assertion
         };
         
-        var resp = await SendWithDpop(oauthState.TokenEndpoint, body, clientData, oauthState.KeyPair);
+        var resp = await _client.Post(oauthState.TokenEndpoint, body, clientData, oauthState.KeyPair);
         if (!resp.IsSuccessStatusCode)
         {
             Console.WriteLine($"Failed to retrieve the token: {await resp.Content.ReadAsStringAsync()}");
-            return null;
+            return false;
         }
 
-        return await resp.Content.ReadFromJsonAsync<TokenResponse>();
+        var tokenResponse = await resp.Content.ReadFromJsonAsync<TokenResponse>();
+        if (tokenResponse is null)
+            return false;
+        
+        oauthState.AuthorizationCode = tokenResponse.AccessToken;
+        return true;
     }
 
     /// <inheritdoc />
     public async Task<ProtectedResource?> GetOAuthProtectedResourceForPds(string pds)
     {
         const string wellKnownUrl = "/.well-known/oauth-protected-resource";
-        return await _client.GetFromJsonAsync<ProtectedResource>($"{pds}{wellKnownUrl}");
+        return await _client.RawClient.GetFromJsonAsync<ProtectedResource>($"{pds}{wellKnownUrl}");
     }
 
     /// <inheritdoc />
     public async Task<AuthorizationServer?> GetOAuthAuthorizationServerDataForAuthorizationServer(string authServer)
     {
         const string wellKnownUrl = "/.well-known/oauth-authorization-server";
-        return await _client.GetFromJsonAsync<AuthorizationServer>($"{authServer}{wellKnownUrl}");
+        return await _client.RawClient.GetFromJsonAsync<AuthorizationServer>($"{authServer}{wellKnownUrl}");
     }
 
     /// <summary>
@@ -195,64 +203,6 @@ public class AtProtoOAuthClient(
         var str = RandomNumberGenerator.GetString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-", 64);
         var hash = SHA256.HashData(Encoding.ASCII.GetBytes(str));
         return (str, Base64UrlEncoder.Encode(hash));
-    }
-
-    /// <summary>
-    /// Sends a payload with DPoP enabled.
-    /// </summary>
-    /// <param name="endpoint">The endpoint.</param>
-    /// <param name="value">The value to send.</param>
-    /// <param name="clientData">The client data.</param>
-    /// <param name="keyPair">The keypair.</param>
-    /// <param name="nonce">The DPoP nonce.</param>
-    /// <typeparam name="TValue">The value of the type.</typeparam>
-    /// <returns>The response.</returns>
-    private async Task<HttpResponseMessage> SendWithDpop<TValue>(
-        string endpoint,
-        TValue value,
-        OAuthClientData clientData,
-        DpopKeyPair keyPair,
-        string? nonce = null)
-    {
-        var dpop = jwtSigningProvider.GenerateDpopHeader(new DpopSigningData()
-        {
-            ClientId = clientData.ClientId,
-            Keypair = keyPair,
-            Method = "POST",
-            Url = endpoint,
-            Nonce = nonce
-        });
-        
-        var request = new HttpRequestMessage()
-        {
-            Method = HttpMethod.Post,
-            RequestUri = new Uri(endpoint),
-            Content = JsonContent.Create(value),
-            Headers =
-            {
-                { "DPoP", dpop }
-            }
-        };
-
-        var resp = await _client.SendAsync(request);
-        if (resp.StatusCode != HttpStatusCode.BadRequest || nonce is not null)
-            return resp;
-        
-        // Failed to send, maybe requires DPoP nonce?
-        // Retry sending with the nonce.
-        var dpopNonce = resp.Headers.GetValues("DPoP-Nonce")?
-            .FirstOrDefault();
-            
-        // We don't have the nonce, we can quit.
-        if (dpopNonce is null)
-            return resp;
-
-        return await SendWithDpop(
-            endpoint,
-            value,
-            clientData,
-            keyPair,
-            dpopNonce);
     }
 
     /// <inheritdoc />

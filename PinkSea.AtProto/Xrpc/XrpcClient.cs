@@ -1,4 +1,5 @@
-using PinkSea.AtProto.OAuth;
+using PinkSea.AtProto.Http;
+using PinkSea.AtProto.Providers.OAuth;
 
 namespace PinkSea.AtProto.Xrpc;
 
@@ -6,14 +7,16 @@ namespace PinkSea.AtProto.Xrpc;
 /// An Xrpc client.
 /// </summary>
 public class XrpcClient(
-    IAtProtoOAuthClient atProtoOAuthClient,
-    IHttpClientFactory httpClientFactory)
+    IHttpClientFactory httpClientFactory,
+    IJwtSigningProvider jwtSigningProvider)
     : IXrpcClient, IDisposable
 {
     /// <summary>
     /// The http client.
     /// </summary>
-    private readonly HttpClient _client = httpClientFactory.CreateClient("xrpc-client");
+    private readonly DpopHttpClient _client = new(
+        httpClientFactory.CreateClient("xrpc-client"),
+        jwtSigningProvider);
     
     /// <inheritdoc />
     public Task<TResponse?> Query<TResponse>(
@@ -22,6 +25,7 @@ public class XrpcClient(
         object? parameters = null,
         string? token = null)
     {
+        var actualEndpoint = $"{pds}/xrpc/{nsid}";
         throw new NotImplementedException();
     }
 

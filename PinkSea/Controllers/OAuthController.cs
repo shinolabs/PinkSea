@@ -62,7 +62,7 @@ public class OAuthController(
         [FromQuery] string code)
     {
         var metadata = GetMetadata();
-        var token = await oAuthClient.GetTokenForPreviousState(
+        var token = await oAuthClient.CompleteAuthorization(
             state,
             code,
             new OAuthClientData()
@@ -81,7 +81,7 @@ public class OAuthController(
             }
         });
 
-        if (token is null)
+        if (!token)
             return BadRequest();
 
         var profile = xrpcClient.Query<Profile>(
@@ -93,7 +93,7 @@ public class OAuthController(
                 Collection = "app.bsky.actor.profile",
                 Rkey = "self",
             },
-            token.AccessToken);
+            state);
         return Ok(token);
     }
     

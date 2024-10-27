@@ -58,4 +58,10 @@ public class AuthorizationRequest
     /// </summary>
     [JsonPropertyName("client_assertion")]
     public string? ClientAssertion { get; init; }
+    
+    /// <summary>
+    /// The login hint.
+    /// </summary>
+    [JsonPropertyName("login_hint")]
+    public string? LoginHint { get; init; }
 }
