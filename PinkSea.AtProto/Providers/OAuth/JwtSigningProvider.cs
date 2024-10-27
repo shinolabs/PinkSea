@@ -59,6 +59,9 @@ public class JwtSigningProvider : IJwtSigningProvider, IDisposable
             },
             Expires = DateTime.UtcNow.AddMinutes(5),
             SigningCredentials = new SigningCredentials(secKey, SecurityAlgorithms.EcdsaSha256)
+            {
+                CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
+            }
         };
 
         if (signingData.Nonce is not null)

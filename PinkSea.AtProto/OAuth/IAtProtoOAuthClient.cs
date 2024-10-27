@@ -16,6 +16,18 @@ public interface IAtProtoOAuthClient
     Task<string?> GetOAuthRequestUriForHandle(
         string handle,
         OAuthClientData clientData);
+
+    /// <summary>
+    /// Gets a token for a previous state.
+    /// </summary>
+    /// <param name="stateId">The state id.</param>
+    /// <param name="authCode">The authorization code.</param>
+    /// <param name="clientData">The OAuth client data.</param>
+    /// <returns>The user token.</returns>
+    Task<TokenResponse?> GetTokenForPreviousState(
+        string stateId,
+        string authCode,
+        OAuthClientData clientData);
     
     /// <summary>
     /// Gets the OAuth protected resource for a given PDS.

@@ -1,7 +1,9 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Security.Cryptography;
+using System.Text;
 using System.Web;
+using Microsoft.IdentityModel.Tokens;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.Providers.OAuth;
 using PinkSea.AtProto.Providers.Storage;
@@ -46,6 +48,7 @@ public class AtProtoOAuthClient(
 
         var keyPair = GenerateDPopKeypair();
         var state = GenerateRandomState();
+        var (codeVerifier, codeChallenge) = GetPkcePair();
         
         var body = new AuthorizationRequest()
         {
@@ -54,7 +57,7 @@ public class AtProtoOAuthClient(
             Scope = clientData.Scope,
             RedirectUrl = clientData.RedirectUri,
             State = state,
-            CodeChallenge = "a",
+            CodeChallenge = codeChallenge,
             CodeChallengeMethod = "S256",
             ClientAssertionType = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
             ClientAssertion = assertion
@@ -79,12 +82,51 @@ public class AtProtoOAuthClient(
             new OAuthState
             {
                 Did = did,
-                PkceString = "a",
+                PkceString = codeVerifier,
                 Issuer = authServer.Issuer,
-                KeyPair = keyPair
+                KeyPair = keyPair,
+                TokenEndpoint = authServer.TokenEndpoint
             });
         
         return finalUrl.ToString();
+    }
+
+    /// <inheritdoc />
+    public async Task<TokenResponse?> GetTokenForPreviousState(
+        string stateId,
+        string authCode,
+        OAuthClientData clientData)
+    {
+        var oauthState = await oAuthStateStorageProvider.GetForStateId(stateId);
+        if (oauthState is null)
+            return null;
+        
+        var assertion = jwtSigningProvider.GenerateClientAssertion(new JwtSigningData
+        {
+            ClientId = clientData.ClientId,
+            Audience = oauthState.Issuer,
+            Key = clientData.Key
+        });
+        
+        var body = new TokenRequest()
+        {
+            ClientId = clientData.ClientId,
+            GrantType = "authorization_code",
+            Code = authCode,
+            RedirectUri = clientData.RedirectUri,
+            CodeVerifier = oauthState.PkceString,
+            ClientAssertionType = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+            ClientAssertion = assertion
+        };
+        
+        var resp = await SendWithDpop(oauthState.TokenEndpoint, body, clientData, oauthState.KeyPair);
+        if (!resp.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Failed to retrieve the token: {await resp.Content.ReadAsStringAsync()}");
+            return null;
+        }
+
+        return await resp.Content.ReadFromJsonAsync<TokenResponse>();
     }
 
     /// <inheritdoc />
@@ -141,7 +183,18 @@ public class AtProtoOAuthClient(
     /// <returns>The state string.</returns>
     private string GenerateRandomState()
     {
-        return RandomNumberGenerator.GetHexString(64, true);
+        return RandomNumberGenerator.GetString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-", 64);
+    }
+
+    /// <summary>
+    /// Gets the PKCE pair.
+    /// </summary>
+    /// <returns>The verifier and the hash.</returns>
+    private (string, string) GetPkcePair()
+    {
+        var str = RandomNumberGenerator.GetString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-", 64);
+        var hash = SHA256.HashData(Encoding.ASCII.GetBytes(str));
+        return (str, Base64UrlEncoder.Encode(hash));
     }
 
     /// <summary>

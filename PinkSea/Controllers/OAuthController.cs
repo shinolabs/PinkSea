@@ -32,7 +32,10 @@ public class OAuthController(
             Scope = metadata.Scope,
             Key = new JwtKey
             {
-                SigningCredentials = new SigningCredentials(signingKeyService.SecurityKey, SecurityAlgorithms.EcdsaSha256),
+                SigningCredentials = new SigningCredentials(signingKeyService.SecurityKey, SecurityAlgorithms.EcdsaSha256)
+                {
+                    CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
+                },
                 KeyId = signingKeyService.KeyId
             }
         });
@@ -55,7 +58,31 @@ public class OAuthController(
         [FromQuery] string state,
         [FromQuery] string code)
     {
-        return Ok(code);
+        var metadata = GetMetadata();
+        var token = await oAuthClient.GetTokenForPreviousState(
+            state,
+            code,
+            new OAuthClientData()
+        {
+            ClientId = metadata.ClientId,
+            RedirectUri = metadata.RedirectUris[0],
+            Scope = metadata.Scope,
+            Key = new JwtKey
+            {
+                SigningCredentials =
+                    new SigningCredentials(signingKeyService.SecurityKey, SecurityAlgorithms.EcdsaSha256)
+                    {
+                        CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
+                    },
+                KeyId = signingKeyService.KeyId
+            }
+        });
+
+        if (token is null)
+            return BadRequest();
+
+        token.AccessToken = "[redacted]";
+        return Ok(token);
     }
     
     /// <summary>
@@ -93,7 +120,7 @@ public class OAuthController(
     /// <returns>The client metadata.</returns>
     private ClientMetadata GetMetadata()
     {
-        const string baseUrl = "https://1fc7efe4e3b866.lhr.life";
+        const string baseUrl = "https://ed888befa98df1.lhr.life";
         return new ClientMetadata
         {
             ClientId = $"{baseUrl}/oauth/client-metadata.json",

@@ -24,4 +24,9 @@ public class OAuthState
     /// The PKCE string.
     /// </summary>
     public required string PkceString { get; set; }
+    
+    /// <summary>
+    /// The token endpoint.
+    /// </summary>
+    public required string TokenEndpoint { get; set; }
 }
