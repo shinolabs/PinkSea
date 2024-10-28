@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PinkSea.AtProto.Lexicons;
 using PinkSea.AtProto.Lexicons.Bluesky.Records;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.OAuth;
-using PinkSea.AtProto.Providers.OAuth;
 using PinkSea.AtProto.Xrpc;
 using PinkSea.Services;
 
@@ -16,7 +16,8 @@ namespace PinkSea.Controllers;
 public class OAuthController(
     SigningKeyService signingKeyService,
     IAtProtoOAuthClient oAuthClient,
-    IXrpcClient xrpcClient) : Controller
+    IOAuthClientDataProvider clientDataProvider,
+    IXrpcClientFactory xrpcClientFactory) : Controller
 {
     /// <summary>
     /// Begins the OAuth login flow.
@@ -27,21 +28,7 @@ public class OAuthController(
     public async Task<IActionResult> BeginLogin(
         [FromQuery] string handle)
     {
-        var metadata = GetMetadata();
-        var authorizationServer = await oAuthClient.GetOAuthRequestUriForHandle(handle, new OAuthClientData()
-        {
-            ClientId = metadata.ClientId,
-            RedirectUri = metadata.RedirectUris[0],
-            Scope = metadata.Scope,
-            Key = new JwtKey
-            {
-                SigningCredentials = new SigningCredentials(signingKeyService.SecurityKey, SecurityAlgorithms.EcdsaSha256)
-                {
-                    CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
-                },
-                KeyId = signingKeyService.KeyId
-            }
-        });
+        var authorizationServer = await oAuthClient.GetOAuthRequestUriForHandle(handle);
         
         if (authorizationServer is null)
             return BadRequest();
@@ -61,40 +48,28 @@ public class OAuthController(
         [FromQuery] string state,
         [FromQuery] string code)
     {
-        var metadata = GetMetadata();
         var token = await oAuthClient.CompleteAuthorization(
             state,
-            code,
-            new OAuthClientData()
-        {
-            ClientId = metadata.ClientId,
-            RedirectUri = metadata.RedirectUris[0],
-            Scope = metadata.Scope,
-            Key = new JwtKey
-            {
-                SigningCredentials =
-                    new SigningCredentials(signingKeyService.SecurityKey, SecurityAlgorithms.EcdsaSha256)
-                    {
-                        CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
-                    },
-                KeyId = signingKeyService.KeyId
-            }
-        });
+            code);
 
         if (!token)
             return BadRequest();
 
-        var profile = xrpcClient.Query<Profile>(
-            "https://matsutake.us-west.host.bsky.network",
+        using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(state);
+        var profile = await xrpcClient!.Query<Record<Profile>>(
+            "https://porcini.us-east.host.bsky.network",
             "com.atproto.repo.getRecord",
             new
             {
-                Repo = "did:plc:2edipcwcjiezjtanjs5vmrlw",
+                Repo = "did:plc:xtzdbt3kmdb6ef3wumhkhktd",
                 Collection = "app.bsky.actor.profile",
                 Rkey = "self",
-            },
-            state);
-        return Ok(token);
+            });
+        return Content($@"
+<h1>Hi {profile!.Value.DisplayName}!</h1>
+<b>{profile.Value.Description}</b>
+<p>This is your avatar: <img src=""https://porcini.us-east.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:xtzdbt3kmdb6ef3wumhkhktd&cid={profile.Value.Avatar!.Reference.Link}"" /></p>
+", "text/html");
     }
     
     /// <summary>
@@ -104,7 +79,7 @@ public class OAuthController(
     [Route("client-metadata.json")]
     public async Task<ActionResult<ClientMetadata>> ClientMetadata()
     {
-        return Ok(GetMetadata());
+        return Ok(clientDataProvider.ClientMetadata);
     }
 
     /// <summary>
@@ -124,33 +99,5 @@ public class OAuthController(
         set.Keys.Add(key);
         
         return Ok(set);
-    }
-
-    /// <summary>
-    /// Generates the client metadata.
-    /// </summary>
-    /// <returns>The client metadata.</returns>
-    private ClientMetadata GetMetadata()
-    {
-        const string baseUrl = "https://ed888befa98df1.lhr.life";
-        return new ClientMetadata
-        {
-            ClientId = $"{baseUrl}/oauth/client-metadata.json",
-            ClientName = "PinkSea",
-            ApplicationType = "web",
-            DpopBoundAccessTokens = true,
-            GrantTypes =
-            [
-                "authorization_code"
-            ],
-            RedirectUris =
-            [
-                $"{baseUrl}/oauth/callback"
-            ],
-            Scope = "atproto transition:generic",
-            TokenEndpointAuthMethod = "private_key_jwt",
-            TokenEndpointAuthSigningAlgorithm = "ES256",
-            JwksUri = $"{baseUrl}/oauth/jwks.json"
-        };
     }
 }

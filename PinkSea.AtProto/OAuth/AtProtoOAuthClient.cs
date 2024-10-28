@@ -20,17 +20,19 @@ public class AtProtoOAuthClient(
     IDomainDidResolver domainDidResolver,
     IDidResolver didResolver,
     IJwtSigningProvider jwtSigningProvider,
-    IOAuthStateStorageProvider oAuthStateStorageProvider) : IAtProtoOAuthClient, IDisposable
+    IOAuthStateStorageProvider oAuthStateStorageProvider,
+    IOAuthClientDataProvider clientDataProvider) : IAtProtoOAuthClient, IDisposable
 {
     /// <summary>
     /// The HTTP client used for the OAuth client.
     /// </summary>
     private readonly DpopHttpClient _client = new(
         httpClientFactory.CreateClient("oauth-client"),
-        jwtSigningProvider);
+        jwtSigningProvider,
+        clientDataProvider.ClientData);
 
     /// <inheritdoc />
-    public async Task<string?> GetOAuthRequestUriForHandle(string handle, OAuthClientData clientData)
+    public async Task<string?> GetOAuthRequestUriForHandle(string handle)
     {
         var did = handle;
         if (!did.StartsWith("did"))
@@ -38,8 +40,14 @@ public class AtProtoOAuthClient(
 
         if (did is null)
             return null;
+        
+        var resolved = await didResolver.GetDidResponseForDid(did!);
+        var pds = resolved?.GetPds();
+        if (pds is null)
+            return null;
 
-        var authServer = await GetOAuthAuthorizationServerDataForDid(did);
+        var authServer = await GetOAuthAuthorizationServerDataForPds(pds);
+        var clientData = clientDataProvider.ClientData;
         
         var assertion = jwtSigningProvider.GenerateClientAssertion(new JwtSigningData()
         {
@@ -66,7 +74,7 @@ public class AtProtoOAuthClient(
             LoginHint = handle
         };
         
-        var resp = await _client.Post(authServer!.PushedAuthorizationRequestEndpoint!, body, clientData, keyPair);
+        var resp = await _client.Post(authServer!.PushedAuthorizationRequestEndpoint!, body, keyPair);
         if (!resp.IsSuccessStatusCode)
         {
             Console.WriteLine($"Failed to send a PAR: {await resp.Content.ReadAsStringAsync()}");
@@ -88,7 +96,8 @@ public class AtProtoOAuthClient(
                 PkceString = codeVerifier,
                 Issuer = authServer.Issuer,
                 KeyPair = keyPair,
-                TokenEndpoint = authServer.TokenEndpoint
+                TokenEndpoint = authServer.TokenEndpoint,
+                Pds = pds
             });
         
         return finalUrl.ToString();
@@ -97,12 +106,13 @@ public class AtProtoOAuthClient(
     /// <inheritdoc />
     public async Task<bool> CompleteAuthorization(
         string stateId,
-        string authCode,
-        OAuthClientData clientData)
+        string authCode)
     {
         var oauthState = await oAuthStateStorageProvider.GetForStateId(stateId);
         if (oauthState is null)
             return false;
+
+        var clientData = clientDataProvider.ClientData;
         
         var assertion = jwtSigningProvider.GenerateClientAssertion(new JwtSigningData
         {
@@ -122,7 +132,7 @@ public class AtProtoOAuthClient(
             ClientAssertion = assertion
         };
         
-        var resp = await _client.Post(oauthState.TokenEndpoint, body, clientData, oauthState.KeyPair);
+        var resp = await _client.Post(oauthState.TokenEndpoint, body, oauthState.KeyPair);
         if (!resp.IsSuccessStatusCode)
         {
             Console.WriteLine($"Failed to retrieve the token: {await resp.Content.ReadAsStringAsync()}");
@@ -152,17 +162,12 @@ public class AtProtoOAuthClient(
     }
 
     /// <summary>
-    /// Gets an OAuth Authorization Server data for a given DID.
+    /// Gets an OAuth Authorization Server data for a given PDS.
     /// </summary>
-    /// <param name="did">The DID.</param>
+    /// <param name="pds">The PDS.</param>
     /// <returns>The authorization server data.</returns>
-    private async Task<AuthorizationServer?> GetOAuthAuthorizationServerDataForDid(string did)
+    private async Task<AuthorizationServer?> GetOAuthAuthorizationServerDataForPds(string pds)
     {
-        var resolved = await didResolver.GetDidResponseForDid(did!);
-        var pds = resolved?.GetPds();
-        if (pds is null)
-            return null;
-        
         var protectedResource = await GetOAuthProtectedResourceForPds(pds);
         var authServer = protectedResource?.GetAuthorizationServer();
         if (authServer is null)

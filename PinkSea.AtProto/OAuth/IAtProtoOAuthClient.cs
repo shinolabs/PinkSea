@@ -11,23 +11,19 @@ public interface IAtProtoOAuthClient
     /// Gets the OAuth redirect URI for a given handle.
     /// </summary>
     /// <param name="handle">The handle.</param>
-    /// <param name="clientData">The OAuth client data.</param>
     /// <returns>The redirect URI.</returns>
     Task<string?> GetOAuthRequestUriForHandle(
-        string handle,
-        OAuthClientData clientData);
+        string handle);
 
     /// <summary>
     /// Completes authorization for a user.
     /// </summary>
     /// <param name="stateId">The state id.</param>
     /// <param name="authCode">The authorization code.</param>
-    /// <param name="clientData">The OAuth client data.</param>
     /// <returns>Whether the state is now bound to a properly working authorization code.</returns>
     Task<bool> CompleteAuthorization(
         string stateId,
-        string authCode,
-        OAuthClientData clientData);
+        string authCode);
     
     /// <summary>
     /// Gets the OAuth protected resource for a given PDS.

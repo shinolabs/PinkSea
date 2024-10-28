@@ -1,47 +1,64 @@
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Web;
 using PinkSea.AtProto.Http;
-using PinkSea.AtProto.Providers.OAuth;
+using PinkSea.AtProto.Models.OAuth;
 
 namespace PinkSea.AtProto.Xrpc;
 
 /// <summary>
-/// An Xrpc client.
+/// An XRPC client.
 /// </summary>
-public class XrpcClient(
-    IHttpClientFactory httpClientFactory,
-    IJwtSigningProvider jwtSigningProvider)
-    : IXrpcClient, IDisposable
+public class XrpcClient(DpopHttpClient client, DpopKeyPair keyPair)
+    : IXrpcClient
 {
-    /// <summary>
-    /// The http client.
-    /// </summary>
-    private readonly DpopHttpClient _client = new(
-        httpClientFactory.CreateClient("xrpc-client"),
-        jwtSigningProvider);
-    
     /// <inheritdoc />
-    public Task<TResponse?> Query<TResponse>(
+    public async Task<TResponse?> Query<TResponse>(
         string pds,
         string nsid,
-        object? parameters = null,
-        string? token = null)
+        object? parameters = null)
     {
         var actualEndpoint = $"{pds}/xrpc/{nsid}";
-        throw new NotImplementedException();
+        if (parameters is not null)
+            actualEndpoint += $"?{ObjectToQueryParams(parameters)}";
+
+        var resp = await client.Get(actualEndpoint, keyPair);
+        if (resp.IsSuccessStatusCode)
+        {
+            var str = await resp.Content.ReadAsStringAsync();
+            Console.WriteLine($"Got back data from the PDS: {str}");
+            return JsonSerializer.Deserialize<TResponse>(str);
+        }
+
+        return default;
     }
 
     /// <inheritdoc />
     public Task<TResponse?> Procedure<TResponse>(
         string pds,
         string nsid,
-        object? parameters = null,
-        string? token = null)
+        object? parameters = null)
     {
         throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// Converts an object to a query string.
+    /// </summary>
+    /// <param name="obj">The object.</param>
+    /// <returns>The resulting query string.</returns>
+    private string ObjectToQueryParams(object obj)
+    {
+        var props = from p in obj.GetType().GetProperties()
+            where p.GetValue(obj, null) != null
+            select p.Name.ToLowerInvariant() + "=" + HttpUtility.UrlEncode(p.GetValue(obj, null).ToString());
+
+        return string.Join('&', props.ToArray());
     }
 
     /// <inheritdoc />
     public void Dispose()
     {
-        _client.Dispose();
+        client.Dispose();
     }
 }

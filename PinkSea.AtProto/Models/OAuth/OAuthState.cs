@@ -31,6 +31,11 @@ public class OAuthState
     public required string TokenEndpoint { get; set; }
     
     /// <summary>
+    /// The personal data server of the user.
+    /// </summary>
+    public required string Pds { get; set; }
+    
+    /// <summary>
     /// The authorization code.
     /// </summary>
     public string? AuthorizationCode { get; set; }

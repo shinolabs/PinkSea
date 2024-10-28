@@ -8,21 +8,9 @@ namespace PinkSea.AtProto.Lexicons.Bluesky.Records;
 public class Profile
 {
     /// <summary>
-    /// The DID.
-    /// </summary>
-    [JsonPropertyName("did")]
-    public required string Did { get; set; }
-    
-    /// <summary>
-    /// The handle of the profile.
-    /// </summary>
-    [JsonPropertyName("handle")]
-    public required string Handle { get; set; }
-
-    /// <summary>
     /// The display name.
     /// </summary>
-    [JsonPropertyName("display_name")]
+    [JsonPropertyName("displayName")]
     public string? DisplayName { get; set; }
     
     /// <summary>
@@ -35,11 +23,11 @@ public class Profile
     /// The description.
     /// </summary>
     [JsonPropertyName("avatar")]
-    public string? Avatar { get; set; }
+    public Blob? Avatar { get; set; }
     
     /// <summary>
     /// The description.
     /// </summary>
     [JsonPropertyName("banner")]
-    public string? Banner { get; set; }
+    public Blob? Banner { get; set; }
 }
