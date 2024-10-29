@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using PinkSea.AtProto.Lexicons.Types;
 
 namespace PinkSea.AtProto.Lexicons.Bluesky.Records;
 

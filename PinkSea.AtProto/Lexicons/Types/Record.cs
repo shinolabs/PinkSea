@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace PinkSea.AtProto.Lexicons;
+namespace PinkSea.AtProto.Lexicons.Types;
 
 /// <summary>
 /// An AT Protocol record.

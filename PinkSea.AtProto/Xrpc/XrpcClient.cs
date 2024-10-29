@@ -3,26 +3,28 @@ using System.Text.Json;
 using System.Web;
 using PinkSea.AtProto.Http;
 using PinkSea.AtProto.Models.OAuth;
+using PinkSea.AtProto.OAuth;
 
 namespace PinkSea.AtProto.Xrpc;
 
 /// <summary>
 /// An XRPC client.
 /// </summary>
-public class XrpcClient(DpopHttpClient client, DpopKeyPair keyPair)
+public class XrpcClient(
+    DpopHttpClient client,
+    OAuthState clientState)
     : IXrpcClient
 {
     /// <inheritdoc />
     public async Task<TResponse?> Query<TResponse>(
-        string pds,
         string nsid,
         object? parameters = null)
     {
-        var actualEndpoint = $"{pds}/xrpc/{nsid}";
+        var actualEndpoint = $"{clientState.Pds}/xrpc/{nsid}";
         if (parameters is not null)
             actualEndpoint += $"?{ObjectToQueryParams(parameters)}";
 
-        var resp = await client.Get(actualEndpoint, keyPair);
+        var resp = await client.Get(actualEndpoint, clientState.KeyPair);
         if (resp.IsSuccessStatusCode)
         {
             var str = await resp.Content.ReadAsStringAsync();
@@ -35,7 +37,6 @@ public class XrpcClient(DpopHttpClient client, DpopKeyPair keyPair)
 
     /// <inheritdoc />
     public Task<TResponse?> Procedure<TResponse>(
-        string pds,
         string nsid,
         object? parameters = null)
     {

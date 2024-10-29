@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using PinkSea.AtProto.Lexicons;
+using PinkSea.AtProto.Lexicons.Types;
 using PinkSea.AtProto.Lexicons.Bluesky.Records;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.OAuth;
@@ -57,7 +57,6 @@ public class OAuthController(
 
         using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(state);
         var profile = await xrpcClient!.Query<Record<Profile>>(
-            "https://porcini.us-east.host.bsky.network",
             "com.atproto.repo.getRecord",
             new
             {
