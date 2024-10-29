@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 namespace PinkSea.AtProto.Lexicons.Types;
 
 /// <summary>
-/// An atproto time-based ID.
+/// An AT protocol time-based ID.
 /// </summary>
 public readonly struct Tid
 {

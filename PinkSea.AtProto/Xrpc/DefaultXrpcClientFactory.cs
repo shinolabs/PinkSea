@@ -18,12 +18,13 @@ public class DefaultXrpcClientFactory(
     public async Task<IXrpcClient?> GetForOAuthStateId(string stateId)
     {
         var oauthState = await stateStorageProvider.GetForStateId(stateId);
-        if (oauthState is null)
+        if (oauthState?.AuthorizationCode is null)
             return null;
 
         var httpClient = httpClientFactory.CreateClient("xrpc-client");
         var dpopClient = new DpopHttpClient(httpClient, jwtSigningProvider, clientDataProvider.ClientData);
-
+        dpopClient.SetAuthorizationHeader(oauthState.AuthorizationCode);
+        
         return new XrpcClient(dpopClient, oauthState);
     }
 }

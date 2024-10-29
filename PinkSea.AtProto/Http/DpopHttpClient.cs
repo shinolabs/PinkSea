@@ -27,6 +27,11 @@ public class DpopHttpClient : IDisposable
     private readonly OAuthClientData _clientData;
 
     /// <summary>
+    /// The authorization header value.
+    /// </summary>
+    private string? _authorization;
+
+    /// <summary>
     /// The raw HTTP client.
     /// </summary>
     public HttpClient RawClient => _client;
@@ -42,6 +47,15 @@ public class DpopHttpClient : IDisposable
         _client = client;
         _jwtSigningProvider = jwtSigningProvider;
         _clientData = clientData;
+    }
+
+    /// <summary>
+    /// Sets the authorization header.
+    /// </summary>
+    /// <param name="authorization">The value.</param>
+    public void SetAuthorizationHeader(string authorization)
+    {
+        _authorization = authorization;
     }
     
     /// <summary>
@@ -105,6 +119,9 @@ public class DpopHttpClient : IDisposable
                 { "DPoP", dpop }
             }
         };
+        
+        if (_authorization is not null)
+            request.Headers.Add("Authorization", $"DPoP {_authorization}");
 
         if (method != HttpMethod.Get)
             request.Content = JsonContent.Create(value);
