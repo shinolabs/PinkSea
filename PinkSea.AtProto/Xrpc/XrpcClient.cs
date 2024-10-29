@@ -36,11 +36,21 @@ public class XrpcClient(
     }
 
     /// <inheritdoc />
-    public Task<TResponse?> Procedure<TResponse>(
+    public async Task<TResponse?> Procedure<TResponse>(
         string nsid,
         object? parameters = null)
     {
-        throw new NotImplementedException();
+        var actualEndpoint = $"{clientState.Pds}/xrpc/{nsid}";
+        var resp = await client.Post(actualEndpoint, parameters, clientState.KeyPair);
+        
+        if (resp.IsSuccessStatusCode)
+        {
+            var str = await resp.Content.ReadAsStringAsync();
+            Console.WriteLine($"Got back data from the PDS: {str}");
+            return JsonSerializer.Deserialize<TResponse>(str);
+        }
+
+        return default;
     }
 
     /// <summary>

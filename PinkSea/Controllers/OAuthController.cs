@@ -64,6 +64,7 @@ public class OAuthController(
                 Collection = "app.bsky.actor.profile",
                 Rkey = "self",
             });
+        
         return Content($@"
 <h1>Hi {profile!.Value.DisplayName}!</h1>
 <b>{profile.Value.Description}</b>
