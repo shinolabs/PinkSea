@@ -4,7 +4,7 @@ using PinkSea.AtProto.Lexicons.Types;
 using PinkSea.AtProto.Lexicons.Bluesky.Records;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.OAuth;
-using PinkSea.AtProto.Xrpc;
+using PinkSea.AtProto.Xrpc.Client;
 using PinkSea.Services;
 
 namespace PinkSea.Controllers;
@@ -28,7 +28,7 @@ public class OAuthController(
     public async Task<IActionResult> BeginLogin(
         [FromQuery] string handle)
     {
-        var authorizationServer = await oAuthClient.GetOAuthRequestUriForHandle(handle);
+        var authorizationServer = await oAuthClient.BeginOAuthFlow(handle);
         
         if (authorizationServer is null)
             return BadRequest();

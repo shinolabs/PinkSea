@@ -12,7 +12,7 @@ public interface IAtProtoOAuthClient
     /// </summary>
     /// <param name="handle">The handle.</param>
     /// <returns>The redirect URI.</returns>
-    Task<string?> GetOAuthRequestUriForHandle(
+    Task<string?> BeginOAuthFlow(
         string handle);
 
     /// <summary>

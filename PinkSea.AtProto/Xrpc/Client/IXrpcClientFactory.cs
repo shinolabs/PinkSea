@@ -1,4 +1,4 @@
-namespace PinkSea.AtProto.Xrpc;
+namespace PinkSea.AtProto.Xrpc.Client;
 
 /// <summary>
 /// A factory for <see cref="IXrpcClient"/>

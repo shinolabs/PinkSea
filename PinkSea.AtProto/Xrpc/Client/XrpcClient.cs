@@ -1,11 +1,9 @@
-using System.Net.Http.Json;
 using System.Text.Json;
 using System.Web;
 using PinkSea.AtProto.Http;
 using PinkSea.AtProto.Models.OAuth;
-using PinkSea.AtProto.OAuth;
 
-namespace PinkSea.AtProto.Xrpc;
+namespace PinkSea.AtProto.Xrpc.Client;
 
 /// <summary>
 /// An XRPC client.

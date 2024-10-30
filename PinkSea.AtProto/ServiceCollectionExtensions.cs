@@ -4,7 +4,7 @@ using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.OAuth;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Resolvers.Domain;
-using PinkSea.AtProto.Xrpc;
+using PinkSea.AtProto.Xrpc.Client;
 
 namespace PinkSea.AtProto;
 

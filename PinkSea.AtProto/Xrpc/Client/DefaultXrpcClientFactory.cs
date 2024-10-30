@@ -3,7 +3,7 @@ using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.OAuth;
 using PinkSea.AtProto.Providers.Storage;
 
-namespace PinkSea.AtProto.Xrpc;
+namespace PinkSea.AtProto.Xrpc.Client;
 
 /// <summary>
 /// The default XRPC client factory implementation.

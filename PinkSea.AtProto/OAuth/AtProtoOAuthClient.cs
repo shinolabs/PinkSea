@@ -24,6 +24,26 @@ public class AtProtoOAuthClient(
     IOAuthClientDataProvider clientDataProvider) : IAtProtoOAuthClient, IDisposable
 {
     /// <summary>
+    /// The JWT client assertion type.
+    /// </summary>
+    private const string JwtClientAssertionType = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
+
+    /// <summary>
+    /// The PKCE code challenge method.
+    /// </summary>
+    private const string CodeChallengeMethod = "S256";
+
+    /// <summary>
+    /// The code response type.
+    /// </summary>
+    private const string CodeResponseType = "code";
+
+    /// <summary>
+    /// The authorization code grant type.
+    /// </summary>
+    private const string AuthorizationCodeGrantType = "authorization_code";
+    
+    /// <summary>
     /// The HTTP client used for the OAuth client.
     /// </summary>
     private readonly DpopHttpClient _client = new(
@@ -32,7 +52,7 @@ public class AtProtoOAuthClient(
         clientDataProvider.ClientData);
 
     /// <inheritdoc />
-    public async Task<string?> GetOAuthRequestUriForHandle(string handle)
+    public async Task<string?> BeginOAuthFlow(string handle)
     {
         var did = handle;
         if (!did.StartsWith("did"))
@@ -63,13 +83,13 @@ public class AtProtoOAuthClient(
         var body = new AuthorizationRequest()
         {
             ClientId = clientData.ClientId,
-            ResponseType = "code",
+            ResponseType = CodeResponseType,
             Scope = clientData.Scope,
             RedirectUrl = clientData.RedirectUri,
             State = state,
             CodeChallenge = codeChallenge,
-            CodeChallengeMethod = "S256",
-            ClientAssertionType = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+            CodeChallengeMethod = CodeChallengeMethod,
+            ClientAssertionType = JwtClientAssertionType,
             ClientAssertion = assertion,
             LoginHint = handle
         };
@@ -124,11 +144,11 @@ public class AtProtoOAuthClient(
         var body = new TokenRequest()
         {
             ClientId = clientData.ClientId,
-            GrantType = "authorization_code",
+            GrantType = AuthorizationCodeGrantType,
             Code = authCode,
             RedirectUri = clientData.RedirectUri,
             CodeVerifier = oauthState.PkceString,
-            ClientAssertionType = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+            ClientAssertionType = JwtClientAssertionType,
             ClientAssertion = assertion
         };
         
@@ -194,7 +214,7 @@ public class AtProtoOAuthClient(
     /// Generates a random state string.
     /// </summary>
     /// <returns>The state string.</returns>
-    private string GenerateRandomState()
+    private static string GenerateRandomState()
     {
         return RandomNumberGenerator.GetString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-", 64);
     }
@@ -203,7 +223,7 @@ public class AtProtoOAuthClient(
     /// Gets the PKCE pair.
     /// </summary>
     /// <returns>The verifier and the hash.</returns>
-    private (string, string) GetPkcePair()
+    private static (string, string) GetPkcePair()
     {
         var str = RandomNumberGenerator.GetString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-", 64);
         var hash = SHA256.HashData(Encoding.ASCII.GetBytes(str));
