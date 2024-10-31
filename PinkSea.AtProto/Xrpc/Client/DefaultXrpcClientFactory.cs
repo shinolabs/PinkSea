@@ -23,7 +23,7 @@ public class DefaultXrpcClientFactory(
 
         var httpClient = httpClientFactory.CreateClient("xrpc-client");
         var dpopClient = new DpopHttpClient(httpClient, jwtSigningProvider, clientDataProvider.ClientData);
-        dpopClient.SetAuthorizationHeader(oauthState.AuthorizationCode);
+        dpopClient.SetAuthorizationCode(oauthState.AuthorizationCode);
         
         return new XrpcClient(dpopClient, oauthState);
     }

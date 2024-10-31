@@ -31,4 +31,9 @@ public class DpopSigningData
     /// The nonce.
     /// </summary>
     public string? Nonce { get; set; }
+    
+    /// <summary>
+    /// The authentication code hash.
+    /// </summary>
+    public string? AuthenticationCodeHash { get; set; }
 }

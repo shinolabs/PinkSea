@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PinkSea.AtProto.Lexicons.Types;
@@ -60,15 +61,30 @@ public class OAuthController(
             "com.atproto.repo.getRecord",
             new
             {
-                Repo = "did:plc:xtzdbt3kmdb6ef3wumhkhktd",
+                Repo = "did:plc:2edipcwcjiezjtanjs5vmrlw",
                 Collection = "app.bsky.actor.profile",
                 Rkey = "self",
+            });
+
+        await xrpcClient.Procedure<object>(
+            "com.atproto.repo.putRecord",
+            new
+            {
+                Repo = "did:plc:2edipcwcjiezjtanjs5vmrlw",
+                Collection = "com.shinolabs.pinksea.testRecord",
+                RKey = Tid.NewTid().ToString(),
+                Record = new Dictionary<string, string>()
+                {
+                    { "$type", "com.shinolabs.pinksea.testRecord" },
+                    { "value", "hiiii" },
+                    { "createdAt", DateTimeOffset.UtcNow.ToString(CultureInfo.InvariantCulture) }
+                }
             });
         
         return Content($@"
 <h1>Hi {profile!.Value.DisplayName}!</h1>
 <b>{profile.Value.Description}</b>
-<p>This is your avatar: <img src=""https://porcini.us-east.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:xtzdbt3kmdb6ef3wumhkhktd&cid={profile.Value.Avatar!.Reference.Link}"" /></p>
+<p>This is your avatar: <img src=""https://porcini.us-east.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:2edipcwcjiezjtanjs5vmrlw&cid={profile.Value.Avatar!.Reference.Link}"" /></p>
 ", "text/html");
     }
     

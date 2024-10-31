@@ -41,12 +41,11 @@ public class XrpcClient(
         var actualEndpoint = $"{clientState.Pds}/xrpc/{nsid}";
         var resp = await client.Post(actualEndpoint, parameters, clientState.KeyPair);
         
+        var str = await resp.Content.ReadAsStringAsync();
+        Console.WriteLine($"Got back data from the PDS: {str}");
+        
         if (resp.IsSuccessStatusCode)
-        {
-            var str = await resp.Content.ReadAsStringAsync();
-            Console.WriteLine($"Got back data from the PDS: {str}");
             return JsonSerializer.Deserialize<TResponse>(str);
-        }
 
         return default;
     }

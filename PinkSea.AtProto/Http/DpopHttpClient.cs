@@ -1,10 +1,25 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using Microsoft.IdentityModel.Tokens;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.OAuth;
 
 namespace PinkSea.AtProto.Http;
+
+public class LowerCaseNamingPolicy : JsonNamingPolicy
+{
+    public override string ConvertName(string name)
+    {
+        if (string.IsNullOrEmpty(name) || !char.IsUpper(name[0]))
+            return name;
+
+        return name.ToLower();
+    }
+}
 
 /// <summary>
 /// A DPoP-capable HTTP client.
@@ -32,6 +47,11 @@ public class DpopHttpClient : IDisposable
     private string? _authorization;
 
     /// <summary>
+    /// The authorization code.
+    /// </summary>
+    private string? _authorizationCode;
+
+    /// <summary>
     /// The raw HTTP client.
     /// </summary>
     public HttpClient RawClient => _client;
@@ -50,12 +70,14 @@ public class DpopHttpClient : IDisposable
     }
 
     /// <summary>
-    /// Sets the authorization header.
+    /// Sets the authorization code.
     /// </summary>
-    /// <param name="authorization">The value.</param>
-    public void SetAuthorizationHeader(string authorization)
+    /// <param name="authorizationCode">The value.</param>
+    public void SetAuthorizationCode(string authorizationCode)
     {
-        _authorization = authorization;
+        var hash = SHA256.HashData(Encoding.ASCII.GetBytes(authorizationCode));
+        _authorizationCode = Base64UrlEncoder.Encode(hash);
+        _authorization = authorizationCode;
     }
     
     /// <summary>
@@ -107,7 +129,8 @@ public class DpopHttpClient : IDisposable
             Keypair = keyPair,
             Method = method.ToString().ToUpper(),
             Url = endpoint,
-            Nonce = nonce
+            Nonce = nonce,
+            AuthenticationCodeHash = _authorizationCode
         });
         
         var request = new HttpRequestMessage()
@@ -124,10 +147,19 @@ public class DpopHttpClient : IDisposable
             request.Headers.Add("Authorization", $"DPoP {_authorization}");
 
         if (method != HttpMethod.Get)
-            request.Content = JsonContent.Create(value);
+        {
+            Console.WriteLine($"Serialized: {JsonSerializer.Serialize(value, options: new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = new LowerCaseNamingPolicy()
+            })}");
+            request.Content = JsonContent.Create(value, options: new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = new LowerCaseNamingPolicy()
+            });
+        }
         
         var resp = await _client.SendAsync(request);
-        if (resp.StatusCode != HttpStatusCode.BadRequest || nonce is not null)
+        if ((resp.StatusCode != HttpStatusCode.BadRequest && resp.StatusCode != HttpStatusCode.Unauthorized) || nonce is not null)
             return resp;
         
         Console.WriteLine($"Failed to fetch with DPoP: {await resp.Content.ReadAsStringAsync()}");

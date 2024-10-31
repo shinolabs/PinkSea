@@ -67,6 +67,9 @@ public class JwtSigningProvider : IJwtSigningProvider, IDisposable
         if (signingData.Nonce is not null)
             descriptor.Claims.Add("nonce", signingData.Nonce);
         
+        if (signingData.AuthenticationCodeHash is not null)
+            descriptor.Claims.Add("ath", signingData.AuthenticationCodeHash);
+        
         var key = JsonWebKeyConverter.ConvertFromECDsaSecurityKey(secKey);
         key.D = null;
         key.X = Base64UrlEncoder.Encode(parameters.Q.X!);
