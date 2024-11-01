@@ -1,21 +1,20 @@
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.OAuth;
+using PinkSea.Models;
 
 namespace PinkSea.Services;
 
 /// <summary>
 /// The PinkSea client data provider.
 /// </summary>
-public class OAuthClientDataProvider(SigningKeyService signingKeyService) 
+public class OAuthClientDataProvider(
+    SigningKeyService signingKeyService,
+    IOptions<AppViewConfig> appViewConfig) 
     : IOAuthClientDataProvider
 {
-    /// <summary>
-    /// The base URL of the service.
-    /// </summary>
-    private const string BaseUrl = "https://50fdb54308ada0.lhr.life";
-    
     /// <inheritdoc />
     public OAuthClientData ClientData => new()
     {
@@ -35,7 +34,7 @@ public class OAuthClientDataProvider(SigningKeyService signingKeyService)
     /// <inheritdoc />
     public ClientMetadata ClientMetadata => new()
     {
-        ClientId = $"{BaseUrl}/oauth/client-metadata.json",
+        ClientId = $"{appViewConfig.Value.AppUrl}/oauth/client-metadata.json",
         ClientName = "PinkSea",
         ApplicationType = "web",
         DpopBoundAccessTokens = true,
@@ -45,11 +44,11 @@ public class OAuthClientDataProvider(SigningKeyService signingKeyService)
         ],
         RedirectUris =
         [
-            $"{BaseUrl}/oauth/callback"
+            $"{appViewConfig.Value.AppUrl}/oauth/callback"
         ],
         Scope = "atproto transition:generic",
         TokenEndpointAuthMethod = "private_key_jwt",
         TokenEndpointAuthSigningAlgorithm = "ES256",
-        JwksUri = $"{BaseUrl}/oauth/jwks.json"
+        JwksUri = $"{appViewConfig.Value.AppUrl}/oauth/jwks.json"
     };
 }

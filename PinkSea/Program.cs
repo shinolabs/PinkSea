@@ -1,9 +1,13 @@
 using PinkSea.AtProto;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.Storage;
+using PinkSea.Models;
 using PinkSea.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<AppViewConfig>(
+    builder.Configuration.GetSection("AppViewConfig"));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
