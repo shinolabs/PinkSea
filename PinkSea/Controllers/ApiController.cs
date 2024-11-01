@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using PinkSea.AtProto.Lexicons.AtProto;
-using PinkSea.AtProto.Lexicons.Types;
-using PinkSea.AtProto.Xrpc.Client;
-using PinkSea.Helpers;
-using PinkSea.Lexicons.Records;
+using Microsoft.EntityFrameworkCore;
+using PinkSea.AtProto.Models.Did;
+using PinkSea.AtProto.Resolvers.Did;
+using PinkSea.Database;
 using PinkSea.Models;
+using PinkSea.Models.Dto;
+using PinkSea.Services;
 
 namespace PinkSea.Controllers;
 
@@ -13,7 +14,9 @@ namespace PinkSea.Controllers;
 /// </summary>
 [Route("/api")]
 public class ApiController(
-    IXrpcClientFactory xrpcClientFactory) : Controller
+    OekakiService oekakiService,
+    PinkSeaDbContext dbContext,
+    IDidResolver didResolver) : Controller
 {
     /// <summary>
     /// Uploads an oekaki.
@@ -24,71 +27,50 @@ public class ApiController(
     public async Task<IActionResult> UploadOekaki(
         [FromBody] UploadOekakiRequest request)
     {
-        var stateClaim = User.Claims.FirstOrDefault(c => c.Type == "state");
+        var stateClaim = User.Claims.FirstOrDefault(c => c.Type == "state")?.Value;
         if (stateClaim is null)
             return Unauthorized();
 
-        var pds = User.Claims.FirstOrDefault(c => c.Type == "pds")!.Value;
-        var did = User.Claims.FirstOrDefault(c => c.Type == "did")!.Value;
-
-        using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(stateClaim.Value);
-        if (xrpcClient is null)
-            return Unauthorized();
-        
-        var (mime, bytes) = DataUrlHelper.ParseDataUrl(request.Data);
-        
-        // We'll only deal with PNG files.
-        if (!mime.Equals("image/png;base64", StringComparison.CurrentCultureIgnoreCase))
-            return StatusCode(StatusCodes.Status415UnsupportedMediaType);
-        
-        // As per the lexicon: maxSize=1048576
-        if (bytes.Length > 1048576)
-            return StatusCode(StatusCodes.Status413PayloadTooLarge);
-
-        var byteArrayContent = new ByteArrayContent(bytes);
-        byteArrayContent.Headers.Add("Content-Type", "image/png");
-        
-        var result = await xrpcClient.RawCall<UploadBlobResponse>(
-            "com.atproto.repo.uploadBlob",
-            byteArrayContent);
-
-        if (result is null)
-            return BadRequest();
-
-        var oekaki = new Oekaki
+        return await oekakiService.ProcessUploadedOekaki(request, stateClaim) switch
         {
-            CreatedAt = DateTimeOffset.UtcNow
-                .ToUnixTimeMilliseconds()
-                .ToString(),
-            Image = new Image
-            {
-                Blob = result.Blob,
-                ImageLink = new Image.ImageLinkObject
-                {
-                    // By default we'll put it at the getBlob xrpc call to the pds for decentralization.
-                    // PinkSea will be able to retrieve its own version.
-                    FullSize = $"{pds}/xrpc/com.atproto.sync.getBlob?did={did}&cid={result.Blob.Reference.Link}",
-                    Alt = request.AltText
-                }
-            },
-            Tags = request.Tags?
-                .Where(t => t.Length <= 640)
-                .ToArray()
+            OekakiUploadResult.NotAPng => BadRequest("The uploaded file is not a PNG file."),
+            OekakiUploadResult.UploadTooBig => BadRequest("The uploaded file exceeds the size."),
+            OekakiUploadResult.FailedToUploadBlob => BadRequest("Failed to upload the blob to the PDS"),
+            OekakiUploadResult.FailedToUploadRecord => BadRequest("Failed to upload the record to the PDS"),
+            _ => Accepted()
         };
+    }
 
-        var response = await xrpcClient.Procedure<PutRecordResponse>(
-            "com.atproto.repo.putRecord",
-            new PutRecordRequest
-            {
-                Repo = did,
-                Collection = "com.shinolabs.pinksea.oekaki",
-                RecordKey = Tid.NewTid().ToString(),
-                Record = oekaki
-            });
+    /// <summary>
+    /// Gets all the oekaki.
+    /// </summary>
+    /// <returns>The oekaki enumerable</returns>
+    [Route("get-all")]
+    [HttpGet]
+    public async Task<IEnumerable<OekakiDto>> GetAll()
+    {
+        var oekaki = await dbContext.Oekaki
+            .Include(o => o.Author)
+            .ToListAsync();
 
-        if (response is null)
-            return StatusCode(StatusCodes.Status500InternalServerError);
-        
-        return Ok(response.Uri);
+        var dids = oekaki.Select(o => o.AuthorDid)
+            .Distinct();
+
+        var map = new Dictionary<string, DidResponse>();
+        foreach (var did in dids)
+        {
+            var document = await didResolver.GetDidResponseForDid(did);
+            map[did] = document!;
+        }
+
+        return oekaki.Select(o => new OekakiDto()
+        {
+            AuthorDid = o.AuthorDid,
+            AuthorHandle = map[o.AuthorDid].AlsoKnownAs[0]
+                .Replace("at://", ""),
+            CreationTime = o.IndexedAt,
+            ImageLink = $"{map[o.AuthorDid].GetPds()!}/xrpc/com.atproto.sync.getBlob?did={o.AuthorDid}&cid={o.BlobCid}",
+            Tags = []
+        });
     }
 }

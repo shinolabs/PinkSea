@@ -164,6 +164,7 @@ public class AtProtoOAuthClient(
             return false;
         
         oauthState.AuthorizationCode = tokenResponse.AccessToken;
+        await oAuthStateStorageProvider.SetForStateId(stateId, oauthState);
         return true;
     }
 

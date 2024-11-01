@@ -17,8 +17,8 @@
 			<canvas id="bakagaki" width="480" height="300"></canvas>
 		</div>
 		<div>
-			<input type="color" id="penColor" name="body" value="#00ddc0" />
-			<input type="range" id="penSize"  min="1" max="30" value="5" /> <span id="penSizeDisplay">5</span>
+			<input type="color" id="penColor" name="body" value="#00ddc0"/>
+			<input type="range" id="penSize" min="1" max="30" value="5"/> <span id="penSizeDisplay">5</span>
 			<button onclick="uploadImage()">Upload!</button>
 		</div>
 	</div>
@@ -30,6 +30,31 @@ else
 		<input type="submit" value="Login with ATProto" />
 	</form>
 }
+<hr/>
+<div id="posts" style="display: inline-block; width: 100%;">
+	
+</div>
+
+<script>
+	const posts = document.getElementById("posts");
+	fetch("/api/get-all")
+    .then(res => res.json())
+    .then(j => {
+		for (const obj of j) {
+			const container = document.createElement("div");
+			container.style.display = "inline-block";
+			
+			const image = document.createElement("img");
+			const description = document.createElement("div");
+			description.innerText = "By @@" + obj.authorHandle + " at: " + obj.creationTime;
+			image.src = obj.imageLink;
+			container.appendChild(image);
+			container.appendChild(description);
+			posts.appendChild(container);
+		}
+	})
+    .catch(res => console.log(res));
+</script>
 
 <script>
 	const canvas = document.getElementById("bakagaki");
@@ -106,7 +131,7 @@ else
             	"Content-Type": "application/json",
             },
 		})
-		.then(res => console.log(res))
+		.then(res => location.reload())
 		.catch(res => console.log(res));
 	};
 </script>

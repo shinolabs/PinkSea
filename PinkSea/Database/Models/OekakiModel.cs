@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PinkSea.Database.Models;
 
@@ -12,6 +13,12 @@ public class OekakiModel
     /// </summary>
     [Key]
     public required string Tid { get; set; }
+    
+    /// <summary>
+    /// The ID of the oekaki post.
+    /// </summary>
+    [ForeignKey(nameof(Author))]
+    public required string AuthorDid { get; set; }
     
     /// <summary>
     /// When was the oekaki indexed at by the AppView?

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.HttpLogging;
 using PinkSea.AtProto;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.Storage;
+using PinkSea.Database;
 using PinkSea.Models;
 using PinkSea.Services;
 
@@ -17,9 +18,11 @@ builder.Services.Configure<AppViewConfig>(
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton<IOAuthStateStorageProvider, MemoryOAuthStateStorageProvider>();
+builder.Services.AddScoped<IOAuthStateStorageProvider, DatabaseOAuthStateStorageProvider>();
 builder.Services.AddTransient<IOAuthClientDataProvider, OAuthClientDataProvider>();
 builder.Services.AddSingleton<SigningKeyService>();
+builder.Services.AddScoped<OekakiService>();
+builder.Services.AddDbContext<PinkSeaDbContext>();
 builder.Services.AddAtProtoClientServices();
 
 builder.Services.AddAuthentication("PinkSea")
