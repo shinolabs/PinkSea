@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpLogging;
 using PinkSea.AtProto;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.Storage;
@@ -5,6 +6,11 @@ using PinkSea.Models;
 using PinkSea.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHttpLogging(o => { 
+    o.LoggingFields = HttpLoggingFields.All;
+    o.RequestBodyLogLimit = 10000000;
+});
 
 builder.Services.Configure<AppViewConfig>(
     builder.Configuration.GetSection("AppViewConfig"));
@@ -26,10 +32,13 @@ builder.Services.AddAuthentication("PinkSea")
 
 var app = builder.Build();
 
+app.UseHttpLogging();
+
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
@@ -37,14 +46,12 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.MapControllers();
+
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
 app.Run();

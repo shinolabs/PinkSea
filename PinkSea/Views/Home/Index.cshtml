@@ -21,6 +21,7 @@
 		<div>
 			<input type="color" id="penColor" name="body" value="#00ddc0" />
 			<input type="range" id="penSize"  min="1" max="30" value="5" /> <span id="penSizeDisplay">5</span>
+			<button onclick="uploadImage">Upload!</button>
 		</div>
 	</div>
 }
@@ -28,7 +29,7 @@ else
 {
 	<form action="/oauth/begin-login">
 		<input name="handle" />
-		<input type="submit" />
+		<input type="submit" value="Login with ATProto" />
 	</form>
 }
 
@@ -93,4 +94,18 @@ else
 		lastX = x;
 		lastY = y;
 	})
+	
+	const uploadImage = () => {
+		const body = {
+			data: canvas.toDataURL('image/png')
+		};
+		
+		fetch("/api/upload-oekaki",
+		{
+			method: 'POST',
+			body: JSON.stringify(body)
+		})
+		.then(res => console.log(res))
+		.catch(res => console.log(res));
+	};
 </script>

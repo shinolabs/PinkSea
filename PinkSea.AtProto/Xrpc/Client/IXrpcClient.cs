@@ -26,4 +26,15 @@ public interface IXrpcClient : IDisposable
     Task<TResponse?> Procedure<TResponse>(
         string nsid,
         object? parameters = null);
+    
+    /// <summary>
+    /// A raw XRPC call, without any serialization.
+    /// </summary>
+    /// <param name="nsid">The NSID.</param>
+    /// <param name="bodyContent">The body content.</param>
+    /// <typeparam name="TResponse">The response type.</typeparam>
+    /// <returns>The response, if it exists.</returns>
+    Task<TResponse?> RawCall<TResponse>(
+        string nsid,
+        HttpContent bodyContent);
 }

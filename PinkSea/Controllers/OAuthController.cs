@@ -51,7 +51,7 @@ public class OAuthController(
         var oauthState = await oAuthStateStorageProvider.GetForStateId(state);
 
         if (oauthState is null)
-            return BadRequest();
+            return Unauthorized();
         
         var token = await oAuthClient.CompleteAuthorization(
             state,

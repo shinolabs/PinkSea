@@ -50,6 +50,25 @@ public class XrpcClient(
         return default;
     }
 
+    /// <inheritdoc />
+    public async Task<TResponse?> RawCall<TResponse>(string nsid, HttpContent bodyContent)
+    {
+        var actualEndpoint = $"{clientState.Pds}/xrpc/{nsid}";
+        var resp = await client.Send(
+            actualEndpoint,
+            HttpMethod.Post,
+            clientState.KeyPair,
+            value: bodyContent);
+        
+        var str = await resp.Content.ReadAsStringAsync();
+        Console.WriteLine($"Got back data from the PDS: {str}");
+        
+        if (resp.IsSuccessStatusCode)
+            return JsonSerializer.Deserialize<TResponse>(str);
+
+        return default;
+    }
+
     /// <summary>
     /// Converts an object to a query string.
     /// </summary>

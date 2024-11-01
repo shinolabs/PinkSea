@@ -10,17 +10,6 @@ using PinkSea.AtProto.Providers.OAuth;
 
 namespace PinkSea.AtProto.Http;
 
-public class LowerCaseNamingPolicy : JsonNamingPolicy
-{
-    public override string ConvertName(string name)
-    {
-        if (string.IsNullOrEmpty(name) || !char.IsUpper(name[0]))
-            return name;
-
-        return name.ToLower();
-    }
-}
-
 /// <summary>
 /// A DPoP-capable HTTP client.
 /// </summary>
@@ -97,7 +86,7 @@ public class DpopHttpClient : IDisposable
             endpoint,
             HttpMethod.Post,
             keyPair,
-            value: value);
+            value: JsonContent.Create(value));
     }
     
     /// <summary>
@@ -110,18 +99,28 @@ public class DpopHttpClient : IDisposable
         string endpoint,
         DpopKeyPair keyPair)
     {
-        return await Send<object>(
+        return await Send(
             endpoint,
             HttpMethod.Get,
             keyPair);
     }
     
-    private async Task<HttpResponseMessage> Send<TValue>(
+    /// <summary>
+    /// Performs a raw send.
+    /// </summary>
+    /// <param name="endpoint"></param>
+    /// <param name="method"></param>
+    /// <param name="keyPair"></param>
+    /// <param name="nonce"></param>
+    /// <param name="value"></param>
+    /// <typeparam name="TValue"></typeparam>
+    /// <returns></returns>
+    public async Task<HttpResponseMessage> Send(
         string endpoint,
         HttpMethod method,
         DpopKeyPair keyPair,
         string? nonce = null,
-        TValue? value = default)
+        HttpContent? value = default)
     {
         var dpop = _jwtSigningProvider.GenerateDpopHeader(new DpopSigningData()
         {
@@ -147,16 +146,7 @@ public class DpopHttpClient : IDisposable
             request.Headers.Add("Authorization", $"DPoP {_authorization}");
 
         if (method != HttpMethod.Get)
-        {
-            Console.WriteLine($"Serialized: {JsonSerializer.Serialize(value, options: new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = new LowerCaseNamingPolicy()
-            })}");
-            request.Content = JsonContent.Create(value, options: new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = new LowerCaseNamingPolicy()
-            });
-        }
+            request.Content = value;
         
         var resp = await _client.SendAsync(request);
         if ((resp.StatusCode != HttpStatusCode.BadRequest && resp.StatusCode != HttpStatusCode.Unauthorized) || nonce is not null)
