@@ -10,7 +10,15 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<IOAuthStateStorageProvider, MemoryOAuthStateStorageProvider>();
 builder.Services.AddTransient<IOAuthClientDataProvider, OAuthClientDataProvider>();
 builder.Services.AddSingleton<SigningKeyService>();
-builder.Services.AddAtProtoServices();
+builder.Services.AddAtProtoClientServices();
+
+builder.Services.AddAuthentication("PinkSea")
+    .AddCookie("PinkSea", options =>
+    {
+        options.LoginPath = "/";
+        options.LogoutPath = "/oauth/invalidate";
+        options.AccessDeniedPath = "/";
+    });
 
 var app = builder.Build();
 
@@ -27,6 +35,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -10,7 +10,7 @@ namespace PinkSea.AtProto;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddAtProtoServices(this IServiceCollection collection)
+    public static IServiceCollection AddAtProtoClientServices(this IServiceCollection collection)
     {
         collection.AddSingleton<LookupClient>();
         collection.AddTransient<IDomainDidResolver, DomainDidResolver>();

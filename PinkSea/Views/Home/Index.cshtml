@@ -2,7 +2,95 @@
     ViewData["Title"] = "Home Page";
 }
 
-<form action="/oauth/begin-login">
-    <input name="handle" />
-    <input type="submit" />
-</form>
+<style>
+	.background {
+		width: auto;
+		border: 2px solid #FFB6C1;
+		display: inline-block;
+	}
+</style>
+
+@if (User.Identity!.IsAuthenticated)
+{
+	<div id="bakagakiContainer">
+		<div class="background">
+			<canvas id="bakagaki" width="480" height="300">
+
+			</canvas>
+		</div>
+		<div>
+			<input type="color" id="penColor" name="body" value="#00ddc0" />
+			<input type="range" id="penSize"  min="1" max="30" value="5" /> <span id="penSizeDisplay">5</span>
+		</div>
+	</div>
+}
+else
+{
+	<form action="/oauth/begin-login">
+		<input name="handle" />
+		<input type="submit" />
+	</form>
+}
+
+<script>
+	const canvas = document.getElementById("bakagaki");
+	const penSize = document.getElementById("penSize");
+	const penColor = document.getElementById("penColor");
+	const penSizeDisplay = document.getElementById("penSizeDisplay");
+
+
+	const context = canvas.getContext("2d");
+	context.imageSmoothingEnabled = false;
+	context.lineCap = "round";
+	context.lineWidth = penSize.value;
+	penSizeDisplay.innerText = penSize.value;
+	context.strokeStyle = penColor.value
+	context.lineJoin = "round";
+
+	context.fillStyle = "white";
+	context.fillRect(0, 0, canvas.width, canvas.height);
+
+	penSize.addEventListener("input", evt => {
+		context.lineWidth = evt.target.value;
+		penSizeDisplay.innerText = evt.target.value;
+	});
+
+	penColor.addEventListener("input", evt => {
+		context.strokeStyle = evt.target.value;
+	});
+
+
+	var isDrawing = false;
+	var lastX, lastY;
+
+	canvas.addEventListener('mousedown', evt => {
+		isDrawing = true;
+	});
+
+	canvas.addEventListener('mouseup', evt => {
+		isDrawing = false;
+		lastX = undefined;
+		lastY = undefined;
+	});
+
+	canvas.addEventListener('mousemove', evt => {
+		if (!isDrawing)
+			return;
+
+		let canvasX = canvas.offsetLeft + canvas.clientLeft;
+		let canvasY = canvas.offsetTop + canvas.clientTop;
+
+		let x = evt.pageX - canvasX;
+		let y = evt.pageY - canvasY;
+
+		if (lastX != undefined && lastY != undefined) {
+			context.beginPath();
+			context.moveTo(lastX, lastY);
+			context.lineTo(x, y);
+			context.stroke();
+		}
+		
+		lastX = x;
+		lastY = y;
+	})
+</script>

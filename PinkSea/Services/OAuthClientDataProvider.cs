@@ -14,7 +14,7 @@ public class OAuthClientDataProvider(SigningKeyService signingKeyService)
     /// <summary>
     /// The base URL of the service.
     /// </summary>
-    private const string BaseUrl = "https://5a3d51c8175e3f.lhr.life";
+    private const string BaseUrl = "https://50fdb54308ada0.lhr.life";
     
     /// <inheritdoc />
     public OAuthClientData ClientData => new()

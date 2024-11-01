@@ -1,11 +1,10 @@
-using System.Globalization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using PinkSea.AtProto.Lexicons.Types;
-using PinkSea.AtProto.Lexicons.Bluesky.Records;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.OAuth;
-using PinkSea.AtProto.Xrpc.Client;
+using PinkSea.AtProto.Providers.Storage;
 using PinkSea.Services;
 
 namespace PinkSea.Controllers;
@@ -18,7 +17,7 @@ public class OAuthController(
     SigningKeyService signingKeyService,
     IAtProtoOAuthClient oAuthClient,
     IOAuthClientDataProvider clientDataProvider,
-    IXrpcClientFactory xrpcClientFactory) : Controller
+    IOAuthStateStorageProvider oAuthStateStorageProvider) : Controller
 {
     /// <summary>
     /// Begins the OAuth login flow.
@@ -49,6 +48,11 @@ public class OAuthController(
         [FromQuery] string state,
         [FromQuery] string code)
     {
+        var oauthState = await oAuthStateStorageProvider.GetForStateId(state);
+
+        if (oauthState is null)
+            return BadRequest();
+        
         var token = await oAuthClient.CompleteAuthorization(
             state,
             code);
@@ -56,36 +60,32 @@ public class OAuthController(
         if (!token)
             return BadRequest();
 
-        using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(state);
-        var profile = await xrpcClient!.Query<Record<Profile>>(
-            "com.atproto.repo.getRecord",
-            new
-            {
-                Repo = "did:plc:2edipcwcjiezjtanjs5vmrlw",
-                Collection = "app.bsky.actor.profile",
-                Rkey = "self",
-            });
+        var claims = new List<Claim>()
+        {
+            new("state", state),
+            new("did", oauthState.Did),
+            new("pds", oauthState.Pds)
+        };
 
-        await xrpcClient.Procedure<object>(
-            "com.atproto.repo.putRecord",
-            new
-            {
-                Repo = "did:plc:2edipcwcjiezjtanjs5vmrlw",
-                Collection = "com.shinolabs.pinksea.testRecord",
-                RKey = Tid.NewTid().ToString(),
-                Record = new Dictionary<string, string>()
-                {
-                    { "$type", "com.shinolabs.pinksea.testRecord" },
-                    { "value", "hiiii" },
-                    { "createdAt", DateTimeOffset.UtcNow.ToString(CultureInfo.InvariantCulture) }
-                }
-            });
-        
-        return Content($@"
-<h1>Hi {profile!.Value.DisplayName}!</h1>
-<b>{profile.Value.Description}</b>
-<p>This is your avatar: <img src=""https://porcini.us-east.host.bsky.network/xrpc/com.atproto.sync.getBlob?did=did:plc:2edipcwcjiezjtanjs5vmrlw&cid={profile.Value.Avatar!.Reference.Link}"" /></p>
-", "text/html");
+        var claimsIdentity = new ClaimsIdentity(claims, "PinkSea");
+
+        await HttpContext.SignInAsync(
+            "PinkSea",
+            new ClaimsPrincipal(claimsIdentity),
+            new AuthenticationProperties());
+
+        return Redirect("/");
+    }
+    
+    /// <summary>
+    /// Invalidates the current session.
+    /// </summary>
+    /// <returns>A redirect.</returns>
+    [Route("invalidate")]
+    public async Task<IActionResult> Invalidate()
+    {
+        await HttpContext.SignOutAsync("PinkSea");
+        return Redirect("/");
     }
     
     /// <summary>
