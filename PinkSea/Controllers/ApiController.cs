@@ -51,6 +51,7 @@ public class ApiController(
     {
         var oekaki = await dbContext.Oekaki
             .Include(o => o.Author)
+            .OrderByDescending(o => o.Tid)
             .ToListAsync();
 
         var dids = oekaki.Select(o => o.AuthorDid)

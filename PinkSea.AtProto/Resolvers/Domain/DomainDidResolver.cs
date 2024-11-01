@@ -1,4 +1,5 @@
 using DnsClient;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace PinkSea.AtProto.Resolvers.Domain;
 
@@ -6,20 +7,28 @@ namespace PinkSea.AtProto.Resolvers.Domain;
 /// A generic handle to DID resolver.
 /// </summary>
 public class DomainDidResolver(
-    LookupClient lookupClient,
-    IHttpClientFactory httpClientFactory) : IDomainDidResolver
+    IDnsQuery lookupClient,
+    IHttpClientFactory httpClientFactory,
+    IMemoryCache memoryCache) : IDomainDidResolver
 {
     /// <inheritdoc />
     public async Task<string?> GetDidForDomainHandle(string handle)
     {
-        // First try to resolve via DNS.
-        var dns = await TryResolveDidThroughDnsTxt(handle);
-        if (dns is not null)
-            return dns;
+        return await memoryCache.GetOrCreateAsync<string>(
+            $"domain:{handle}",
+            async e =>
+            {
+                e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                
+                // First try to resolve via DNS.
+                var dns = await TryResolveDidThroughDnsTxt(handle);
+                if (dns is not null)
+                    return dns;
         
-        // Then try to resolve via well-known
-        var wellKnown = await TryResolveDidThroughWellKnown(handle);
-        return wellKnown;
+                // Then try to resolve via well-known
+                var wellKnown = await TryResolveDidThroughWellKnown(handle);
+                return wellKnown!;
+            });
     }
 
     /// <summary>

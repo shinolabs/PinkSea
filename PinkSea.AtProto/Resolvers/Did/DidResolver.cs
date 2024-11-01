@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using Microsoft.Extensions.Caching.Memory;
 using PinkSea.AtProto.Models.Did;
 
 namespace PinkSea.AtProto.Resolvers.Did;
@@ -6,10 +7,29 @@ namespace PinkSea.AtProto.Resolvers.Did;
 /// <summary>
 /// A generic DID resolver.
 /// </summary>
-public class DidResolver(IHttpClientFactory clientFactory) : IDidResolver
+public class DidResolver(
+    IHttpClientFactory clientFactory,
+    IMemoryCache memoryCache) : IDidResolver
 {
     /// <inheritdoc />
     public async Task<DidResponse?> GetDidResponseForDid(string did)
+    {
+        return await memoryCache.GetOrCreateAsync(
+            $"did:{did}",
+            async e =>
+            {
+                e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                return await ResolveDidViaPlcDirectory(did);
+            });
+    }
+
+    /// <summary>
+    /// Resolves a DID via the PLC directory.
+    /// </summary>
+    /// <param name="did">The DID.</param>
+    /// <returns>The response, if it exists.</returns>
+    private async Task<DidResponse?> ResolveDidViaPlcDirectory(
+        string did)
     {
         Uri uri;
         try

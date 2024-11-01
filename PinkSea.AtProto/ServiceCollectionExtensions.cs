@@ -12,7 +12,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddAtProtoClientServices(this IServiceCollection collection)
     {
-        collection.AddSingleton<LookupClient>();
+        collection.AddMemoryCache();
+        collection.AddSingleton<IDnsQuery, LookupClient>();
         collection.AddTransient<IDomainDidResolver, DomainDidResolver>();
         collection.AddTransient<IJwtSigningProvider, JwtSigningProvider>();
         collection.AddScoped<IDidResolver, DidResolver>();
