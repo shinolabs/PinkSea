@@ -30,7 +30,7 @@ public class Image
     /// The actual atproto image blob.
     /// </summary>
     [JsonPropertyName("blob")]
-    public required Reference Blob { get; set; }
+    public required Blob Blob { get; set; }
     
     /// <summary>
     /// A link to the image, it can be either directly to the PDS or to a CDN.

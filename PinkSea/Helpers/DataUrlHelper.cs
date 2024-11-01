@@ -11,7 +11,7 @@ public static partial class DataUrlHelper
     /// The regex for parsing data:image/ tags.
     /// </summary>
     /// <returns></returns>
-    [GeneratedRegex(@"data:image/(?<type>.+?),(?<data>.+)")]
+    [GeneratedRegex(@"data:(?<type>.+?),(?<data>.+)")]
     private static partial Regex DataRegex();
     
     /// <summary>

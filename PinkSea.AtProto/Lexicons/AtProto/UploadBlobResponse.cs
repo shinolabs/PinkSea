@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using PinkSea.AtProto.Lexicons.Types;
 
 namespace PinkSea.AtProto.Lexicons.AtProto;
 
@@ -8,5 +9,5 @@ namespace PinkSea.AtProto.Lexicons.AtProto;
 public class UploadBlobResponse
 {
     [JsonPropertyName("blob")]
-    public required string Blob { get; set; }
+    public required Blob Blob { get; set; }
 }

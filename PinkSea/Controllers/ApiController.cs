@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using PinkSea.AtProto.Lexicons.AtProto;
-using PinkSea.AtProto.Providers.Storage;
+using PinkSea.AtProto.Lexicons.Types;
 using PinkSea.AtProto.Xrpc.Client;
 using PinkSea.Helpers;
+using PinkSea.Lexicons.Records;
 using PinkSea.Models;
 
 namespace PinkSea.Controllers;
@@ -12,7 +13,6 @@ namespace PinkSea.Controllers;
 /// </summary>
 [Route("/api")]
 public class ApiController(
-    IOAuthStateStorageProvider oauthStateStorageProvider,
     IXrpcClientFactory xrpcClientFactory) : Controller
 {
     /// <summary>
@@ -28,6 +28,9 @@ public class ApiController(
         if (stateClaim is null)
             return Unauthorized();
 
+        var pds = User.Claims.FirstOrDefault(c => c.Type == "pds")!.Value;
+        var did = User.Claims.FirstOrDefault(c => c.Type == "did")!.Value;
+
         using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(stateClaim.Value);
         if (xrpcClient is null)
             return Unauthorized();
@@ -35,23 +38,57 @@ public class ApiController(
         var (mime, bytes) = DataUrlHelper.ParseDataUrl(request.Data);
         
         // We'll only deal with PNG files.
-        if (!mime.Equals("image/png", StringComparison.CurrentCultureIgnoreCase))
+        if (!mime.Equals("image/png;base64", StringComparison.CurrentCultureIgnoreCase))
             return StatusCode(StatusCodes.Status415UnsupportedMediaType);
         
-        // As per the lexicon: maxSize=1000000
+        // As per the lexicon: maxSize=1048576
         if (bytes.Length > 1048576)
             return StatusCode(StatusCodes.Status413PayloadTooLarge);
+
+        var byteArrayContent = new ByteArrayContent(bytes);
+        byteArrayContent.Headers.Add("Content-Type", "image/png");
         
         var result = await xrpcClient.RawCall<UploadBlobResponse>(
             "com.atproto.repo.uploadBlob",
-            new ByteArrayContent(bytes));
+            byteArrayContent);
 
         if (result is null)
-        {
-            Console.WriteLine("Result is null.");
             return BadRequest();
-        }
+
+        var oekaki = new Oekaki
+        {
+            CreatedAt = DateTimeOffset.UtcNow
+                .ToUnixTimeMilliseconds()
+                .ToString(),
+            Image = new Image
+            {
+                Blob = result.Blob,
+                ImageLink = new Image.ImageLinkObject
+                {
+                    // By default we'll put it at the getBlob xrpc call to the pds for decentralization.
+                    // PinkSea will be able to retrieve its own version.
+                    FullSize = $"{pds}/xrpc/com.atproto.sync.getBlob?did={did}&cid={result.Blob.Reference.Link}",
+                    Alt = request.AltText
+                }
+            },
+            Tags = request.Tags?
+                .Where(t => t.Length <= 640)
+                .ToArray()
+        };
+
+        var response = await xrpcClient.Procedure<PutRecordResponse>(
+            "com.atproto.repo.putRecord",
+            new PutRecordRequest
+            {
+                Repo = did,
+                Collection = "com.shinolabs.pinksea.oekaki",
+                RecordKey = Tid.NewTid().ToString(),
+                Record = oekaki
+            });
+
+        if (response is null)
+            return StatusCode(StatusCodes.Status500InternalServerError);
         
-        return Ok(result.Blob);
+        return Ok(response.Uri);
     }
 }
