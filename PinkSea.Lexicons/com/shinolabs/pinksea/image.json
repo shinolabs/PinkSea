@@ -1,0 +1,34 @@
+{
+  "lexicon": 1,
+  "id": "com.shinolabs.pinksea.image",
+  "type": "record",
+  "description": "An oekaki image.",
+  "record": {
+    "type": "object",
+    "required": ["blob", "imageLink"],
+    "properties": {
+      "blob": {
+        "type": "blob",
+        "accept": ["image/*"],
+        "maxSize": 1000000,
+        "description": "The actual atproto image blob."
+      },
+      "imageLink": {
+        "type": "object",
+        "description": "A link to the image, it can be either directly to the PDS or to a CDN.",
+        "required": ["fullsize"],
+        "properties": {
+          "fullsize": {
+            "type": "string",
+            "format": "uri",
+            "description": "Fully-qualified URL where a large version of the image can be fetched."
+          },
+          "alt": {
+            "type": "string",
+            "description": "Alt text description of the image, for accessibility."
+          }
+        }
+      }
+    }
+  }
+}

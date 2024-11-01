@@ -1,0 +1,17 @@
+{
+  "lexicon": 1,
+  "id": "com.shinolabs.pinksea.tag",
+  "type": "record",
+  "description": "An oekaki image tag.",
+  "record": {
+    "type": "object",
+    "required": ["name"],
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "The name of the hashtag, without the # sign.",
+        "maxLength": "50"
+      }
+    }
+  }
+}
