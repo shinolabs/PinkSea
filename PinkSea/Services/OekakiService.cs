@@ -66,7 +66,8 @@ public class OekakiService(
             return OekakiUploadResult.FailedToUploadRecord;
 
         await InsertOekakiIntoDatabase(
-            oekakiRecord,
+            oekakiRecord.Value.Item1,
+            oekakiRecord.Value.Item2,
             oauthState.Did,
             tid);
         
@@ -102,7 +103,7 @@ public class OekakiService(
     /// <param name="oauthState">The OAuth state for the client.</param>
     /// <param name="xrpcClient">The XRPC client.</param>
     /// <returns>The oekaki record.</returns>
-    private async Task<Oekaki?> PutOekakiInRepository(
+    private async Task<(Oekaki, string)?> PutOekakiInRepository(
         Blob blob,
         UploadOekakiRequest request,
         string tid,
@@ -141,17 +142,21 @@ public class OekakiService(
                 Record = oekaki
             });
 
-        return response is not null ? oekaki : null;
+        return response is not null 
+            ? (oekaki, response.Cid)
+            : null;
     }
 
     /// <summary>
     /// Inserts the oekaki record into the local database
     /// </summary>
     /// <param name="record">The record.</param>
+    /// <param name="oekakiCid">The oekaki CID..</param>
     /// <param name="authorDid">The author's did.</param>
     /// <param name="recordTid">The tid of the record.</param>
     public async Task InsertOekakiIntoDatabase(
         Oekaki record,
+        string oekakiCid,
         string authorDid,
         string recordTid)
     {
@@ -177,6 +182,7 @@ public class OekakiService(
             Author = author,
             AuthorDid = author.Did,
             IndexedAt = DateTimeOffset.UtcNow,
+            RecordCid = oekakiCid,
             BlobCid = record.Image.Blob.Reference.Link,
             AltText = record.Image.ImageLink.Alt
         };

@@ -74,6 +74,12 @@
                     "type": "string",
                     "maxLength": 640
                 }
+            },
+            "inResponseTo":
+            {
+                "type": "ref",
+                "description": "What this oekaki post is a response to.",
+                "ref": "com.atproto.repo.strongRef"
             }
         }
     }

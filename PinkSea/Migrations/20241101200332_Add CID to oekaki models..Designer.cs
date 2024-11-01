@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PinkSea.Database;
 
@@ -10,9 +11,11 @@ using PinkSea.Database;
 namespace PinkSea.Migrations
 {
     [DbContext(typeof(PinkSeaDbContext))]
-    partial class PinkSeaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241101200332_Add CID to oekaki models.")]
+    partial class AddCIDtooekakimodels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
@@ -50,9 +53,6 @@ namespace PinkSea.Migrations
                     b.Property<DateTimeOffset>("IndexedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ParentId")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("RecordCid")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -60,8 +60,6 @@ namespace PinkSea.Migrations
                     b.HasKey("Tid");
 
                     b.HasIndex("AuthorDid");
-
-                    b.HasIndex("ParentId");
 
                     b.ToTable("Oekaki");
                 });
@@ -120,13 +118,7 @@ namespace PinkSea.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PinkSea.Database.Models.OekakiModel", "Parent")
-                        .WithMany()
-                        .HasForeignKey("ParentId");
-
                     b.Navigation("Author");
-
-                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("PinkSea.Database.Models.TagOekakiRelationModel", b =>

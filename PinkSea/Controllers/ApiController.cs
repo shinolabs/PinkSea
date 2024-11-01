@@ -64,14 +64,25 @@ public class ApiController(
             map[did] = document!;
         }
 
-        return oekaki.Select(o => new OekakiDto()
+        return oekaki.Select(o =>
         {
-            AuthorDid = o.AuthorDid,
-            AuthorHandle = map[o.AuthorDid].AlsoKnownAs[0]
-                .Replace("at://", ""),
-            CreationTime = o.IndexedAt,
-            ImageLink = $"{map[o.AuthorDid].GetPds()!}/xrpc/com.atproto.sync.getBlob?did={o.AuthorDid}&cid={o.BlobCid}",
-            Tags = []
+            var handle = map[o.AuthorDid].AlsoKnownAs[0]
+                .Replace("at://", "");
+
+            var pds = map[o.AuthorDid].GetPds()!;
+            
+            return new OekakiDto
+            {
+                AuthorDid = o.AuthorDid,
+                AuthorHandle = handle,
+                CreationTime = o.IndexedAt,
+                ImageLink =
+                    $"{pds}/xrpc/com.atproto.sync.getBlob?did={o.AuthorDid}&cid={o.BlobCid}",
+                Tags = [],
+
+                AtProtoLink = $"at://{handle}/com.shinolabs.pinksea.oekaki/{o.Tid}",
+                OekakiCid = o.RecordCid
+            };
         });
     }
 }

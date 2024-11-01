@@ -24,4 +24,10 @@ public class UploadOekakiRequest
     /// </summary>
     [JsonPropertyName("alt")]
     public string? AltText { get; set; }
+    
+    /// <summary>
+    /// The at:// url of the parent.
+    /// </summary>
+    [JsonPropertyName("parent")]
+    public string? ParentAtUrl { get; set; }
 }

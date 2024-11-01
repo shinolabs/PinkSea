@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using PinkSea.AtProto.Lexicons.Types;
 
 namespace PinkSea.Lexicons.Records;
 
@@ -24,4 +25,10 @@ public class Oekaki
     /// </summary>
     [JsonPropertyName("tags"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string[]? Tags { get; set; }
+    
+    /// <summary>
+    /// What this oekaki post is a response to.
+    /// </summary>
+    [JsonPropertyName("inResponseTo"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public StrongRef? InResponseTo { get; set; }
 }

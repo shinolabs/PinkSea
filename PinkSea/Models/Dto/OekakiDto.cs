@@ -18,6 +18,16 @@ public class OekakiDto
     public required string ImageLink { get; set; }
     
     /// <summary>
+    /// The AT protocol link.
+    /// </summary>
+    public required string AtProtoLink { get; set; }
+    
+    /// <summary>
+    /// The oekaki CID.
+    /// </summary>
+    public required string OekakiCid { get; set; }
+    
+    /// <summary>
     /// The creation time.
     /// </summary>
     public required DateTimeOffset CreationTime { get; set; }
