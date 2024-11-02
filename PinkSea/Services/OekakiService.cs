@@ -208,7 +208,7 @@ public partial class OekakiService(
             AltText = record.Image.ImageLink.Alt,
             
             Parent = parent,
-            ParentId = parent.Tid
+            ParentId = parent?.Tid
         };
 
         await dbContext.Oekaki.AddAsync(image);
