@@ -33,6 +33,11 @@ public class PinkSeaDbContext : DbContext
     /// </summary>
     public DbSet<OAuthStateModel> OAuthStates { get; set; } = null!;
 
+    /// <summary>
+    /// The Oekaki table.
+    /// </summary>
+    public DbSet<ConfigurationModel> Configuration { get; set; } = null!;
+    
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,6 +46,7 @@ public class PinkSeaDbContext : DbContext
         modelBuilder.Entity<TagOekakiRelationModel>();
         modelBuilder.Entity<UserModel>();
         modelBuilder.Entity<OAuthStateModel>();
+        modelBuilder.Entity<ConfigurationModel>();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)

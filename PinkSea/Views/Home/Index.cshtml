@@ -51,6 +51,9 @@ else
 			container.appendChild(image);
 			container.appendChild(description);
 			posts.appendChild(container);
+			container.addEventListener("click", ev => {
+				atUrl = obj.atProtoLink;
+			});
 		}
 	})
     .catch(res => console.log(res));
@@ -61,7 +64,7 @@ else
 	const penSize = document.getElementById("penSize");
 	const penColor = document.getElementById("penColor");
 	const penSizeDisplay = document.getElementById("penSizeDisplay");
-
+	let atUrl = null;
 
 	const context = canvas.getContext("2d");
 	context.imageSmoothingEnabled = false;
@@ -120,7 +123,8 @@ else
 	
 	const uploadImage = () => {
 		const body = {
-			data: canvas.toDataURL('image/png')
+			data: canvas.toDataURL('image/png'),
+			parent: atUrl
 		};
 		
 		fetch("/api/upload-oekaki",

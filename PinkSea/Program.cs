@@ -15,6 +15,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IOAuthStateStorageProvider, DatabaseOAuthStateStorageProvider>();
 builder.Services.AddTransient<IOAuthClientDataProvider, OAuthClientDataProvider>();
 builder.Services.AddSingleton<SigningKeyService>();
+builder.Services.AddSingleton<ConfigurationService>();
 builder.Services.AddScoped<OekakiService>();
 builder.Services.AddDbContext<PinkSeaDbContext>();
 builder.Services.AddAtProtoClientServices();
@@ -44,6 +45,5 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 
 app.Run();

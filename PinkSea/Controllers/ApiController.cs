@@ -50,6 +50,7 @@ public class ApiController(
     public async Task<IEnumerable<OekakiDto>> GetAll()
     {
         var oekaki = await dbContext.Oekaki
+            .Where(o => o.ParentId == null)
             .Include(o => o.Author)
             .OrderByDescending(o => o.Tid)
             .ToListAsync();
