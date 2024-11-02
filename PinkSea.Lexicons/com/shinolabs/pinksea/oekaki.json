@@ -1,85 +1,91 @@
 {
     "lexicon": 1,
     "id": "com.shinolabs.pinksea.oekaki",
-    "type": "record",
-    "description": "An oekaki post.",
-    "record":
+    "defs":
     {
-        "type": "object",
-        "required":
-        [
-            "image",
-            "createdAt"
-        ],
-        "properties":
+        "main":
         {
-            "createdAt":
-            {
-                "type": "string",
-                "description": "The timestamp of creation.",
-                "format": "datetime"
-            },
-            "image":
+            "type": "record",
+            "description": "An oekaki post.",
+            "record":
             {
                 "type": "object",
                 "required":
                 [
-                    "blob",
-                    "imageLink"
+                    "image",
+                    "createdAt"
                 ],
                 "properties":
                 {
-                    "blob":
+                    "createdAt":
                     {
-                        "type": "blob",
-                        "accept":
-                        [
-                            "image/png"
-                        ],
-                        "maxSize": 1048576,
-                        "description": "The actual atproto image blob."
+                        "type": "string",
+                        "description": "The timestamp of creation.",
+                        "format": "datetime"
                     },
-                    "imageLink":
+                    "image":
                     {
                         "type": "object",
-                        "description": "A link to the image, it can be either directly to the PDS or to a CDN.",
                         "required":
                         [
-                            "fullsize"
+                            "blob",
+                            "imageLink"
                         ],
                         "properties":
                         {
-                            "fullsize":
+                            "blob":
                             {
-                                "type": "string",
-                                "format": "uri",
-                                "description": "Fully-qualified URL where a large version of the image can be fetched."
+                                "type": "blob",
+                                "accept":
+                                [
+                                    "image/png"
+                                ],
+                                "maxSize": 1048576,
+                                "description": "The actual atproto image blob."
                             },
-                            "alt":
+                            "imageLink":
                             {
-                                "type": "string",
-                                "description": "Alt text description of the image, for accessibility."
+                                "type": "object",
+                                "description": "A link to the image, it can be either directly to the PDS or to a CDN.",
+                                "required":
+                                [
+                                    "fullsize"
+                                ],
+                                "properties":
+                                {
+                                    "fullsize":
+                                    {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "description": "Fully-qualified URL where a large version of the image can be fetched."
+                                    },
+                                    "alt":
+                                    {
+                                        "type": "string",
+                                        "description": "Alt text description of the image, for accessibility."
+                                    }
+                                }
                             }
                         }
+                    },
+                    "tags":
+                    {
+                        "type": "array",
+                        "description": "An array of tags this image had.",
+                        "maxLength": 10,
+                        "items":
+                        {
+                            "type": "string",
+                            "maxLength": 640
+                        }
+                    },
+                    "inResponseTo":
+                    {
+                        "type": "ref",
+                        "description": "What this oekaki post is a response to.",
+                        "ref": "com.atproto.repo.strongRef"
                     }
                 }
-            },
-            "tags":
-            {
-                "type": "array",
-                "description": "An array of tags this image had.",
-                "maxLength": 10,
-                "items":
-                {
-                    "type": "string",
-                    "maxLength": 640
-                }
-            },
-            "inResponseTo":
-            {
-                "type": "ref",
-                "description": "What this oekaki post is a response to.",
-                "ref": "com.atproto.repo.strongRef"
             }
         }
     }
