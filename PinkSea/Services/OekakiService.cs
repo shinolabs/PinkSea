@@ -1,8 +1,10 @@
+using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using PinkSea.AtProto.Lexicons.AtProto;
 using PinkSea.AtProto.Lexicons.Types;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.Providers.Storage;
+using PinkSea.AtProto.Resolvers.Domain;
 using PinkSea.AtProto.Xrpc.Client;
 using PinkSea.Database;
 using PinkSea.Database.Models;
@@ -15,9 +17,10 @@ namespace PinkSea.Services;
 /// <summary>
 /// The oekaki processing service.
 /// </summary>
-public class OekakiService(
+public partial class OekakiService(
     IOAuthStateStorageProvider oauthStateStorageProvider,
     IXrpcClientFactory xrpcClientFactory,
+    IDomainDidResolver didResolver,
     PinkSeaDbContext dbContext)
 {
     /// <summary>
@@ -45,6 +48,9 @@ public class OekakiService(
         if (bytes.Length > 1048576)
             return OekakiUploadResult.UploadTooBig;
 
+        var parent = await GetParentForPost(
+            request);
+
         var blob = await UploadOekakiBlobToRepository(
             bytes,
             xrpcClient!);
@@ -58,6 +64,7 @@ public class OekakiService(
         var oekakiRecord = await PutOekakiInRepository(
             blob,
             request,
+            parent,
             tid,
             oauthState,
             xrpcClient!);
@@ -67,6 +74,7 @@ public class OekakiService(
 
         await InsertOekakiIntoDatabase(
             oekakiRecord.Value.Item1,
+            parent,
             oekakiRecord.Value.Item2,
             oauthState.Did,
             tid);
@@ -99,6 +107,7 @@ public class OekakiService(
     /// </summary>
     /// <param name="blob">The image blob.</param>
     /// <param name="request">The upload request.</param>
+    /// <param name="parent">The parent.</param>
     /// <param name="tid">The TID.</param>
     /// <param name="oauthState">The OAuth state for the client.</param>
     /// <param name="xrpcClient">The XRPC client.</param>
@@ -106,10 +115,19 @@ public class OekakiService(
     private async Task<(Oekaki, string)?> PutOekakiInRepository(
         Blob blob,
         UploadOekakiRequest request,
+        OekakiModel? parent,
         string tid,
         OAuthState oauthState,
         IXrpcClient xrpcClient)
     {
+        var inResponseTo = parent is not null
+            ? new StrongRef
+            {
+                Uri = $"at://{parent.AuthorDid}/com.shinolabs.pinksea.oekaki/{parent.Tid}",
+                Cid = parent.RecordCid
+            }
+            : null;
+        
         var oekaki = new Oekaki
         {
             CreatedAt = DateTimeOffset.UtcNow
@@ -126,9 +144,12 @@ public class OekakiService(
                     Alt = request.AltText
                 }
             },
+            
             Tags = request.Tags?
                 .Where(t => t.Length <= 640)
-                .ToArray()
+                .ToArray(),
+            
+            InResponseTo = inResponseTo
         };
 
         var response = await xrpcClient.Procedure<PutRecordResponse>(
@@ -150,11 +171,13 @@ public class OekakiService(
     /// Inserts the oekaki record into the local database
     /// </summary>
     /// <param name="record">The record.</param>
+    /// <param name="parent">The parent of this oekaki.</param>
     /// <param name="oekakiCid">The oekaki CID..</param>
     /// <param name="authorDid">The author's did.</param>
     /// <param name="recordTid">The tid of the record.</param>
     public async Task InsertOekakiIntoDatabase(
         Oekaki record,
+        OekakiModel? parent,
         string oekakiCid,
         string authorDid,
         string recordTid)
@@ -183,10 +206,53 @@ public class OekakiService(
             IndexedAt = DateTimeOffset.UtcNow,
             RecordCid = oekakiCid,
             BlobCid = record.Image.Blob.Reference.Link,
-            AltText = record.Image.ImageLink.Alt
+            AltText = record.Image.ImageLink.Alt,
+            
+            Parent = parent,
+            ParentId = parent.Tid
         };
 
         await dbContext.Oekaki.AddAsync(image);
         await dbContext.SaveChangesAsync();
     }
+
+    /// <summary>
+    /// Gets the parent for an oekaki upload request.
+    /// </summary>
+    /// <param name="request">The request.</param>
+    /// <returns>The parent.</returns>
+    private async Task<OekakiModel?> GetParentForPost(
+        UploadOekakiRequest request)
+    {
+        if (request.ParentAtUrl is null)
+            return null;
+        
+        var atRegex = AtUrlRegex()
+            .Match(request.ParentAtUrl);
+
+        var domain = atRegex.Groups["domain"].Value;
+        if (!domain.StartsWith("did"))
+            domain = await didResolver.GetDidForDomainHandle(domain);
+
+        var id = atRegex.Groups["tid"].Value;
+
+        var parent = await dbContext.Oekaki
+            .Where(o => o.AuthorDid == domain && o.Tid == id)
+            .FirstOrDefaultAsync();
+
+        if (parent is null)
+            return null;
+
+        // Children cannot reply to each other. 
+        return parent.ParentId is not null
+            ? null
+            : parent;
+    }
+
+    /// <summary>
+    /// A regex for the at://(handle)/com.shinolabs.pinksea.oekaki/(id) scheme.
+    /// </summary>
+    /// <returns>The regex matches.</returns>
+    [GeneratedRegex("at:\\/\\/(?<domain>[^\\/]+)\\/com\\.shinolabs\\.pinksea\\.oekaki\\/(?<tid>[^\\/]+)")]
+    private static partial Regex AtUrlRegex();
 }
