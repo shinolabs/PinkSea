@@ -22,7 +22,7 @@ public class Image
         /// <summary>
         /// Alt text description of the image, for accessibility.
         /// </summary>
-        [JsonPropertyName("alt")]
+        [JsonPropertyName("alt"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public string? Alt { get; set; }
     }
     

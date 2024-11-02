@@ -113,8 +113,7 @@ public class OekakiService(
         var oekaki = new Oekaki
         {
             CreatedAt = DateTimeOffset.UtcNow
-                .ToUnixTimeMilliseconds()
-                .ToString(),
+                .ToString("o"),
             
             Image = new Image
             {
