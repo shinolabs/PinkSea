@@ -138,9 +138,8 @@ public partial class OekakiService(
                 Blob = blob,
                 ImageLink = new Image.ImageLinkObject
                 {
-                    // By default we'll put it at the getBlob xrpc call to the pds for decentralization.
-                    // PinkSea will be able to retrieve its own version.
-                    FullSize = $"{oauthState.Pds}/xrpc/com.atproto.sync.getBlob?did={oauthState.Did}&cid={blob.Reference.Link}",
+                    // TODO: Each PinkSea "instance" should probably proxy the images.
+                    FullSize = $"https://cdn.bsky.app/img/feed_fullsize/plain/{oauthState.Did}/{blob.Reference.Link}",
                     Alt = request.AltText
                 }
             },
