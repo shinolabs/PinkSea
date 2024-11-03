@@ -48,7 +48,7 @@ public class GetRecentQueryHandler(
                 AuthorHandle = handle,
                 CreationTime = o.IndexedAt,
                 ImageLink =
-                    $"{pds}/xrpc/com.atproto.sync.getBlob?did={o.AuthorDid}&cid={o.BlobCid}",
+                    $"https://cdn.bsky.app/img/feed_fullsize/plain/{o.AuthorDid}/{o.BlobCid}",
                 Tags = [],
 
                 AtProtoLink = $"at://{handle}/com.shinolabs.pinksea.oekaki/{o.OekakiTid}",

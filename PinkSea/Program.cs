@@ -38,6 +38,17 @@ builder.Services.AddAuthentication("PinkSea")
         options.AccessDeniedPath = "/";
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "PinkSeaPolicy",
+        policy  =>
+        {
+            policy.WithOrigins("*")
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -56,6 +67,8 @@ app.UseXrpcHandler();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseCors("PinkSeaPolicy");
 
 app.MapFallbackToFile("index.html");
 

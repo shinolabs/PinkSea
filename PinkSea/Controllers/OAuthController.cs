@@ -13,18 +13,19 @@ namespace PinkSea.Controllers;
 /// Controller for the OAuth methods.
 /// </summary>
 [Route("/oauth")]
+[ApiController]
 public class OAuthController(
     SigningKeyService signingKeyService,
     IAtProtoOAuthClient oAuthClient,
     IOAuthClientDataProvider clientDataProvider,
-    IOAuthStateStorageProvider oAuthStateStorageProvider) : Controller
+    IOAuthStateStorageProvider oAuthStateStorageProvider) : ControllerBase
 {
     /// <summary>
     /// Begins the OAuth login flow.
     /// </summary>
     /// <param name="handle">The handle of the user wanting to log in.</param>
     /// <returns>A redirect.</returns>
-    [Route("begin-login")]
+    [Route("login")]
     public async Task<IActionResult> BeginLogin(
         [FromQuery] string handle)
     {
