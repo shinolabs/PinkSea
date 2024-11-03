@@ -1,6 +1,10 @@
 using System.Net.WebSockets;
+using System.Reactive.Linq;
+using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using PinkSea.AtProto.Streaming.JetStream.Events;
 using Websocket.Client;
 
 namespace PinkSea.AtProto.Streaming.JetStream;
@@ -9,7 +13,8 @@ namespace PinkSea.AtProto.Streaming.JetStream;
 /// A listener for the AT Protocol jetstream.
 /// </summary>
 public class JetStreamListener(
-    IOptions<JetStreamOptions> opts) : IHostedService
+    IOptions<JetStreamOptions> opts,
+    IServiceScopeFactory serviceScopeFactory) : IHostedService
 {
     /// <summary>
     /// The websocket client.
@@ -32,7 +37,18 @@ public class JetStreamListener(
 
         _client = new WebsocketClient(new Uri(url));
 
-        _client.MessageReceived.Subscribe(OnWebsocketMessage);
+        _client.MessageReceived
+            .Where(msg => msg.Text is not null)
+            .Select(msg =>
+            {
+                return Observable.FromAsync(async () =>
+                {
+                    await OnWebsocketMessage(msg);
+                });
+            })
+            .Merge(5)
+            .Subscribe();
+        
         await _client.Start();
     }
 
@@ -40,9 +56,21 @@ public class JetStreamListener(
     /// Called when we receive a websocket message.
     /// </summary>
     /// <param name="message">The message.</param>
-    private void OnWebsocketMessage(ResponseMessage message)
+    private async Task OnWebsocketMessage(ResponseMessage message)
     {
-        Console.WriteLine(message.Text!);
+        try
+        {
+            await using var scope = serviceScopeFactory.CreateAsyncScope();
+            var listeners = scope.ServiceProvider.GetServices<IJetStreamEventHandler>();
+            var @event = JsonSerializer.Deserialize<JetStreamEvent>(message.Text!)!;
+        
+            foreach (var listener in listeners)
+                await listener.HandleEvent(@event);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Encountered an exception while handling JetStream event: {e}");
+        }
     }
 
     /// <inheritdoc />

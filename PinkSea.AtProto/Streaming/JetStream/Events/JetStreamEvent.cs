@@ -18,4 +18,28 @@ public class JetStreamEvent
     /// </summary>
     [JsonPropertyName("time_us")]
     public required long TimeInMicroseconds { get; set; }
+    
+    /// <summary>
+    /// The kind of the event.
+    /// </summary>
+    [JsonPropertyName("kind")]
+    public required string Kind { get; set; }
+    
+    /// <summary>
+    /// The commit data.
+    /// </summary>
+    [JsonPropertyName("commit")]
+    public AtProtoCommit? Commit { get; set; }
+    
+    /// <summary>
+    /// The identity data.
+    /// </summary>
+    [JsonPropertyName("identity")]
+    public AtProtoIdentity? Identity { get; set; }
+    
+    /// <summary>
+    /// The identity data.
+    /// </summary>
+    [JsonPropertyName("account")]
+    public AtProtoAccount? Account { get; set; }
 }
