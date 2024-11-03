@@ -1,6 +1,7 @@
 using PinkSea.AtProto;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.Storage;
+using PinkSea.AtProto.Streaming;
 using PinkSea.Database;
 using PinkSea.Models;
 using PinkSea.Services;
@@ -19,6 +20,7 @@ builder.Services.AddSingleton<ConfigurationService>();
 builder.Services.AddScoped<OekakiService>();
 builder.Services.AddDbContext<PinkSeaDbContext>();
 builder.Services.AddAtProtoClientServices();
+builder.Services.AddJetStream();
 
 builder.Services.AddAuthentication("PinkSea")
     .AddCookie("PinkSea", options =>
