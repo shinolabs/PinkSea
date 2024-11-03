@@ -1,6 +1,7 @@
 using PinkSea.AtProto;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.Storage;
+using PinkSea.AtProto.Server.Xrpc;
 using PinkSea.AtProto.Streaming;
 using PinkSea.AtProto.Streaming.JetStream;
 using PinkSea.Database;
@@ -13,6 +14,7 @@ builder.Services.Configure<AppViewConfig>(
     builder.Configuration.GetSection("AppViewConfig"));
 
 // Add services to the container.
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IOAuthStateStorageProvider, DatabaseOAuthStateStorageProvider>();
 builder.Services.AddTransient<IOAuthClientDataProvider, OAuthClientDataProvider>();
@@ -26,6 +28,7 @@ builder.Services.AddJetStream(o =>
     o.WantedCollections = ["com.shinolabs.pinksea.oekaki"];
 });
 builder.Services.AddScoped<IJetStreamEventHandler, OekakiJetStreamEventHandler>();
+builder.Services.AddXrpcHandlers();
 
 builder.Services.AddAuthentication("PinkSea")
     .AddCookie("PinkSea", options =>
@@ -49,6 +52,7 @@ app.UseStaticFiles();
 app.MapControllers();
 
 app.UseRouting();
+app.UseXrpcHandler();
 
 app.UseAuthentication();
 app.UseAuthorization();
