@@ -52,7 +52,7 @@ public class ApiController(
         var oekaki = await dbContext.Oekaki
             .Where(o => o.ParentId == null)
             .Include(o => o.Author)
-            .OrderByDescending(o => o.Tid)
+            .OrderByDescending(o => o.IndexedAt)
             .ToListAsync();
 
         var dids = oekaki.Select(o => o.AuthorDid)
@@ -81,7 +81,7 @@ public class ApiController(
                     $"{pds}/xrpc/com.atproto.sync.getBlob?did={o.AuthorDid}&cid={o.BlobCid}",
                 Tags = [],
 
-                AtProtoLink = $"at://{handle}/com.shinolabs.pinksea.oekaki/{o.Tid}",
+                AtProtoLink = $"at://{handle}/com.shinolabs.pinksea.oekaki/{o.OekakiTid}",
                 OekakiCid = o.RecordCid
             };
         });

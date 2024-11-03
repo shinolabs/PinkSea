@@ -21,7 +21,10 @@ builder.Services.AddSingleton<ConfigurationService>();
 builder.Services.AddScoped<OekakiService>();
 builder.Services.AddDbContext<PinkSeaDbContext>();
 builder.Services.AddAtProtoClientServices();
-builder.Services.AddJetStream();
+builder.Services.AddJetStream(o =>
+{
+    o.WantedCollections = ["com.shinolabs.pinksea.oekaki"];
+});
 builder.Services.AddScoped<IJetStreamEventHandler, OekakiJetStreamEventHandler>();
 
 builder.Services.AddAuthentication("PinkSea")

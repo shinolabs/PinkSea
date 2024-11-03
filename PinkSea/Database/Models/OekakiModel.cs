@@ -1,18 +1,25 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace PinkSea.Database.Models;
 
 /// <summary>
 /// A database oekaki model.
 /// </summary>
+[Index(nameof(AuthorDid), nameof(OekakiTid))]
 public class OekakiModel
 {
     /// <summary>
-    /// The TID of the model.
+    /// The key of the oekaki model.
     /// </summary>
     [Key]
-    public required string Tid { get; set; }
+    public required string Key { get; set; }
+    
+    /// <summary>
+    /// The TID of the model.
+    /// </summary>
+    public required string OekakiTid { get; set; }
     
     /// <summary>
     /// The ID of the oekaki post.

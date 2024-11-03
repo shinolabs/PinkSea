@@ -48,8 +48,9 @@ public partial class OekakiService(
         if (bytes.Length > 1048576)
             return OekakiUploadResult.UploadTooBig;
 
-        var parent = await GetParentForPost(
-            request);
+        var parent = request.ParentAtUrl is not null
+            ? await GetParentForPost(request.ParentAtUrl)
+            : null;
 
         var blob = await UploadOekakiBlobToRepository(
             bytes,
@@ -123,7 +124,7 @@ public partial class OekakiService(
         var inResponseTo = parent is not null
             ? new StrongRef
             {
-                Uri = $"at://{parent.AuthorDid}/com.shinolabs.pinksea.oekaki/{parent.Tid}",
+                Uri = $"at://{parent.AuthorDid}/com.shinolabs.pinksea.oekaki/{parent.OekakiTid}",
                 Cid = parent.RecordCid
             }
             : null;
@@ -199,7 +200,10 @@ public partial class OekakiService(
 
         var image = new OekakiModel
         {
-            Tid = recordTid,
+            // We want the key to be separate from the oekaki TID, as we might collide between PDSes.
+            Key = Tid.NewTid().ToString(),
+            
+            OekakiTid = recordTid,
             Author = author,
             AuthorDid = author.Did,
             IndexedAt = DateTimeOffset.UtcNow,
@@ -208,7 +212,7 @@ public partial class OekakiService(
             AltText = record.Image.ImageLink.Alt,
             
             Parent = parent,
-            ParentId = parent?.Tid
+            ParentId = parent?.OekakiTid
         };
 
         await dbContext.Oekaki.AddAsync(image);
@@ -216,18 +220,15 @@ public partial class OekakiService(
     }
 
     /// <summary>
-    /// Gets the parent for an oekaki upload request.
+    /// Gets the parent for an AT url.
     /// </summary>
-    /// <param name="request">The request.</param>
+    /// <param name="atUrl">The url.</param>
     /// <returns>The parent.</returns>
-    private async Task<OekakiModel?> GetParentForPost(
-        UploadOekakiRequest request)
+    public async Task<OekakiModel?> GetParentForPost(
+        string atUrl)
     {
-        if (request.ParentAtUrl is null)
-            return null;
-        
         var atRegex = AtUrlRegex()
-            .Match(request.ParentAtUrl);
+            .Match(atUrl);
 
         var domain = atRegex.Groups["domain"].Value;
         if (!domain.StartsWith("did"))
@@ -236,7 +237,7 @@ public partial class OekakiService(
         var id = atRegex.Groups["tid"].Value;
 
         var parent = await dbContext.Oekaki
-            .Where(o => o.AuthorDid == domain && o.Tid == id)
+            .Where(o => o.AuthorDid == domain && o.OekakiTid == id)
             .FirstOrDefaultAsync();
 
         if (parent is null)
@@ -246,6 +247,19 @@ public partial class OekakiService(
         return parent.ParentId is not null
             ? null
             : parent;
+    }
+
+    /// <summary>
+    /// Checks if an oekaki record already exists in the DB.
+    /// </summary>
+    /// <returns>Whether it exists.</returns>
+    public async Task<bool> OekakiRecordExists(
+        string authorDid,
+        string oekakiTid)
+    {
+        return await dbContext
+            .Oekaki
+            .AnyAsync(o => o.AuthorDid == authorDid && o.OekakiTid == oekakiTid);
     }
 
     /// <summary>
