@@ -13,7 +13,7 @@ builder.Services.Configure<AppViewConfig>(
     builder.Configuration.GetSection("AppViewConfig"));
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
 builder.Services.AddScoped<IOAuthStateStorageProvider, DatabaseOAuthStateStorageProvider>();
 builder.Services.AddTransient<IOAuthClientDataProvider, OAuthClientDataProvider>();
 builder.Services.AddSingleton<SigningKeyService>();
@@ -52,5 +52,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapFallbackToFile("index.html");
 
 app.Run();
