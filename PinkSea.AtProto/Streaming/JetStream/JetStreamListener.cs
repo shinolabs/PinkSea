@@ -46,7 +46,7 @@ public class JetStreamListener(
                     await OnWebsocketMessage(msg);
                 });
             })
-            .Merge(5)
+            .Merge(opts.Value.DegreeOfParallelism)
             .Subscribe();
         
         await _client.Start();

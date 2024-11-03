@@ -14,4 +14,9 @@ public class JetStreamOptions
     /// The wanted collections
     /// </summary>
     public string[]? WantedCollections { get; set; }
+
+    /// <summary>
+    /// Defines how many events can be processed in parallel.
+    /// </summary>
+    public int DegreeOfParallelism { get; set; } = 5;
 }
