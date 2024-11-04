@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 const handle = ref<string>('')
 const beginOAuth = () => {
-  document.location = `http://localhost:5084/oauth/login?handle=${handle.value}&redirectUrl=`
+  document.location = `http://localhost:5084/oauth/login?handle=${handle.value}&redirectUrl=${location.origin}/callback`
 }
 </script>
 

@@ -1,4 +1,5 @@
 using PinkSea.AtProto.Server.Xrpc;
+using PinkSea.Extensions;
 using PinkSea.Models;
 using PinkSea.Services;
 
@@ -15,13 +16,11 @@ public class PutOekakiProcedure(
     /// <inheritdoc />
     public async Task<string> Handle(UploadOekakiRequest request)
     {
-        var context = contextAccessor.HttpContext!;
-        
-        var stateClaim = context.User.Claims.FirstOrDefault(c => c.Type == "state")?.Value;
-        if (stateClaim is null)
+        var state = contextAccessor.HttpContext?.GetStateToken();
+        if (state is null)
             return null!;
 
-        return await oekakiService.ProcessUploadedOekaki(request, stateClaim) switch
+        return await oekakiService.ProcessUploadedOekaki(request, state) switch
         {
             OekakiUploadResult.NotAPng => null!,
             OekakiUploadResult.UploadTooBig => null!,

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onBeforeMount, ref } from 'vue'
 import TimeLineOekakiCard from '@/components/TimeLineOekakiCard.vue'
+import type { Oekaki } from '@/models/oekaki'
+import type { TimelineResponse } from '@/models/timeline-response'
 
   const props = defineProps<{
     endpoint: string

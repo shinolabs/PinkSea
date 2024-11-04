@@ -1,4 +1,4 @@
-interface Oekaki {
+export interface Oekaki {
   authorDid: string,
   authorHandle: string,
   imageLink: string,

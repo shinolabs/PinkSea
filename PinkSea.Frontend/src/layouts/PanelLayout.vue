@@ -2,6 +2,15 @@
 
 import BreadCrumbBar from '@/components/BreadCrumbBar.vue'
 import LoginBar from '@/components/LoginBar.vue'
+import { usePersistedStore } from '@/state/store'
+import { useRouter } from 'vue-router'
+
+const persistedStore = usePersistedStore()
+const router = useRouter()
+
+const startPainting = async () => {
+  await router.push('/paint')
+}
 </script>
 
 <template>
@@ -17,9 +26,13 @@ import LoginBar from '@/components/LoginBar.vue'
         <h1>PinkSea</h1>
         <h2>oekaki BBS</h2>
       </div>
-      <div class="aside-box">
+      <div class="aside-box" v-if="persistedStore.token == null">
         <div class="prompt">Login to start creating!</div>
         <LoginBar />
+      </div>
+      <div class="aside-box" v-else>
+        <div class="prompt">Hi @someone.tld!</div>
+        <button v-on:click.prevent="startPainting">Create something</button>
       </div>
       <div class="aside-box bottom">
         a shinonome laboratories project

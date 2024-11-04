@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import type { Oekaki } from '@/models/oekaki'
 
 const props = defineProps<{
   oekaki: Oekaki

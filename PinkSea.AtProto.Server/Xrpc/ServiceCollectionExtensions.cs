@@ -36,17 +36,26 @@ public static class ServiceCollectionExtensions
     {
         routeBuilder.MapGet(
             "/xrpc/{nsid}", 
-            async (HttpContext ctx, string nsid, [FromServices] IServiceProvider serviceProvider) =>
-        {
-            var xrpcHandler = serviceProvider.GetRequiredService<IXrpcHandler>();
-            var result = await xrpcHandler.HandleXrpc(nsid, ctx);
+            HandleXrpc);
 
-            if (result is null)
-                return Results.BadRequest();
-            
-            return Results.Ok(result);
-        });
+        routeBuilder.MapPost(
+            "/xrpc/{nsid}",
+            HandleXrpc);
 
         return routeBuilder;
+    }
+
+    private static async Task<IResult> HandleXrpc(
+        HttpContext ctx,
+        string nsid,
+        [FromServices] IServiceProvider serviceProvider)
+    {
+        var xrpcHandler = serviceProvider.GetRequiredService<IXrpcHandler>();
+        var result = await xrpcHandler.HandleXrpc(nsid, ctx);
+
+        if (result is null)
+            return Results.BadRequest();
+            
+        return Results.Ok(result);
     }
 }
