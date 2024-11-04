@@ -14,7 +14,7 @@ public class PutOekakiProcedure(
     OekakiService oekakiService) : IXrpcProcedure<UploadOekakiRequest, string>
 {
     /// <inheritdoc />
-    public async Task<string> Handle(UploadOekakiRequest request)
+    public async Task<string?> Handle(UploadOekakiRequest request)
     {
         var state = contextAccessor.HttpContext?.GetStateToken();
         if (state is null)

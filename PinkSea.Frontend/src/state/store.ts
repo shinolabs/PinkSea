@@ -10,3 +10,14 @@ export const usePersistedStore = defineStore(
     },
     persist: true
   });
+
+export const useIdentityStore = defineStore(
+  'identityStore',
+  {
+    state: () => {
+        return {
+          did: null as (string | null),
+          handle: null as (string | null)
+        }
+    }
+  });

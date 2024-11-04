@@ -2,15 +2,34 @@
 
 import BreadCrumbBar from '@/components/BreadCrumbBar.vue'
 import LoginBar from '@/components/LoginBar.vue'
-import { usePersistedStore } from '@/state/store'
+import { useIdentityStore, usePersistedStore } from '@/state/store'
 import { useRouter } from 'vue-router'
+import { onBeforeMount } from 'vue'
+import type { GetIdentityResponse } from '@/models/get-identity-response'
 
+const identityStore = useIdentityStore()
 const persistedStore = usePersistedStore()
 const router = useRouter()
 
 const startPainting = async () => {
   await router.push('/paint')
 }
+
+onBeforeMount(() => {
+  if (persistedStore.token != null &&
+    identityStore.handle == null) {
+    fetch("http://localhost:5084/xrpc/com.shinolabs.pinksea.getIdentity", {
+      headers: {
+        'Authorization': `Bearer ${persistedStore.token}`
+      }
+    }).then(r => r.json())
+      .then(j => {
+        const typed = j as GetIdentityResponse;
+        identityStore.did = typed.did;
+        identityStore.handle = typed.handle;
+      });
+  }
+})
 </script>
 
 <template>
@@ -31,7 +50,7 @@ const startPainting = async () => {
         <LoginBar />
       </div>
       <div class="aside-box" v-else>
-        <div class="prompt">Hi @someone.tld!</div>
+        <div class="prompt">Hi @{{ identityStore.handle }}!</div>
         <button v-on:click.prevent="startPainting">Create something</button>
       </div>
       <div class="aside-box bottom">

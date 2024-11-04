@@ -7,7 +7,7 @@ namespace PinkSea.AtProto.Server.Xrpc;
 /// <typeparam name="TResponse">The type of the response.</typeparam>
 public interface IXrpcRequestHandler<TRequest, TResponse> : IXrpcRequestHandler
 {
-    Task<TResponse> Handle(TRequest request);
+    Task<TResponse?> Handle(TRequest request);
 }
 
 /// <summary>

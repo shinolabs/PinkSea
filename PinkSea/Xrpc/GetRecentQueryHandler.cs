@@ -17,7 +17,7 @@ public class GetRecentQueryHandler(
     PinkSeaDbContext dbContext) : IXrpcQuery<GenericTimelineQueryRequest, GenericTimelineQueryResponse>
 {
     /// <inheritdoc />
-    public async Task<GenericTimelineQueryResponse> Handle(GenericTimelineQueryRequest request)
+    public async Task<GenericTimelineQueryResponse?> Handle(GenericTimelineQueryRequest request)
     {
         var oekaki = await dbContext.Oekaki
             .Where(o => o.ParentId == null)

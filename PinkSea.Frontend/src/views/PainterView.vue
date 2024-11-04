@@ -42,6 +42,7 @@
 <template>
   <PanelLayout>
     <img v-bind:src="image" />
+    <input type="checkbox" value="nsfw"><span>NSFW</span>
     <button v-on:click="uploadImage">Upload!</button>
   </PanelLayout>
 </template>

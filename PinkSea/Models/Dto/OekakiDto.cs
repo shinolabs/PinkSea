@@ -1,3 +1,5 @@
+using PinkSea.Database.Models;
+
 namespace PinkSea.Models.Dto;
 
 public class OekakiDto
@@ -36,4 +38,28 @@ public class OekakiDto
     /// The tags for this oekaki post.
     /// </summary>
     public string[]? Tags { get; set; }
+
+    /// <summary>
+    /// Constructs an oekaki DTO from an oekaki model and the author's handle.
+    /// </summary>
+    /// <param name="oekakiModel">The oekaki model.</param>
+    /// <param name="authorHandle">The author's handle.</param>
+    /// <returns>The oekaki DTO.</returns>
+    public static OekakiDto FromOekakiModel(
+        OekakiModel oekakiModel,
+        string authorHandle)
+    {
+        return new OekakiDto
+        {
+            AuthorDid = oekakiModel.AuthorDid,
+            AuthorHandle = authorHandle,
+            CreationTime = oekakiModel.IndexedAt,
+            ImageLink =
+                $"https://cdn.bsky.app/img/feed_fullsize/plain/{oekakiModel.AuthorDid}/{oekakiModel.BlobCid}",
+            Tags = [],
+
+            AtProtoLink = $"at://{authorHandle}/com.shinolabs.pinksea.oekaki/{oekakiModel.OekakiTid}",
+            OekakiCid = oekakiModel.RecordCid
+        };
+    }
 }
