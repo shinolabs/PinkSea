@@ -24,12 +24,16 @@ public class OAuthController(
     /// Begins the OAuth login flow.
     /// </summary>
     /// <param name="handle">The handle of the user wanting to log in.</param>
+    /// <param name="redirectUrl">The final redirect url.</param>
     /// <returns>A redirect.</returns>
     [Route("login")]
     public async Task<IActionResult> BeginLogin(
-        [FromQuery] string handle)
+        [FromQuery] string handle,
+        [FromQuery] string redirectUrl)
     {
-        var authorizationServer = await oAuthClient.BeginOAuthFlow(handle);
+        var authorizationServer = await oAuthClient.BeginOAuthFlow(
+            handle,
+            redirectUrl);
         
         if (authorizationServer is null)
             return BadRequest();
@@ -61,21 +65,10 @@ public class OAuthController(
         if (!token)
             return BadRequest();
 
-        var claims = new List<Claim>()
-        {
-            new("state", state),
-            new("did", oauthState.Did),
-            new("pds", oauthState.Pds)
-        };
-
-        var claimsIdentity = new ClaimsIdentity(claims, "PinkSea");
-
-        await HttpContext.SignInAsync(
-            "PinkSea",
-            new ClaimsPrincipal(claimsIdentity),
-            new AuthenticationProperties());
-
-        return Redirect("/");
+        if (oauthState.ClientRedirectUrl is not null)
+            return Redirect($"{oauthState.ClientRedirectUrl}?code={state}");
+        
+        return Ok(state);
     }
     
     /// <summary>
@@ -85,7 +78,6 @@ public class OAuthController(
     [Route("invalidate")]
     public async Task<IActionResult> Invalidate()
     {
-        await HttpContext.SignOutAsync("PinkSea");
         return Redirect("/");
     }
     

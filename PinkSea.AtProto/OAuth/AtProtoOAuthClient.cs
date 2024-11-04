@@ -52,7 +52,9 @@ public class AtProtoOAuthClient(
         clientDataProvider.ClientData);
 
     /// <inheritdoc />
-    public async Task<string?> BeginOAuthFlow(string handle)
+    public async Task<string?> BeginOAuthFlow(
+        string handle,
+        string? redirectUrl = null)
     {
         var did = handle;
         if (!did.StartsWith("did"))
@@ -117,7 +119,8 @@ public class AtProtoOAuthClient(
                 Issuer = authServer.Issuer,
                 KeyPair = keyPair,
                 TokenEndpoint = authServer.TokenEndpoint,
-                Pds = pds
+                Pds = pds,
+                ClientRedirectUrl = redirectUrl
             });
         
         return finalUrl.ToString();

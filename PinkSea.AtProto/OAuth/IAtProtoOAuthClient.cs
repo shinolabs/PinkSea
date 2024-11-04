@@ -11,9 +11,11 @@ public interface IAtProtoOAuthClient
     /// Gets the OAuth redirect URI for a given handle.
     /// </summary>
     /// <param name="handle">The handle.</param>
+    /// <param name="redirectUrl">The final redirect url.</param>
     /// <returns>The redirect URI.</returns>
     Task<string?> BeginOAuthFlow(
-        string handle);
+        string handle,
+        string? redirectUrl = null);
 
     /// <summary>
     /// Completes authorization for a user.

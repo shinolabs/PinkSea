@@ -3,7 +3,7 @@
 
   const handle = ref<string>("");
   const beginOAuth = () => {
-    document.location = `http://localhost:5084/oauth/login?handle=${handle.value}`;
+    document.location = `http://localhost:5084/oauth/login?handle=${handle.value}&redirectUrl=`;
   };
 </script>
 

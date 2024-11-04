@@ -1,6 +1,5 @@
 using PinkSea.AtProto.Server.Xrpc;
 using PinkSea.Models;
-using PinkSea.Models.Dto;
 using PinkSea.Services;
 
 namespace PinkSea.Xrpc;
@@ -8,6 +7,7 @@ namespace PinkSea.Xrpc;
 /// <summary>
 /// Handler for the "com.shinolabs.pinksea.putOekaki" procedure. Uploads an oekaki.
 /// </summary>
+[Xrpc("com.shinolabs.pinksea.putOekaki")]
 public class PutOekakiProcedure(
     IHttpContextAccessor contextAccessor,
     OekakiService oekakiService) : IXrpcProcedure<UploadOekakiRequest, string>

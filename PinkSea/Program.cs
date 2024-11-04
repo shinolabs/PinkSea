@@ -5,6 +5,7 @@ using PinkSea.AtProto.Server.Xrpc;
 using PinkSea.AtProto.Streaming;
 using PinkSea.AtProto.Streaming.JetStream;
 using PinkSea.Database;
+using PinkSea.Middleware;
 using PinkSea.Models;
 using PinkSea.Services;
 
@@ -14,6 +15,7 @@ builder.Services.Configure<AppViewConfig>(
     builder.Configuration.GetSection("AppViewConfig"));
 
 // Add services to the container.
+builder.Services.AddTransient<StateTokenMiddleware>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IOAuthStateStorageProvider, DatabaseOAuthStateStorageProvider>();
@@ -29,14 +31,6 @@ builder.Services.AddJetStream(o =>
 });
 builder.Services.AddScoped<IJetStreamEventHandler, OekakiJetStreamEventHandler>();
 builder.Services.AddXrpcHandlers();
-
-builder.Services.AddAuthentication("PinkSea")
-    .AddCookie("PinkSea", options =>
-    {
-        options.LoginPath = "/";
-        options.LogoutPath = "/oauth/invalidate";
-        options.AccessDeniedPath = "/";
-    });
 
 builder.Services.AddCors(options =>
 {
@@ -65,10 +59,10 @@ app.MapControllers();
 app.UseRouting();
 app.UseXrpcHandler();
 
-app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseCors("PinkSeaPolicy");
+app.UseMiddleware<StateTokenMiddleware>();
 
 app.MapFallbackToFile("index.html");
 

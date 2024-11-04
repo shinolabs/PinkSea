@@ -39,4 +39,9 @@ public class OAuthState
     /// The authorization code.
     /// </summary>
     public string? AuthorizationCode { get; set; }
+    
+    /// <summary>
+    /// The custom client-defined redirect url.
+    /// </summary>
+    public string? ClientRedirectUrl { get; set; }
 }
