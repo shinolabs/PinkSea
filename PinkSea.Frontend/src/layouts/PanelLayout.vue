@@ -6,8 +6,6 @@ import LoginBar from '@/components/LoginBar.vue'
 
 <template>
   <div class="container">
-    <aside>
-    </aside>
     <main>
       <section>
         <BreadCrumbBar />
@@ -15,42 +13,112 @@ import LoginBar from '@/components/LoginBar.vue'
       </section>
     </main>
     <aside>
-      <h1>PinkSea</h1>
-      <div>oekaki BBS</div>
-      <div>
-        <div>Login to start creating!</div>
+      <div class="title">
+        <h1>PinkSea</h1>
+        <h2>oekaki BBS</h2>
+      </div>
+      <div class="aside-box">
+        <div class="prompt">Login to start creating!</div>
         <LoginBar />
+      </div>
+      <div class="aside-box bottom">
+        a shinonome laboratories project
       </div>
     </aside>
   </div>
 </template>
 
 <style scoped>
-  .container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-  }
-  .container aside {
-    max-width: 20rem;
-    width: 100%;
-    display: block;
-  }
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.container aside {
+  display: block;
+  width: 260px;
+  background-size: 8px 8px;
+  background-image: repeating-linear-gradient(45deg, #FFB6C1 0, #FFB6C1 0.8px, #FFFFFF 0, #FFFFFF 50%);
+  opacity: 1.0;
+  border: 1px solid #FFB6C1;
+  border-width: 0px 1px 0px 1px;
+}
+
+.title {
+  background-color: #FFFFFF;
+  background-image: radial-gradient(7rem at bottom left, #FFE5EA, transparent);
+  text-align: right;
+  margin-bottom: 20px;
+  margin-top: 35px;
+}
+
+.container main {
+  background-color: #FFFFFF;
+  border-left: 1px solid #FFB6C1;
+  max-width: 42rem;
+  width: 100%;
+  display: block;
+}
+
+.container main section {
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 20pt;
+  margin-bottom: -10px;
+  padding-top: 6px;
+}
+
+.title h2 {
+  font-style: italic;
+  font-weight: normal;
+  padding-bottom: 6px;
+}
+
+h1, .title h2 {
+  padding-right: 4px;
+  padding-left: 4px;
+}
+
+.title, .aside-box {
+  box-shadow: 0px 1px #FFB6C1, 0px -1px #FFB6C1;
+}
+
+.aside-box {
+  background: #FFFFFF;
+  margin: -10px 0px 0px 0px;
+  padding: 10px 0px 10px 0px;
+  text-align: center;
+}
+
+.prompt:before {
+  content: "★";
+  color: #FFB6C1;
+  margin-right: 4px;
+}
+
+.prompt {
+  margin-bottom: 4px;
+  font-weight: bold;
+  letter-spacing: -0.5px;
+}
+
+.bottom {
+  position: absolute;
+  bottom: 10px;
+  font-size: smaller;
+  width: inherit;
+}
+
+@media (max-width: 768px) {
   .container main {
-    max-width: 42rem;
-    width: 100%;
-    display: block;
-  }
-  .container main section {
-    min-height: 100vh;
+    text-align: center;
   }
 
-  @media (max-width: 768px) {
-    .container main {
-      text-align: center;
-    }
-    .container aside {
-      display: none;
-    }
+  .container aside {
+    display: none;
   }
+}
 </style>
