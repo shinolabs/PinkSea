@@ -1,6 +1,8 @@
 using PinkSea.AtProto.Server.Xrpc;
 using PinkSea.Extensions;
+using PinkSea.Lexicons.Procedures;
 using PinkSea.Models;
+using PinkSea.Models.Oekaki;
 using PinkSea.Services;
 
 namespace PinkSea.Xrpc;
@@ -11,22 +13,28 @@ namespace PinkSea.Xrpc;
 [Xrpc("com.shinolabs.pinksea.putOekaki")]
 public class PutOekakiProcedure(
     IHttpContextAccessor contextAccessor,
-    OekakiService oekakiService) : IXrpcProcedure<UploadOekakiRequest, string>
+    OekakiService oekakiService) : IXrpcProcedure<UploadOekakiRequest, PutOekakiProcedureResponse>
 {
     /// <inheritdoc />
-    public async Task<string?> Handle(UploadOekakiRequest request)
+    public async Task<PutOekakiProcedureResponse?> Handle(UploadOekakiRequest request)
     {
         var state = contextAccessor.HttpContext?.GetStateToken();
         if (state is null)
             return null!;
 
-        return await oekakiService.ProcessUploadedOekaki(request, state) switch
+        var result = await oekakiService.ProcessUploadedOekaki(request, state);
+        
+        return result.State switch
         {
-            OekakiUploadResult.NotAPng => null!,
-            OekakiUploadResult.UploadTooBig => null!,
-            OekakiUploadResult.FailedToUploadBlob => null!,
-            OekakiUploadResult.FailedToUploadRecord => null!,
-            _ => "ok" // TODO
+            OekakiUploadState.NotAPng => null!,
+            OekakiUploadState.UploadTooBig => null!,
+            OekakiUploadState.FailedToUploadBlob => null!,
+            OekakiUploadState.FailedToUploadRecord => null!,
+            _ => new PutOekakiProcedureResponse
+            {
+                AtLink = $"at://{result.Oekaki!.AuthorDid}/com.shinolabs.pinksea.oekaki/{result.Oekaki.OekakiTid}",
+                RecordKey = result.Oekaki.OekakiTid
+            }
         };
     }
 }

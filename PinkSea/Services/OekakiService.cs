@@ -11,6 +11,7 @@ using PinkSea.Database.Models;
 using PinkSea.Helpers;
 using PinkSea.Lexicons.Records;
 using PinkSea.Models;
+using PinkSea.Models.Oekaki;
 
 namespace PinkSea.Services;
 
@@ -34,7 +35,7 @@ public partial class OekakiService(
     {
         var oauthState = await oauthStateStorageProvider.GetForStateId(stateId);
         if (oauthState is null)
-            return OekakiUploadResult.NotAuthorized;
+            return new OekakiUploadResult(OekakiUploadState.NotAuthorized);
 
         using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(stateId);
         
@@ -42,11 +43,11 @@ public partial class OekakiService(
         
         // We'll only deal with PNG files.
         if (!mime.Equals("image/png;base64", StringComparison.CurrentCultureIgnoreCase))
-            return OekakiUploadResult.NotAPng;
+            return new OekakiUploadResult(OekakiUploadState.NotAPng);
         
         // As per the lexicon: maxSize=1048576
         if (bytes.Length > 1048576)
-            return OekakiUploadResult.UploadTooBig;
+            return new OekakiUploadResult(OekakiUploadState.UploadTooBig);
 
         var parent = request.ParentAtUrl is not null
             ? await GetParentForPost(request.ParentAtUrl)
@@ -57,7 +58,7 @@ public partial class OekakiService(
             xrpcClient!);
         
         if (blob is null)
-            return OekakiUploadResult.FailedToUploadBlob;
+            return new OekakiUploadResult(OekakiUploadState.FailedToUploadBlob);
 
         var tid = Tid.NewTid()
             .ToString();
@@ -71,16 +72,16 @@ public partial class OekakiService(
             xrpcClient!);
         
         if (oekakiRecord is null)
-            return OekakiUploadResult.FailedToUploadRecord;
+            return new OekakiUploadResult(OekakiUploadState.FailedToUploadRecord);
 
-        await InsertOekakiIntoDatabase(
+        var model = await InsertOekakiIntoDatabase(
             oekakiRecord.Value.Item1,
             parent,
             oekakiRecord.Value.Item2,
             oauthState.Did,
             tid);
         
-        return OekakiUploadResult.Ok;
+        return new OekakiUploadResult(OekakiUploadState.Ok, model);
     }
 
     /// <summary>
@@ -175,7 +176,7 @@ public partial class OekakiService(
     /// <param name="oekakiCid">The oekaki CID..</param>
     /// <param name="authorDid">The author's did.</param>
     /// <param name="recordTid">The tid of the record.</param>
-    public async Task InsertOekakiIntoDatabase(
+    public async Task<OekakiModel> InsertOekakiIntoDatabase(
         Oekaki record,
         OekakiModel? parent,
         string oekakiCid,
@@ -217,6 +218,8 @@ public partial class OekakiService(
 
         await dbContext.Oekaki.AddAsync(image);
         await dbContext.SaveChangesAsync();
+
+        return image;
     }
 
     /// <summary>

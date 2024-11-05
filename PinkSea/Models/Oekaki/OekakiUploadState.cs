@@ -1,9 +1,9 @@
-namespace PinkSea.Models;
+namespace PinkSea.Models.Oekaki;
 
 /// <summary>
 /// The upload result.
 /// </summary>
-public enum OekakiUploadResult
+public enum OekakiUploadState
 {
     /// <summary>
     /// The user is not authorized.
