@@ -25,35 +25,29 @@ public class GetRecentQueryHandler(
             .OrderByDescending(o => o.IndexedAt)
             .ToListAsync();
 
-        var dids = oekaki.Select(o => o.AuthorDid)
+        var dids = oekaki
+            .Select(o => o.AuthorDid)
             .Distinct();
 
-        var map = new Dictionary<string, DidResponse>();
+        var map = new Dictionary<string, string>();
         foreach (var did in dids)
         {
             var document = await didResolver.GetDidResponseForDid(did);
-            map[did] = document!;
+            map[did] = document!.AlsoKnownAs[0]
+                .Replace("at://", "");
         }
 
-        var oekakiDtos = oekaki.Select(o =>
+        var oekakiDtos = oekaki.Select(o => new OekakiDto
         {
-            var handle = map[o.AuthorDid].AlsoKnownAs[0]
-                .Replace("at://", "");
+            AuthorDid = o.AuthorDid,
+            AuthorHandle = map[o.AuthorDid],
+            CreationTime = o.IndexedAt,
+            ImageLink =
+                $"https://cdn.bsky.app/img/feed_fullsize/plain/{o.AuthorDid}/{o.BlobCid}",
+            Tags = [],
 
-            var pds = map[o.AuthorDid].GetPds()!;
-            
-            return new OekakiDto
-            {
-                AuthorDid = o.AuthorDid,
-                AuthorHandle = handle,
-                CreationTime = o.IndexedAt,
-                ImageLink =
-                    $"https://cdn.bsky.app/img/feed_fullsize/plain/{o.AuthorDid}/{o.BlobCid}",
-                Tags = [],
-
-                AtProtoLink = $"at://{handle}/com.shinolabs.pinksea.oekaki/{o.OekakiTid}",
-                OekakiCid = o.RecordCid
-            };
+            AtProtoLink = $"at://{o.AuthorDid}/com.shinolabs.pinksea.oekaki/{o.OekakiTid}",
+            OekakiCid = o.RecordCid
         });
 
         return new GenericTimelineQueryResponse
