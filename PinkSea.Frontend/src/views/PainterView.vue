@@ -1,11 +1,13 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue'
-  import { Tegaki } from '@/tegaki/tegaki';
+  import { Tegaki } from '@/api/tegaki/tegaki';
   import { useRouter } from 'vue-router'
   import PanelLayout from '@/layouts/PanelLayout.vue'
-  import { usePersistedStore } from '@/state/store'
+  import { useIdentityStore, usePersistedStore } from '@/state/store'
+  import { xrpc } from '@/api/atproto/client'
 
   const persistedStore = usePersistedStore();
+  const identityStore = useIdentityStore();
   const image = ref<string>("");
   const router = useRouter();
 
@@ -24,18 +26,18 @@
     });
   });
 
-  const uploadImage = () => {
-    fetch("http://localhost:5084/xrpc/com.shinolabs.pinksea.putOekaki", {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${persistedStore.token}`
-      },
-      body: JSON.stringify({
+  const uploadImage = async () => {
+    const { data } = await xrpc.call("com.shinolabs.pinksea.putOekaki", {
+      data: {
         data: image.value,
-        tags: ['#test', '#whatever']
-      })
-    })
-      .then(_ => router.push('/'));
+        tags: ["#test", "#test2"]
+      },
+      headers: {
+        "Authorization": `Bearer ${persistedStore.token}`
+      }
+    });
+
+    await router.push(`/${identityStore.did}/oekaki/${data.rkey}`);
   };
 </script>
 

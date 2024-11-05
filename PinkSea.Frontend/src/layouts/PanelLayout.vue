@@ -5,7 +5,7 @@ import LoginBar from '@/components/LoginBar.vue'
 import { useIdentityStore, usePersistedStore } from '@/state/store'
 import { useRouter } from 'vue-router'
 import { onBeforeMount } from 'vue'
-import type { GetIdentityResponse } from '@/models/get-identity-response'
+import { xrpc } from '@/api/atproto/client'
 
 const identityStore = useIdentityStore()
 const persistedStore = usePersistedStore()
@@ -15,19 +15,16 @@ const startPainting = async () => {
   await router.push('/paint')
 }
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
   if (persistedStore.token != null &&
     identityStore.handle == null) {
-    fetch("http://localhost:5084/xrpc/com.shinolabs.pinksea.getIdentity", {
+    const { data } = await xrpc.get("com.shinolabs.pinksea.getIdentity", {
+      params: {},
       headers: {
-        'Authorization': `Bearer ${persistedStore.token}`
-      }
-    }).then(r => r.json())
-      .then(j => {
-        const typed = j as GetIdentityResponse;
-        identityStore.did = typed.did;
-        identityStore.handle = typed.handle;
-      });
+        "Authorization": `Bearer ${persistedStore.token}`
+      }});
+    identityStore.did = data.did;
+    identityStore.handle = data.handle;
   }
 })
 </script>

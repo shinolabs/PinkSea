@@ -2,21 +2,18 @@
 import { onBeforeMount, ref } from 'vue'
 import TimeLineOekakiCard from '@/components/TimeLineOekakiCard.vue'
 import type { Oekaki } from '@/models/oekaki'
-import type { TimelineResponse } from '@/models/timeline-response'
+import type { GenericTimelineQueryOuput, Queries } from '@atcute/client/lexicons'
+import { xrpc } from '@/api/atproto/client'
 
   const props = defineProps<{
-    endpoint: string
+    endpoint: keyof Queries
   }>();
 
   const oekaki = ref<Oekaki[] | null>(null);
 
   onBeforeMount(async () => {
-    await fetch(`http://localhost:5084/xrpc/${props.endpoint}`)
-      .then(r => r.json())
-      .then(d => {
-        console.log(d);
-        oekaki.value = (d as TimelineResponse).oekaki;
-      });
+    const { data } = await xrpc.get(props.endpoint, { });
+    oekaki.value = (data as GenericTimelineQueryOuput).oekaki;
   });
 </script>
 
