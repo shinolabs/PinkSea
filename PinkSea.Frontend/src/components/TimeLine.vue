@@ -4,6 +4,7 @@ import TimeLineOekakiCard from '@/components/TimeLineOekakiCard.vue'
 import type { Oekaki } from '@/models/oekaki'
 import type { GenericTimelineQueryOutput, Queries } from '@atcute/client/lexicons'
 import { xrpc } from '@/api/atproto/client'
+import Loader from '@/components/Loader.vue'
 
   const props = defineProps<{
     endpoint: keyof Queries,
@@ -24,9 +25,7 @@ import { xrpc } from '@/api/atproto/client'
 </script>
 
 <template>
-  <div v-if="oekaki == null">
-    <b>loading...</b>
-  </div>
+  <Loader v-if="oekaki == null" />
   <div class="timeline-container" v-else>
     <TimeLineOekakiCard v-for="oekakiPost of oekaki" v-bind:key="oekakiPost.atProtoLink" v-bind="oekakiPost" :oekaki="oekakiPost" />
   </div>

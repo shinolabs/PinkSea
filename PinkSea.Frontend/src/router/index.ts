@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, type RouteParamsGeneric } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import CallbackView from '@/views/CallbackView.vue'
 import PainterView from '@/views/PainterView.vue'
@@ -12,7 +12,12 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        resolveBreadcrumb: () => {
+          return "recent";
+        }
+      }
     },
     {
       path: '/callback',
@@ -22,17 +27,32 @@ const router = createRouter({
     {
       path: '/paint',
       name: 'paint',
-      component: PainterView
+      component: PainterView,
+      meta: {
+        resolveBreadcrumb: () => {
+          return "painter";
+        }
+      }
     },
     {
       path: '/:did',
       name: 'user',
-      component: UserView
+      component: UserView,
+      meta: {
+        resolveBreadcrumb: (route: RouteParamsGeneric) => {
+          return `${route.did}'s profile`;
+        }
+      }
     },
     {
       path: '/:did/oekaki/:rkey',
       name: 'post',
-      component: PostView
+      component: PostView,
+      meta: {
+        resolveBreadcrumb: (route: RouteParamsGeneric) => {
+          return `${route.did}'s post`;
+        }
+      }
     }
   ]
 });

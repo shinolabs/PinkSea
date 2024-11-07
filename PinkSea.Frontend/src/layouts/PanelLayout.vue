@@ -18,13 +18,17 @@ const startPainting = async () => {
 onBeforeMount(async () => {
   if (persistedStore.token != null &&
     identityStore.handle == null) {
-    const { data } = await xrpc.get("com.shinolabs.pinksea.getIdentity", {
-      params: {},
-      headers: {
-        "Authorization": `Bearer ${persistedStore.token}`
-      }});
-    identityStore.did = data.did;
-    identityStore.handle = data.handle;
+    try {
+      const { data } = await xrpc.get("com.shinolabs.pinksea.getIdentity", {
+        params: {},
+        headers: {
+          "Authorization": `Bearer ${persistedStore.token}`
+        }});
+      identityStore.did = data.did;
+      identityStore.handle = data.handle;
+    } catch {
+      persistedStore.token = null;
+    }
   }
 })
 </script>
@@ -33,7 +37,7 @@ onBeforeMount(async () => {
   <div class="container">
     <main>
       <section>
-        <BreadCrumbBar />
+        <BreadCrumbBar class="crumb" />
         <slot></slot>
       </section>
     </main>
@@ -64,12 +68,20 @@ onBeforeMount(async () => {
   justify-content: center;
 }
 
+.crumb {
+  position: sticky;
+  top: 0;
+}
+
 .container aside {
-  display: block;
+  display: unset;
   width: 260px;
+  height: 100vh;
   background-size: 8px 8px;
   background-image: repeating-linear-gradient(45deg, #FFB6C1 0, #FFB6C1 0.8px, #FFFFFF 0, #FFFFFF 50%);
   opacity: 1.0;
+  position: sticky;
+  top: 0;
   border: 1px solid #FFB6C1;
   border-width: 0px 1px 0px 1px;
 }

@@ -1,7 +1,8 @@
 import type { Router } from 'vue-router'
 import { useBreadcrumbBarStore } from '@/api/breadcrumb/store'
+import type Crumb from '@/api/breadcrumb/crumb'
 
-window.addEventListener('popstate', _ => {
+window.addEventListener('popstate', () => {
   const bar = useBreadcrumbBarStore();
   bar.pop = true;
 });
@@ -16,7 +17,20 @@ export const withBreadcrumb = (router: Router) : void => {
       return;
     }
 
-    bar.crumbs.push(to.path);
+    const maybeIndexOfExisting = bar.crumbs.findIndex((c: Crumb) => c.path === to.path);
+    if (maybeIndexOfExisting > -1) {
+      bar.crumbs.splice(maybeIndexOfExisting + 1);
+      next();
+      return;
+    }
+
+    const crumb: Crumb = {
+      path: to.path,
+      // @ts-expect-error This is 100% fine and I know it.
+      name: to.meta.resolveBreadcrumb(to.params) as string
+    };
+
+    bar.crumbs.push(crumb);
     next();
   });
 };

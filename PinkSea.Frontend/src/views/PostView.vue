@@ -8,13 +8,15 @@ import type { Oekaki } from '@/models/oekaki'
 import TimeLineOekakiCard from '@/components/TimeLineOekakiCard.vue'
 import { Tegaki } from '@/api/tegaki/tegaki';
 import { usePersistedStore } from '@/state/store'
+import PostViewOekakiParentCard from '@/components/oekaki/PostViewOekakiParentCard.vue'
+import PostViewOekakiChildCard from '@/components/oekaki/PostViewOekakiChildCard.vue'
+import RespondBox from '@/components/RespondBox.vue'
+import Loader from '@/components/Loader.vue'
 
 const route = useRoute();
-const persistedStore = usePersistedStore();
 
 const parent = ref<Oekaki | null>(null);
 const children = ref<Oekaki[] | null>(null);
-const image = ref<string | null>(null);
 
 onBeforeMount(async () => {
   const { data } = await xrpc.get("com.shinolabs.pinksea.getOekaki", {
@@ -28,50 +30,17 @@ onBeforeMount(async () => {
   children.value = data.children;
 });
 
-const reply = () => {
-  Tegaki.open({
-    onDone: () => {
-      image.value = Tegaki.flatten().toDataURL("image/png");
-    },
-
-    width: 380,
-    height: 380
-  });
-};
-
-const uploadImage = async () => {
-  await xrpc.call("com.shinolabs.pinksea.putOekaki", {
-    data: {
-      data: image.value as string,
-      tags: ["#test", "#test2"],
-      parent: parent.value?.atProtoLink
-    },
-    headers: {
-      "Authorization": `Bearer ${persistedStore.token}`
-    }
-  });
-
-  window.location.reload();
-};
 </script>
 
 <template>
   <PanelLayout>
-    <div v-if="parent === null">
-      loading...
-    </div>
+    <Loader v-if="parent === null" />
     <div v-else>
-      <TimeLineOekakiCard :oekaki="parent" />
+      <PostViewOekakiParentCard :oekaki="parent" />
       <br />
-      <TimeLineOekakiCard v-for="child of children" v-bind:key="child.atProtoLink" :oekaki="child" />
+      <PostViewOekakiChildCard v-for="child of children" v-bind:key="child.atProtoLink" :oekaki="child" />
 
-      <div v-if="image === null">
-        <button v-on:click.prevent="reply">Reply</button>
-      </div>
-      <div v-else>
-        <img :src="image" />
-        <button v-on:click.prevent="uploadImage">Upload</button>
-      </div>
+      <RespondBox />
     </div>
   </PanelLayout>
 </template>

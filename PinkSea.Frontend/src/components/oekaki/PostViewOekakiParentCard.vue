@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { Oekaki } from '@/models/oekaki'
-import { useRouter } from 'vue-router'
-
-const router = useRouter();
 
 const props = defineProps<{
   oekaki: Oekaki
@@ -15,20 +12,17 @@ const options: Intl.DateTimeFormatOptions = {
   day: 'numeric'
 }
 
-const imageLink = computed(() => `url(${props.oekaki.imageLink})`)
 const authorProfileLink = computed(() => `/${props.oekaki.authorDid}`);
 const creationTime = computed(() => {
   return new Date(props.oekaki.creationTime).toLocaleTimeString(undefined, options)
 })
-
-const navigateToPost = () => {
-  router.push(`/${props.oekaki.authorDid}/oekaki/${props.oekaki.oekakiRecordKey}`);
-};
 </script>
 
 <template>
   <div class="oekaki-card">
-    <div class="oekaki-image" v-on:click.prevent="navigateToPost"></div>
+    <div class="oekaki-image-container">
+      <img :src="props.oekaki.imageLink" />
+    </div>
     <div class="oekaki-meta">
       <span>By <b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b></span><br>
       <span>{{ creationTime }}</span><br>
@@ -51,22 +45,22 @@ const navigateToPost = () => {
 
 .oekaki-card {
   display: inline-block;
-  width: 300px;
   border: 2px solid #FFB6C1;
+  width: calc(100% - 20px);
+  box-sizing: border-box;
+  margin: 10px;
 }
 
-.oekaki-image {
-  width: auto;
-  height: 200px;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  margin: 2px;
-  background-image: v-bind(imageLink);
+.oekaki-image-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background-size: 8px 8px;
+  background-image: repeating-linear-gradient(45deg, #FFB6C1 0, #FFB6C1 0.8px, #FFFFFF 0, #FFFFFF 50%);
 }
 
-.oekaki-image:hover {
-  cursor: pointer;
+.oekaki-image-container img {
+  max-width: 100%;
 }
 
 .oekaki-meta {

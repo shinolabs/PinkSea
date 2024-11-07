@@ -6,10 +6,12 @@
 
 <template>
   <div class="bar">
-    <RouterLink to="/" class="bar-current">PinkSea</RouterLink>
-    <span v-for="crumb of store.crumbs" v-bind:key="crumb">
-      >
-      <span>{{ crumb }}</span>
+    <RouterLink to="/" class="bar-current link">PinkSea</RouterLink>
+    <span>
+      <span v-for="crumb of store.crumbs" v-bind:key="crumb.name">
+        <span> &gt; </span>
+        <RouterLink :to="crumb.path" class="link">{{ crumb.name }}</RouterLink>
+      </span>
     </span>
   </div>
 </template>
@@ -17,10 +19,9 @@
 <style scoped>
 .bar {
   margin: 0px 0px 0px 0px;
-  padding: 10px 34px 0px 10px;
   background-color: #FFF5F6;
   border-bottom: 1px dashed #FFB6C1;
-  padding-bottom: 8px;
+  padding: 10px 34px 8px 10px;
 }
 
 .bar * {
@@ -28,7 +29,7 @@
   color: black;
 }
 
-.bar *:hover {
+.link:hover {
   text-decoration: underline;
   cursor: pointer;
 }
