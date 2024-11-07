@@ -61,7 +61,7 @@ public class DefaultXrpcHandler(
         var queryDict = context
             .Request
             .Query
-            .ToDictionary(k => k, v => v.Value.ToString());
+            .ToDictionary(k => k.Key, v => v.Value.ToString());
 
         var queryJson = JsonSerializer.Serialize(queryDict);
         return JsonSerializer.Deserialize(queryJson, typeMapping.RequestType);
