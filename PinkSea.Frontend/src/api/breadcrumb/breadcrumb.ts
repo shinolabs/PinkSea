@@ -8,7 +8,7 @@ window.addEventListener('popstate', () => {
 });
 
 export const withBreadcrumb = (router: Router) : void => {
-  router.beforeEach((to, from, next) => {
+  router.beforeEach(async (to, from, next) => {
     const bar = useBreadcrumbBarStore();
     if (bar.pop) {
       bar.crumbs.pop();
@@ -27,7 +27,7 @@ export const withBreadcrumb = (router: Router) : void => {
     const crumb: Crumb = {
       path: to.path,
       // @ts-expect-error This is 100% fine and I know it.
-      name: to.meta.resolveBreadcrumb(to.params) as string
+      name: (await to.meta.resolveBreadcrumb(to.params)) as string
     };
 
     bar.crumbs.push(crumb);

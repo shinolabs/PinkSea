@@ -58,6 +58,17 @@ declare module '@atcute/client/lexicons' {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace ComShinolabsPinkseaGetHandleFromDid {
+    interface Params {
+      did: string
+    }
+
+    interface Output {
+      handle: string
+    }
+  }
+
   interface Queries {
     'com.shinolabs.pinksea.getRecent': {
       params: GenericTimelineQueryRequest,
@@ -78,6 +89,10 @@ declare module '@atcute/client/lexicons' {
     'com.shinolabs.pinksea.getOekaki': {
       params: ComShinolabsPinkseaGetOekaki.Params,
       output: ComShinolabsPinkseaGetOekaki.Output
+    },
+    'com.shinolabs.pinksea.getHandleFromDid': {
+      params: ComShinolabsPinkseaGetHandleFromDid.Params,
+      output: ComShinolabsPinkseaGetHandleFromDid.Output
     }
   }
 

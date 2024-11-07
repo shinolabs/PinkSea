@@ -5,6 +5,7 @@ import PainterView from '@/views/PainterView.vue'
 import UserView from '@/views/UserView.vue'
 import { withBreadcrumb } from '@/api/breadcrumb/breadcrumb'
 import PostView from '@/views/PostView.vue'
+import { xrpc } from '@/api/atproto/client'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,7 +15,7 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
       meta: {
-        resolveBreadcrumb: () => {
+        resolveBreadcrumb: async () => {
           return "recent";
         }
       }
@@ -29,7 +30,7 @@ const router = createRouter({
       name: 'paint',
       component: PainterView,
       meta: {
-        resolveBreadcrumb: () => {
+        resolveBreadcrumb: async () => {
           return "painter";
         }
       }
@@ -39,8 +40,9 @@ const router = createRouter({
       name: 'user',
       component: UserView,
       meta: {
-        resolveBreadcrumb: (route: RouteParamsGeneric) => {
-          return `${route.did}'s profile`;
+        resolveBreadcrumb: async (route: RouteParamsGeneric) => {
+          const { data } = await xrpc.get("com.shinolabs.pinksea.getHandleFromDid", { params: { did: route.did as string }});
+          return `${data.handle}'s profile`;
         }
       }
     },
@@ -49,8 +51,9 @@ const router = createRouter({
       name: 'post',
       component: PostView,
       meta: {
-        resolveBreadcrumb: (route: RouteParamsGeneric) => {
-          return `${route.did}'s post`;
+        resolveBreadcrumb: async (route: RouteParamsGeneric) => {
+          const { data } = await xrpc.get("com.shinolabs.pinksea.getHandleFromDid", { params: { did: route.did as string }});
+          return `${data.handle}'s post`;
         }
       }
     }
