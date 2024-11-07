@@ -1,12 +1,16 @@
 <script setup lang="ts">
+  import { useBreadcrumbBarStore } from '@/api/breadcrumb/store'
 
+  const store = useBreadcrumbBarStore();
 </script>
 
 <template>
   <div class="bar">
-    <span><RouterLink to="/">PinkSea</RouterLink></span>
-    &gt;
-    <span class="bar-current">recent</span>
+    <RouterLink to="/" class="bar-current">PinkSea</RouterLink>
+    <span v-for="crumb of store.crumbs" v-bind:key="crumb">
+      >
+      <span>{{ crumb }}</span>
+    </span>
   </div>
 </template>
 

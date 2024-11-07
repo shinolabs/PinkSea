@@ -22,7 +22,8 @@ declare module '@atcute/client/lexicons' {
   namespace ComShinolabsPinkseaPutOekaki {
     interface Input {
       data: string,
-      tags: string[] | undefined
+      tags: string[] | undefined,
+      parent: string | undefined
     }
     interface Output {
       uri: string,
@@ -44,6 +45,19 @@ declare module '@atcute/client/lexicons' {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace ComShinolabsPinkseaGetOekaki {
+    interface Params {
+      did: string,
+      rkey: string
+    }
+
+    interface Output {
+      parent: Oekaki,
+      children: Oekaki[]
+    }
+  }
+
   interface Queries {
     'com.shinolabs.pinksea.getRecent': {
       params: GenericTimelineQueryRequest,
@@ -60,6 +74,10 @@ declare module '@atcute/client/lexicons' {
     'com.shinolabs.pinksea.getIdentity': {
       params: EmptyParams,
       output: ComShinolabsPinkseaGetIdentity.Output
+    },
+    'com.shinolabs.pinksea.getOekaki': {
+      params: ComShinolabsPinkseaGetOekaki.Params,
+      output: ComShinolabsPinkseaGetOekaki.Output
     }
   }
 

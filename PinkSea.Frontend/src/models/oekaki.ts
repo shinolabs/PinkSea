@@ -1,4 +1,5 @@
 export interface Oekaki {
+  oekakiRecordKey: string,
   authorDid: string,
   authorHandle: string,
   imageLink: string,

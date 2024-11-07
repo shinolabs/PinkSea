@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { Oekaki } from '@/models/oekaki'
+import { useRouter } from 'vue-router'
+
+const router = useRouter();
 
 const props = defineProps<{
   oekaki: Oekaki
@@ -18,11 +21,15 @@ const creationTime = computed(() => {
   console.log(props.oekaki.creationTime)
   return new Date(props.oekaki.creationTime).toLocaleTimeString(undefined, options)
 })
+
+const navigateToPost = () => {
+  router.push(`/${props.oekaki.authorDid}/oekaki/${props.oekaki.oekakiRecordKey}`);
+};
 </script>
 
 <template>
   <div class="oekaki-card">
-    <div class="oekaki-image"></div>
+    <div class="oekaki-image" v-on:click.prevent="navigateToPost"></div>
     <div class="oekaki-meta">
       <span>By <b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b></span><br>
       <span>{{ creationTime }}</span><br>
@@ -57,6 +64,10 @@ const creationTime = computed(() => {
   background-position: center;
   margin: 2px;
   background-image: v-bind(imageLink);
+}
+
+.oekaki-image:hover {
+  cursor: pointer;
 }
 
 .oekaki-meta {

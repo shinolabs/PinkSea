@@ -5,6 +5,11 @@ namespace PinkSea.Models.Dto;
 public class OekakiDto
 {
     /// <summary>
+    /// The oekaki record key.
+    /// </summary>
+    public required string OekakiRecordKey { get; set; }
+    
+    /// <summary>
     /// The DID of the author.
     /// </summary>
     public required string AuthorDid { get; set; }
@@ -51,6 +56,7 @@ public class OekakiDto
     {
         return new OekakiDto
         {
+            OekakiRecordKey = oekakiModel.OekakiTid,
             AuthorDid = oekakiModel.AuthorDid,
             AuthorHandle = authorHandle,
             CreationTime = oekakiModel.IndexedAt,
