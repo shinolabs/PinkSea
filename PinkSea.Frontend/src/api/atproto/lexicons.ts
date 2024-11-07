@@ -2,7 +2,11 @@ import type { Oekaki } from '@/models/oekaki'
 
 declare module '@atcute/client/lexicons' {
   type EmptyParams = object
-  interface GenericTimelineQueryOuput {
+  interface GenericTimelineQueryRequest {
+    since?: Date | null,
+    limit?: number | null,
+  }
+  interface GenericTimelineQueryOutput {
     oekaki: Oekaki[]
   }
 
@@ -26,10 +30,32 @@ declare module '@atcute/client/lexicons' {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace ComShinolabsPinkseaGetAuthorFeed {
+    interface Params extends GenericTimelineQueryRequest {
+      did: string
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace ComShinolabsPinkseaGetTagFeed {
+    interface Params extends GenericTimelineQueryRequest {
+      tag: string
+    }
+  }
+
   interface Queries {
     'com.shinolabs.pinksea.getRecent': {
-      params: EmptyParams,
-      output: GenericTimelineQueryOuput
+      params: GenericTimelineQueryRequest,
+      output: GenericTimelineQueryOutput
+    },
+    'com.shinolabs.pinksea.getAuthorFeed': {
+      params: ComShinolabsPinkseaGetAuthorFeed.Params,
+      output: GenericTimelineQueryOutput,
+    },
+    'com.shinolabs.pinksea.getTagFeed': {
+      params: ComShinolabsPinkseaGetTagFeed.Params,
+      output: GenericTimelineQueryOutput,
     },
     'com.shinolabs.pinksea.getIdentity': {
       params: EmptyParams,

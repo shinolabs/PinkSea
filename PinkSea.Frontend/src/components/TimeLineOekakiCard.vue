@@ -13,6 +13,7 @@ const options: Intl.DateTimeFormatOptions = {
 }
 
 const imageLink = computed(() => `url(${props.oekaki.imageLink})`)
+const authorProfileLink = computed(() => `/${props.oekaki.authorDid}`);
 const creationTime = computed(() => {
   console.log(props.oekaki.creationTime)
   return new Date(props.oekaki.creationTime).toLocaleTimeString(undefined, options)
@@ -23,7 +24,7 @@ const creationTime = computed(() => {
   <div class="oekaki-card">
     <div class="oekaki-image"></div>
     <div class="oekaki-meta">
-      <span>By <b class="oekaki-author">@{{ props.oekaki.authorHandle }}</b></span><br>
+      <span>By <b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b></span><br>
       <span>{{ creationTime }}</span><br>
       <div class="oekaki-tag-container" v-if="props.oekaki.tags !== undefined">
         <span class="oekaki-tag" v-for="tag of props.oekaki.tags" v-bind:key="tag">#{{ tag }}</span>
