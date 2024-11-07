@@ -13,4 +13,11 @@ public interface IDidResolver
     /// <param name="did">The DID.</param>
     /// <returns>The document, if it was possible to fetch.</returns>
     Task<DidResponse?> GetDidResponseForDid(string did);
+
+    /// <summary>
+    /// Gets a handle from a DID.
+    /// </summary>
+    /// <param name="did">The DID.</param>
+    /// <returns>The handle, if it was possible to fetch.</returns>
+    Task<string?> GetHandleFromDid(string did);
 }

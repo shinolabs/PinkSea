@@ -11,7 +11,7 @@ public class GenericTimelineQueryRequest
     /// Since when should we query.
     /// </summary>
     [JsonPropertyName("since")]
-    public string? Since { get; set; }
+    public DateTimeOffset? Since { get; set; }
 
     /// <summary>
     /// The limit on posts to fetch.

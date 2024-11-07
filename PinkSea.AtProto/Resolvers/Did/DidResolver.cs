@@ -23,6 +23,20 @@ public class DidResolver(
             });
     }
 
+    /// <inheritdoc />
+    public async Task<string?> GetHandleFromDid(string did)
+    {
+        return await memoryCache.GetOrCreateAsync(
+            $"did:handle:{did}",
+            async e =>
+            {
+                e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                var didDocument = await GetDidResponseForDid(did);
+                return didDocument?.AlsoKnownAs[0]
+                    .Replace("at://", "");
+            });
+    }
+
     /// <summary>
     /// Resolves a DID via the PLC directory.
     /// </summary>

@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Server.Xrpc;
 using PinkSea.Database;
 using PinkSea.Lexicons.Queries;
 using PinkSea.Models.Dto;
+using PinkSea.Services;
 
 namespace PinkSea.Xrpc;
 
@@ -10,7 +12,7 @@ namespace PinkSea.Xrpc;
 /// Handler for the "com.shinolabs.pinksea.getOekaki" xrpc call. Retrieves an oekaki post and its children.
 /// </summary>
 [Xrpc("com.shinolabs.pinksea.getOekaki")]
-public class GetOekakiQueryHandler(PinkSeaDbContext dbContext)
+public class GetOekakiQueryHandler(PinkSeaDbContext dbContext, FeedBuilder feedBuilder, IDidResolver didResolver)
     : IXrpcQuery<GetOekakiQueryRequest, GetOekakiQueryResponse>
 {
     /// <inheritdoc />
@@ -22,17 +24,18 @@ public class GetOekakiQueryHandler(PinkSeaDbContext dbContext)
         if (parent == null)
             return null;
 
-        var children = await dbContext.Oekaki
-            .Where(o => o.ParentId == parent.Key)
-            .OrderByDescending(o => o.IndexedAt)
-            .ToListAsync();
+        var childrenFeed = await feedBuilder
+            .Where(c => c.ParentId == parent.Key)
+            .GetFeed();
 
         return new GetOekakiQueryResponse()
         {
-            Parent = OekakiDto.FromOekakiModel(parent, ""),
-            Children = children.Select(
-                    c => OekakiDto.FromOekakiModel(c, ""))
-                .ToArray()
+            Parent =
+                OekakiDto.FromOekakiModel(
+                    parent, 
+                    await didResolver.GetHandleFromDid(parent.AuthorDid) ?? "Invalid handle"),
+            
+            Children = childrenFeed.ToArray()
         };
     }
 }
