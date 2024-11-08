@@ -4,16 +4,16 @@ import BreadCrumbBar from '@/components/BreadCrumbBar.vue'
 import LoginBar from '@/components/LoginBar.vue'
 import { useIdentityStore, usePersistedStore } from '@/state/store'
 import { useRouter } from 'vue-router'
-import { onBeforeMount } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import { xrpc } from '@/api/atproto/client'
 
 const identityStore = useIdentityStore()
 const persistedStore = usePersistedStore()
 const router = useRouter()
 
-const startPainting = async () => {
-  await router.push('/paint')
-}
+const selfProfileUrl = computed(() => {
+  return `/${identityStore.did}`;
+});
 
 onBeforeMount(async () => {
   if (persistedStore.token != null &&
@@ -30,7 +30,11 @@ onBeforeMount(async () => {
       persistedStore.token = null;
     }
   }
-})
+});
+
+const navigateTo = async (url: string) => {
+  await router.push(url);
+};
 </script>
 
 <template>
@@ -52,7 +56,13 @@ onBeforeMount(async () => {
       </div>
       <div class="aside-box" v-else>
         <div class="prompt">Hi @{{ identityStore.handle }}!</div>
-        <button v-on:click.prevent="startPainting">Create something</button>
+        <ul>
+          <li v-on:click.prevent="navigateTo(selfProfileUrl)">My oekaki</li>
+          <li v-on:click.prevent="navigateTo('/')">Recent</li>
+          <li>Settings</li>
+          <li>Logout</li>
+        </ul>
+        <button v-on:click.prevent="navigateTo('/paint')">Create something</button>
       </div>
       <div class="aside-box bottom">
         a shinonome laboratories project
@@ -132,6 +142,15 @@ h1, .title h2 {
   margin: -10px 0px 0px 0px;
   padding: 10px 0px 10px 0px;
   text-align: center;
+}
+
+.aside-box ul {
+  text-align: left;
+}
+
+.aside-box ul li:hover {
+  text-decoration: underline dotted;
+  cursor: pointer;
 }
 
 .prompt:before {

@@ -13,7 +13,7 @@ public class TagOekakiRelationModel
     /// </summary>
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public required int Id { get; set; }
+    public int Id { get; set; }
     
     /// <summary>
     /// The ID of the oekaki post.

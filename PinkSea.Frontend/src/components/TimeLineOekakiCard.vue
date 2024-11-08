@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import type { Oekaki } from '@/models/oekaki'
 import { useRouter } from 'vue-router'
+import TagContainer from '@/components/TagContainer.vue'
 
 const router = useRouter();
 
@@ -32,9 +33,7 @@ const navigateToPost = () => {
     <div class="oekaki-meta">
       <span>By <b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b></span><br>
       <span>{{ creationTime }}</span><br>
-      <div class="oekaki-tag-container" v-if="props.oekaki.tags !== undefined">
-        <span class="oekaki-tag" v-for="tag of props.oekaki.tags" v-bind:key="tag">#{{ tag }}</span>
-      </div>
+      <TagContainer v-if="props.oekaki.tags !== undefined" :tags="props.oekaki.tags" />
     </div>
   </div>
 </template>
@@ -75,19 +74,5 @@ const navigateToPost = () => {
   color: #2f4858;
   border-top: 2px dashed #FFB6C1;
   border-left: 0.525em solid #FFB6C1;
-}
-
-.oekaki-tag-container {
-  display: flex;
-  justify-content: left;
-  margin-top: 10px;
-}
-
-.oekaki-tag {
-  margin-right: 5px;
-  padding: 5px;
-  background-color: #FFB6C1;
-  border-radius: 4px;
-  color: #263B48;
 }
 </style>

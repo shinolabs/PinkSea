@@ -62,4 +62,9 @@ public class OekakiModel
     /// The ID of the parent.
     /// </summary>
     public OekakiModel? Parent { get; set; }
+    
+    /// <summary>
+    /// The tag-oekaki relations.
+    /// </summary>
+    public ICollection<TagOekakiRelationModel>? TagOekakiRelations { get; set; }
 }

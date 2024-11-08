@@ -20,8 +20,29 @@ public class FeedBuilder(
     /// </summary>
     private IQueryable<OekakiModel> _query = dbContext
         .Oekaki
+        .Include(o => o.TagOekakiRelations)
         .OrderByDescending(o => o.IndexedAt);
 
+    /// <summary>
+    /// Starts a new feed with the given ordering.
+    /// </summary>
+    /// <param name="expression">The expression to order by.</param>
+    /// <param name="descend">Should we descend?</param>
+    /// <typeparam name="TKey">The key's type.</typeparam>
+    /// <returns>The feed builder.</returns>
+    public FeedBuilder StartWithOrdering<TKey>(
+        Expression<Func<OekakiModel, TKey>> expression,
+        bool descend = false)
+    {
+        _query = dbContext.Oekaki
+            .Include(o => o.TagOekakiRelations);
+        _query = descend
+            ? _query.OrderByDescending(expression)
+            : _query.OrderBy(expression);
+
+        return this;
+    }
+    
     /// <summary>
     /// Adds a where clause to the feed.
     /// </summary>

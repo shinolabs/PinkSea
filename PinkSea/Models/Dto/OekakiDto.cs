@@ -62,7 +62,9 @@ public class OekakiDto
             CreationTime = oekakiModel.IndexedAt,
             ImageLink =
                 $"https://cdn.bsky.app/img/feed_fullsize/plain/{oekakiModel.AuthorDid}/{oekakiModel.BlobCid}",
-            Tags = [],
+            Tags = oekakiModel.TagOekakiRelations is not null 
+                ? oekakiModel.TagOekakiRelations.Select(to => to.TagId).ToArray()
+                : [],
 
             AtProtoLink = $"at://{authorHandle}/com.shinolabs.pinksea.oekaki/{oekakiModel.OekakiTid}",
             OekakiCid = oekakiModel.RecordCid

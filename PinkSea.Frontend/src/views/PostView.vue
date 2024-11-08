@@ -40,7 +40,7 @@ onBeforeMount(async () => {
       <br />
       <PostViewOekakiChildCard v-for="child of children" v-bind:key="child.atProtoLink" :oekaki="child" />
 
-      <RespondBox />
+      <RespondBox :parent="parent" />
     </div>
   </PanelLayout>
 </template>

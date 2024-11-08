@@ -24,11 +24,18 @@ export const withBreadcrumb = (router: Router) : void => {
       return;
     }
 
+    if (to.meta.resolveBreadcrumb === null || to.meta.resolveBreadcrumb === undefined) {
+      next();
+      return;
+    }
+
     const crumb: Crumb = {
       path: to.path,
       // @ts-expect-error This is 100% fine and I know it.
       name: (await to.meta.resolveBreadcrumb(to.params)) as string
     };
+
+    document.title = `${crumb.name} / PinkSea`;
 
     bar.crumbs.push(crumb);
     next();

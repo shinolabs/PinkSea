@@ -23,6 +23,7 @@ builder.Services.AddTransient<IOAuthClientDataProvider, OAuthClientDataProvider>
 builder.Services.AddSingleton<SigningKeyService>();
 builder.Services.AddSingleton<ConfigurationService>();
 builder.Services.AddScoped<OekakiService>();
+builder.Services.AddScoped<TagsService>();
 builder.Services.AddTransient<FeedBuilder>();
 builder.Services.AddDbContext<PinkSeaDbContext>();
 builder.Services.AddAtProtoClientServices();

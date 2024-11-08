@@ -22,6 +22,7 @@
   background-color: #FFF5F6;
   border-bottom: 1px dashed #FFB6C1;
   padding: 10px 34px 8px 10px;
+  z-index: 10;
 }
 
 .bar * {

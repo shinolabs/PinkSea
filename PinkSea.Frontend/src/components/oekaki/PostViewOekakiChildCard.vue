@@ -45,6 +45,27 @@ const creationTime = computed(() => {
   margin-top: 10px;
   border-left: 0.525em solid #FFB6C1;
   box-sizing: border-box;
+  position: relative;
+}
+
+.oekaki-card:before {
+  content: ""; z-index: 1;
+  position: absolute;
+  height: 150%; width: 10px;
+  border-left: 2px solid #FFB6C1;
+  border-bottom: 2px solid #FFB6C1;
+  display: block;
+  left: -22px; top: -100%;
+}
+
+.oekaki-card:nth-of-type(2):before {
+  content: ""; z-index: 1;
+  position: absolute;
+  height: 90%; width: 10px;
+  border-left: 2px solid #FFB6C1;
+  border-bottom: 2px solid #FFB6C1;
+  display: block;
+  left: -22px; top: -35%;
 }
 
 .oekaki-image-container {

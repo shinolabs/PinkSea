@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { Oekaki } from '@/models/oekaki'
+import TagContainer from '@/components/TagContainer.vue'
 
 const props = defineProps<{
   oekaki: Oekaki
@@ -26,9 +27,7 @@ const creationTime = computed(() => {
     <div class="oekaki-meta">
       <span>By <b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b></span><br>
       <span>{{ creationTime }}</span><br>
-      <div class="oekaki-tag-container" v-if="props.oekaki.tags !== undefined">
-        <span class="oekaki-tag" v-for="tag of props.oekaki.tags" v-bind:key="tag">#{{ tag }}</span>
-      </div>
+      <TagContainer v-if="props.oekaki.tags !== undefined" :tags="props.oekaki.tags" />
     </div>
   </div>
 </template>
@@ -49,6 +48,8 @@ const creationTime = computed(() => {
   width: calc(100% - 20px);
   box-sizing: border-box;
   margin: 10px;
+  z-index: 5;
+  position: relative;
 }
 
 .oekaki-image-container {
@@ -75,6 +76,7 @@ const creationTime = computed(() => {
   display: flex;
   justify-content: left;
   margin-top: 10px;
+  overflow: clip;
 }
 
 .oekaki-tag {

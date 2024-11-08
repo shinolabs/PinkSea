@@ -6,6 +6,7 @@ import UserView from '@/views/UserView.vue'
 import { withBreadcrumb } from '@/api/breadcrumb/breadcrumb'
 import PostView from '@/views/PostView.vue'
 import { xrpc } from '@/api/atproto/client'
+import TagView from '@/views/TagView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -54,6 +55,16 @@ const router = createRouter({
         resolveBreadcrumb: async (route: RouteParamsGeneric) => {
           const { data } = await xrpc.get("com.shinolabs.pinksea.getHandleFromDid", { params: { did: route.did as string }});
           return `${data.handle}'s post`;
+        }
+      }
+    },
+    {
+      path: '/tag/:tag',
+      name: 'tag',
+      component: TagView,
+      meta: {
+        resolveBreadcrumb: async (route: RouteParamsGeneric) => {
+          return `posts tagged #${route.tag}`;
         }
       }
     }

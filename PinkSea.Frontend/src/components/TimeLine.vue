@@ -32,6 +32,9 @@ import Loader from '@/components/Loader.vue'
 </template>
 
 <style scoped>
+  .timeline-container {
+    margin: 10px;
+  }
   .timeline-container div {
     margin: 10px;
   }

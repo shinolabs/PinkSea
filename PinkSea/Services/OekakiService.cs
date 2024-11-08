@@ -8,6 +8,7 @@ using PinkSea.AtProto.Resolvers.Domain;
 using PinkSea.AtProto.Xrpc.Client;
 using PinkSea.Database;
 using PinkSea.Database.Models;
+using PinkSea.Extensions;
 using PinkSea.Helpers;
 using PinkSea.Lexicons.Records;
 using PinkSea.Models;
@@ -22,7 +23,8 @@ public partial class OekakiService(
     IOAuthStateStorageProvider oauthStateStorageProvider,
     IXrpcClientFactory xrpcClientFactory,
     IDomainDidResolver didResolver,
-    PinkSeaDbContext dbContext)
+    PinkSeaDbContext dbContext,
+    TagsService tagsService)
 {
     /// <summary>
     /// Processes the uploaded oekaki.
@@ -148,6 +150,7 @@ public partial class OekakiService(
             
             Tags = request.Tags?
                 .Where(t => t.Length <= 640)
+                .Select(t => t.ToNormalizedTag())
                 .ToArray(),
             
             InResponseTo = inResponseTo
@@ -199,7 +202,7 @@ public partial class OekakiService(
             await dbContext.SaveChangesAsync();
         }
 
-        var image = new OekakiModel
+        var model = new OekakiModel
         {
             // We want the key to be separate from the oekaki TID, as we might collide between PDSes.
             Key = Tid.NewTid().ToString(),
@@ -216,10 +219,13 @@ public partial class OekakiService(
             ParentId = parent?.OekakiTid
         };
 
-        await dbContext.Oekaki.AddAsync(image);
+        await dbContext.Oekaki.AddAsync(model);
         await dbContext.SaveChangesAsync();
 
-        return image;
+        if (record.Tags is not null)
+            await tagsService.CreateRelationBetweenOekakiAndTags(model, record.Tags);
+
+        return model;
     }
 
     /// <summary>

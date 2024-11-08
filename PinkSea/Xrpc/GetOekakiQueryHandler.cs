@@ -19,12 +19,14 @@ public class GetOekakiQueryHandler(PinkSeaDbContext dbContext, FeedBuilder feedB
     public async Task<GetOekakiQueryResponse?> Handle(GetOekakiQueryRequest request)
     {
         var parent = await dbContext.Oekaki
+            .Include(o => o.TagOekakiRelations)
             .FirstOrDefaultAsync(o => o.AuthorDid == request.Did && o.OekakiTid == request.RecordKey);
 
         if (parent == null)
             return null;
 
         var childrenFeed = await feedBuilder
+            .StartWithOrdering(c => c.IndexedAt)
             .Where(c => c.ParentId == parent.Key)
             .GetFeed();
 
