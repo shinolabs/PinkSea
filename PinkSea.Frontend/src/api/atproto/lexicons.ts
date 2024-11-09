@@ -22,8 +22,9 @@ declare module '@atcute/client/lexicons' {
   namespace ComShinolabsPinkseaPutOekaki {
     interface Input {
       data: string,
+      nsfw: boolean,
       tags: string[] | undefined,
-      parent: string | undefined
+      parent: string | undefined,
     }
     interface Output {
       uri: string,

@@ -3,8 +3,10 @@ import { computed } from 'vue'
 import type { Oekaki } from '@/models/oekaki'
 import { useRouter } from 'vue-router'
 import TagContainer from '@/components/TagContainer.vue'
+import { usePersistedStore } from '@/state/store'
 
 const router = useRouter();
+const persistedStore = usePersistedStore();
 
 const props = defineProps<{
   oekaki: Oekaki
@@ -29,7 +31,9 @@ const navigateToPost = () => {
 
 <template>
   <div class="oekaki-card">
-    <div class="oekaki-image" v-on:click.prevent="navigateToPost"></div>
+    <div class="oekaki-image" v-on:click.prevent="navigateToPost">
+      <div class="oekaki-nsfw-blur" v-if="props.oekaki.nsfw && persistedStore.hideNsfw">NSFW</div>
+    </div>
     <div class="oekaki-meta">
       <span>By <b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b></span><br>
       <span>{{ creationTime }}</span><br>
@@ -53,6 +57,26 @@ const navigateToPost = () => {
 .oekaki-author:hover {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.oekaki-nsfw-blur {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: backdrop-filter 0.1s;
+  font-weight: bold;
+  backdrop-filter: blur(30px);
+  background-size: 8px 8px;
+  background-image: repeating-linear-gradient(45deg, #FFB6C122 0, #FFB6C122 0.8px, #FFFFFF22 0, #FFFFFF22 50%);
+}
+
+.oekaki-nsfw-blur:hover {
+  transition: backdrop-filter 0.1s;
+  background-image: none;
+  backdrop-filter: none;
+  font-size: 0;
 }
 
 .oekaki-card {

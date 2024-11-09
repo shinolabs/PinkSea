@@ -40,10 +40,15 @@ public class OekakiDto
     public required DateTimeOffset CreationTime { get; set; }
     
     /// <summary>
+    /// Is this oekaki NSFW?
+    /// </summary>
+    public required bool Nsfw { get; set; }
+    
+    /// <summary>
     /// The tags for this oekaki post.
     /// </summary>
     public string[]? Tags { get; set; }
-
+    
     /// <summary>
     /// Constructs an oekaki DTO from an oekaki model and the author's handle.
     /// </summary>
@@ -66,6 +71,8 @@ public class OekakiDto
                 ? oekakiModel.TagOekakiRelations.Select(to => to.TagId).ToArray()
                 : [],
 
+            Nsfw = oekakiModel.IsNsfw ?? false,
+            
             AtProtoLink = $"at://{authorHandle}/com.shinolabs.pinksea.oekaki/{oekakiModel.OekakiTid}",
             OekakiCid = oekakiModel.RecordCid
         };

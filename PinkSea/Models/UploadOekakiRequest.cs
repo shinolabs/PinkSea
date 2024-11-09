@@ -30,4 +30,10 @@ public class UploadOekakiRequest
     /// </summary>
     [JsonPropertyName("parent")]
     public string? ParentAtUrl { get; set; }
+
+    /// <summary>
+    /// Is this oekaki NSFW?
+    /// </summary>
+    [JsonPropertyName("nsfw")]
+    public bool? Nsfw { get; set; } = false;
 }

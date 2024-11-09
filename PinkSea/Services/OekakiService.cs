@@ -153,7 +153,8 @@ public partial class OekakiService(
                 .Select(t => t.ToNormalizedTag())
                 .ToArray(),
             
-            InResponseTo = inResponseTo
+            InResponseTo = inResponseTo,
+            Nsfw = request.Nsfw ?? false
         };
 
         var response = await xrpcClient.Procedure<PutRecordResponse>(
@@ -216,7 +217,9 @@ public partial class OekakiService(
             AltText = record.Image.ImageLink.Alt,
             
             Parent = parent,
-            ParentId = parent?.OekakiTid
+            ParentId = parent?.OekakiTid,
+            
+            IsNsfw = record.Nsfw ?? false
         };
 
         await dbContext.Oekaki.AddAsync(model);

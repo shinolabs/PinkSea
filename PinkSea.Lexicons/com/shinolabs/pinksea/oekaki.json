@@ -84,6 +84,11 @@
                         "type": "ref",
                         "description": "What this oekaki post is a response to.",
                         "ref": "com.atproto.repo.strongRef"
+                    },
+                    "nsfw":
+                    {
+                        "type": "boolean",
+                        "description": "Is this oekaki NSFW?"
                     }
                 }
             }

@@ -6,5 +6,6 @@ export interface Oekaki {
   atProtoLink: string,
   oekakiCid: string,
   creationTime: Date,
-  tags: string[] | undefined
+  tags: string[] | undefined,
+  nsfw: boolean
 }

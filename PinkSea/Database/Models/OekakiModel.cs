@@ -53,6 +53,11 @@ public class OekakiModel
     public string? AltText { get; set; }
     
     /// <summary>
+    /// Is this oekaki NSFW.
+    /// </summary>
+    public bool? IsNsfw { get; set; }
+    
+    /// <summary>
     /// The ID of the parent post.
     /// </summary>
     [ForeignKey(nameof(Parent))]

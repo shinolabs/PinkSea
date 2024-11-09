@@ -31,4 +31,10 @@ public class Oekaki
     /// </summary>
     [JsonPropertyName("inResponseTo"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public StrongRef? InResponseTo { get; set; }
+    
+    /// <summary>
+    /// Is this oekaki NSFW?
+    /// </summary>
+    [JsonPropertyName("nsfw")]
+    public bool? Nsfw { get; set; }
 }

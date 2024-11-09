@@ -12,6 +12,7 @@
   const image = ref<string>("");
   const router = useRouter();
 
+  const nsfw = ref<boolean>(false);
   const currentTag = ref<string>("");
   const tags = ref<string[]>([]);
 
@@ -35,6 +36,7 @@
       data: {
         data: image.value,
         tags: tags.value,
+        nsfw: nsfw.value,
         parent: undefined
       },
       headers: {
@@ -76,7 +78,7 @@
       <TagContainer :tags="tags" />
       <input type="text" placeholder="Tag" v-model="currentTag" v-on:keyup.delete="removeTag" v-on:keyup.space="addTag" v-on:keyup.enter="addTag"/>
     </div>
-    <input type="checkbox" value="nsfw"><span>NSFW</span>
+    <input type="checkbox" value="nsfw" v-model="nsfw"><span>NSFW</span>
     <button v-on:click="uploadImage">Upload!</button>
   </PanelLayout>
 </template>

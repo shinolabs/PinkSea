@@ -82,11 +82,13 @@ const logout = async () => {
   color: black;
   list-style: none;
 }
+
 .aside-menu li {
   border: 1px solid #FFB6C1;
   padding: 4px;
   margin: 0 4% 6px 4%;
 }
+
 .aside-menu li:hover {
   border-right-width: 8px;
   box-shadow: inset -2px 0 white, inset -4px 0 #FFB6C1;

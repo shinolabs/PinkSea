@@ -5,7 +5,8 @@ export const usePersistedStore = defineStore(
   {
     state: () => {
       return {
-        token: null as (string | null)
+        token: null as (string | null),
+        hideNsfw: true
       }
     },
     persist: true
