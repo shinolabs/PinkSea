@@ -74,12 +74,11 @@ public class OAuthController(
     /// <summary>
     /// Invalidates the current session.
     /// </summary>
-    /// <returns>A redirect.</returns>
     [Route("invalidate")]
     public async Task<IActionResult> Invalidate([FromQuery] string code)
     {
-        await oAuthClient.Refresh(code);
-        return Redirect("/");
+        await oAuthStateStorageProvider.DeleteForStateId(code);
+        return NoContent();
     }
     
     /// <summary>

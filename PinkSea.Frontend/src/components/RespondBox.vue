@@ -29,7 +29,7 @@ const uploadImage = async () => {
   await xrpc.call("com.shinolabs.pinksea.putOekaki", {
     data: {
       data: image.value as string,
-      tags: ["#test", "#test2"],
+      tags: [],
       parent: props.parent.atProtoLink
     },
     headers: {

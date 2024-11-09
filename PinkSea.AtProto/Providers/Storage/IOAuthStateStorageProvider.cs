@@ -20,4 +20,10 @@ public interface IOAuthStateStorageProvider
     /// <param name="id">The state id.</param>
     /// <returns>The OAuth state.</returns>
     Task<OAuthState?> GetForStateId(string id);
+
+    /// <summary>
+    /// Deletes the OAuth state for a given state id.
+    /// </summary>
+    /// <param name="id">The state id.</param>
+    Task DeleteForStateId(string id);
 }

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { serviceEndpoint } from '@/api/atproto/client'
 
 const handle = ref<string>('')
 const beginOAuth = () => {
-  document.location = `http://localhost:5084/oauth/login?handle=${handle.value}&redirectUrl=${location.origin}/callback`
+  document.location = `${serviceEndpoint}/oauth/login?handle=${handle.value}&redirectUrl=${location.origin}/callback`
 }
 </script>
 

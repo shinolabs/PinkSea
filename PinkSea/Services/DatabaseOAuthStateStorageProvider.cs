@@ -47,4 +47,12 @@ public class DatabaseOAuthStateStorageProvider(PinkSeaDbContext pinkSeaDbContext
             ? null
             : JsonSerializer.Deserialize<OAuthState>(maybeState.Json);
     }
+
+    /// <inheritdoc />
+    public async Task DeleteForStateId(string id)
+    {
+        await pinkSeaDbContext.OAuthStates
+            .Where(s => s.Id == id)
+            .ExecuteDeleteAsync();
+    }
 }

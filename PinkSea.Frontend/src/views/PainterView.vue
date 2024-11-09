@@ -34,7 +34,8 @@
     const { data } = await xrpc.call("com.shinolabs.pinksea.putOekaki", {
       data: {
         data: image.value,
-        tags: tags.value
+        tags: tags.value,
+        parent: undefined
       },
       headers: {
         "Authorization": `Bearer ${persistedStore.token}`

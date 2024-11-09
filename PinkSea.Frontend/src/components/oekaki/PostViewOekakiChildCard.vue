@@ -70,6 +70,7 @@ const creationTime = computed(() => {
 
 .oekaki-image-container {
   width: 100%;
+  max-height: 400px;
   display: flex;
   justify-content: center;
   background-size: 8px 8px;
@@ -78,6 +79,7 @@ const creationTime = computed(() => {
 
 .oekaki-image-container img {
   max-width: 100%;
+  max-height: 100%;
 }
 
 .oekaki-child-info {

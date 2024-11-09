@@ -5,7 +5,7 @@ import LoginBar from '@/components/LoginBar.vue'
 import { useIdentityStore, usePersistedStore } from '@/state/store'
 import { useRouter } from 'vue-router'
 import { computed, onBeforeMount } from 'vue'
-import { xrpc } from '@/api/atproto/client'
+import { serviceEndpoint, xrpc } from '@/api/atproto/client'
 
 const identityStore = useIdentityStore()
 const persistedStore = usePersistedStore()
@@ -35,6 +35,11 @@ onBeforeMount(async () => {
 const navigateTo = async (url: string) => {
   await router.push(url);
 };
+
+const logout = async () => {
+  fetch(`${serviceEndpoint}/oauth/invalidate?code=${persistedStore.token}`)
+    .then(() => persistedStore.token = null);
+};
 </script>
 
 <template>
@@ -56,11 +61,11 @@ const navigateTo = async (url: string) => {
       </div>
       <div class="aside-box" v-else>
         <div class="prompt">Hi @{{ identityStore.handle }}!</div>
-        <ul>
+        <ul class="aside-menu">
           <li v-on:click.prevent="navigateTo(selfProfileUrl)">My oekaki</li>
           <li v-on:click.prevent="navigateTo('/')">Recent</li>
           <li>Settings</li>
-          <li>Logout</li>
+          <li v-on:click.prevent="logout">Logout</li>
         </ul>
         <button v-on:click.prevent="navigateTo('/paint')">Create something</button>
       </div>
@@ -72,6 +77,21 @@ const navigateTo = async (url: string) => {
 </template>
 
 <style scoped>
+.aside-menu {
+  display: inline;
+  color: black;
+  list-style: none;
+}
+.aside-menu li {
+  border: 1px solid #FFB6C1;
+  padding: 4px;
+  margin: 0 4% 6px 4%;
+}
+.aside-menu li:hover {
+  border-right-width: 8px;
+  box-shadow: inset -2px 0 white, inset -4px 0 #FFB6C1;
+}
+
 .container {
   display: flex;
   flex-direction: row;

@@ -33,12 +33,19 @@ const navigateToPost = () => {
     <div class="oekaki-meta">
       <span>By <b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b></span><br>
       <span>{{ creationTime }}</span><br>
-      <TagContainer v-if="props.oekaki.tags !== undefined" :tags="props.oekaki.tags" />
+      <TagContainer v-if="props.oekaki.tags !== undefined && props.oekaki.tags.length > 0" :tags="props.oekaki.tags" />
+      <div class="oekaki-tag-container-substitute" v-else>.</div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.oekaki-tag-container-substitute {
+  margin-top: 10px;
+  padding: 5px;
+  visibility: hidden;
+}
+
 .oekaki-author {
   text-decoration: underline dotted;
 }
