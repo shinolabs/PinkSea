@@ -167,8 +167,57 @@ public class AtProtoOAuthClient(
             return false;
         
         oauthState.AuthorizationCode = tokenResponse.AccessToken;
+        oauthState.ExpiresAt = DateTimeOffset.UtcNow
+            .AddSeconds(tokenResponse.ExpiresIn);
+        oauthState.RefreshToken = tokenResponse.RefreshToken;
+        
         await oAuthStateStorageProvider.SetForStateId(stateId, oauthState);
         return true;
+    }
+
+    /// <inheritdoc />
+    public async Task Refresh(string stateId)
+    {
+        var oauthState = await oAuthStateStorageProvider.GetForStateId(stateId);
+        if (oauthState is null)
+            return;
+        
+        var clientData = clientDataProvider.ClientData;
+        var assertion = jwtSigningProvider.GenerateClientAssertion(new JwtSigningData
+        {
+            ClientId = clientData.ClientId,
+            Audience = oauthState.Issuer,
+            Key = clientData.Key
+        });
+
+        var tokenRequest = new TokenRequest()
+        {
+            ClientId = clientData.ClientId,
+            GrantType = "refresh_token",
+            RefreshToken = oauthState.RefreshToken,
+            ClientAssertionType = JwtClientAssertionType,
+            ClientAssertion = assertion,
+            RedirectUri = clientData.RedirectUri,
+            CodeVerifier = oauthState.PkceString,
+        };
+        
+        var resp = await _client.Post(oauthState.TokenEndpoint, tokenRequest, oauthState.KeyPair);
+        if (!resp.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Failed to refresh the token: {await resp.Content.ReadAsStringAsync()}");
+            return;
+        }
+
+        var tokenResponse = await resp.Content.ReadFromJsonAsync<TokenResponse>();
+        if (tokenResponse is null)
+            return;
+        
+        oauthState.AuthorizationCode = tokenResponse.AccessToken;
+        oauthState.ExpiresAt = DateTimeOffset.UtcNow
+            .AddSeconds(tokenResponse.ExpiresIn);
+        oauthState.RefreshToken = tokenResponse.RefreshToken ?? oauthState.RefreshToken;
+        
+        await oAuthStateStorageProvider.SetForStateId(stateId, oauthState);
     }
 
     /// <inheritdoc />

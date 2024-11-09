@@ -41,6 +41,16 @@ public class OAuthState
     public string? AuthorizationCode { get; set; }
     
     /// <summary>
+    /// The refresh token.
+    /// </summary>
+    public string? RefreshToken { get; set; }
+    
+    /// <summary>
+    /// When does the token bound to the state expire?
+    /// </summary>
+    public DateTimeOffset ExpiresAt { get; set; }
+    
+    /// <summary>
     /// The custom client-defined redirect url.
     /// </summary>
     public string? ClientRedirectUrl { get; set; }

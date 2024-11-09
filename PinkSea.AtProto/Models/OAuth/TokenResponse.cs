@@ -36,4 +36,10 @@ public class TokenResponse
     /// </summary>
     [JsonPropertyName("sub")]
     public required string Subject { get; set; }
+    
+    /// <summary>
+    /// The refresh token.
+    /// </summary>
+    [JsonPropertyName("refresh_token")]
+    public string? RefreshToken { get; set; }
 }

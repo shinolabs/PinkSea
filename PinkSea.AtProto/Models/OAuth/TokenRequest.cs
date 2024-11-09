@@ -12,19 +12,13 @@ public class TokenRequest
     /// </summary>
     [JsonPropertyName("client_id")]
     public required string ClientId { get; init; }
-    
+
     /// <summary>
     /// The grant type.
     /// </summary>
     [JsonPropertyName("grant_type")]
     public required string GrantType { get; init; }
-    
-    /// <summary>
-    /// The code.
-    /// </summary>
-    [JsonPropertyName("code")]
-    public required string Code { get; init; }
-    
+
     /// <summary>
     /// The redirect uri.
     /// </summary>
@@ -48,4 +42,16 @@ public class TokenRequest
     /// </summary>
     [JsonPropertyName("client_assertion")]
     public string? ClientAssertion { get; init; }
+
+    /// <summary>
+    /// The code.
+    /// </summary>
+    [JsonPropertyName("code")]
+    public string? Code { get; init; }
+    
+    /// <summary>
+    /// The refresh token.
+    /// </summary>
+    [JsonPropertyName("refresh_token")]
+    public string? RefreshToken { get; init; }
 }

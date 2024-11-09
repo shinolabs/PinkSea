@@ -40,7 +40,8 @@ public class OAuthClientDataProvider(
         DpopBoundAccessTokens = true,
         GrantTypes =
         [
-            "authorization_code"
+            "authorization_code",
+            "refresh_token"
         ],
         RedirectUris =
         [

@@ -26,6 +26,12 @@ public interface IAtProtoOAuthClient
     Task<bool> CompleteAuthorization(
         string stateId,
         string authCode);
+
+    /// <summary>
+    /// Refreshes a state.
+    /// </summary>
+    /// <param name="stateId">The state id.</param>
+    Task Refresh(string stateId);
     
     /// <summary>
     /// Gets the OAuth protected resource for a given PDS.

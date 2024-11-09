@@ -76,8 +76,9 @@ public class OAuthController(
     /// </summary>
     /// <returns>A redirect.</returns>
     [Route("invalidate")]
-    public async Task<IActionResult> Invalidate()
+    public async Task<IActionResult> Invalidate([FromQuery] string code)
     {
+        await oAuthClient.Refresh(code);
         return Redirect("/");
     }
     
