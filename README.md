@@ -1,6 +1,13 @@
-# PinkSea
+<p align="center">
+	<b>PinkSea</b><br>
+	<span>poniko's house</span>
+</p>
 
-An oekaki BBS running on top of the AT Protocol. Early in development.
+<hr>
+
+![An image of PinkSea's frontend displaying an oekaki post.](Meta/screenshot.png)
+
+An oekaki BBS running as an [AT Protocol AppView](https://atproto.com/guides/glossary#app-view).
 
 # License
 
