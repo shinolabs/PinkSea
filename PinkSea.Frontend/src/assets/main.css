@@ -1,19 +1,7 @@
 @import './base.css';
 @import './tegaki/tegaki.css';
 
-/*@font-face {
-    font-family: "PT Sans";
-    src: url("PTSans.ttf") format("truetype");
-    unicode-range: U+0400-052F;
-}*/
-
-/*@font-face {
-    font-family: 'Mona';
-    src: url('@/assets/Mona.woff2') format('woff2'),
-    url('@/assets/Mona.woff') format('woff');
-}*/
-
 * {
-    font-family: "PT Sans", "Mona", sans-serif;
+    font-family: "MS PGothic", sans-serif;
     font-size: 12pt;
 }
