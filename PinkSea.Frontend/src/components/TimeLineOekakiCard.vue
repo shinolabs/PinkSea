@@ -21,7 +21,7 @@ const options: Intl.DateTimeFormatOptions = {
 const imageLink = computed(() => `url(${props.oekaki.imageLink})`)
 const authorProfileLink = computed(() => `/${props.oekaki.authorDid}`);
 const creationTime = computed(() => {
-  return new Date(props.oekaki.creationTime).toLocaleTimeString(undefined, options)
+  return new Date(props.oekaki.creationTime).toLocaleTimeString(persistedStore.lang, options)
 })
 
 const navigateToPost = () => {
@@ -35,7 +35,7 @@ const navigateToPost = () => {
       <div class="oekaki-nsfw-blur" v-if="props.oekaki.nsfw && persistedStore.hideNsfw">NSFW</div>
     </div>
     <div class="oekaki-meta">
-      <span>By <b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b></span><br>
+      <span>{{ $t("timeline.by_before_handle") }}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b>{{ $t("timeline.by_after_handle") }}</span><br>
       <span>{{ creationTime }}</span><br>
       <TagContainer v-if="props.oekaki.tags !== undefined && props.oekaki.tags.length > 0" :tags="props.oekaki.tags" />
       <div class="oekaki-tag-container-substitute" v-else>.</div>

@@ -20,6 +20,7 @@ export const withBreadcrumb = (router: Router) : void => {
     const maybeIndexOfExisting = bar.crumbs.findIndex((c: Crumb) => c.path === to.path);
     if (maybeIndexOfExisting > -1) {
       bar.crumbs.splice(maybeIndexOfExisting + 1);
+      document.title = `${bar.crumbs[maybeIndexOfExisting].name} / PinkSea`;
       next();
       return;
     }

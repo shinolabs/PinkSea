@@ -2,10 +2,13 @@
 import { computed } from 'vue'
 import type { Oekaki } from '@/models/oekaki'
 import PostViewOekakiImageContainer from '@/components/oekaki/PostViewOekakiImageContainer.vue'
+import { usePersistedStore } from '@/state/store'
 
 const props = defineProps<{
   oekaki: Oekaki
 }>()
+
+const persistedStore = usePersistedStore();
 
 const options: Intl.DateTimeFormatOptions = {
   year: 'numeric',
@@ -15,13 +18,13 @@ const options: Intl.DateTimeFormatOptions = {
 
 const authorProfileLink = computed(() => `/${props.oekaki.authorDid}`);
 const creationTime = computed(() => {
-  return new Date(props.oekaki.creationTime).toLocaleTimeString(undefined, options)
+  return new Date(props.oekaki.creationTime).toLocaleTimeString(persistedStore.lang, options)
 })
 </script>
 
 <template>
   <div class="oekaki-card">
-    <div class="oekaki-child-info">Response from <b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b> at {{ creationTime }}</div>
+    <div class="oekaki-child-info">{{ $t("post.response_from_before_handle") }}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b>{{ $t("post.response_from_after_handle") }}{{ $t("post.response_from_at_date") }}{{ creationTime }}</div>
     <PostViewOekakiImageContainer :oekaki="props.oekaki" style="max-height: 400px;"/>
   </div>
 </template>

@@ -58,19 +58,19 @@ const logout = async () => {
         <h1>{{ $t("sidebar.title") }}</h1>
         <h2>{{ $t("sidebar.tag") }}</h2>
       </div>
-      <div class="aside-box" v-if="persistedStore.token == null">
-        <div class="prompt">{{ $t("menu.invitation") }}</div>
-        <LoginBar />
-      </div>
-      <div class="aside-box" v-else>
-        <div class="prompt">{{ $t("menu.greeting", { name: identityStore.handle }) }}</div>
+      <div class="aside-box">
+        <div v-if="persistedStore.token === null">
+          <div class="prompt">{{ $t("menu.invitation") }}</div>
+          <LoginBar />
+        </div>
+        <div class="prompt" v-else>{{ $t("menu.greeting", { name: identityStore.handle }) }}</div>
         <ul class="aside-menu">
-          <li v-on:click.prevent="navigateTo(selfProfileUrl)">{{ $t("menu.my_oekaki") }}</li>
+          <li v-on:click.prevent="navigateTo(selfProfileUrl)" v-if="persistedStore.token !== null">{{ $t("menu.my_oekaki") }}</li>
           <li v-on:click.prevent="navigateTo('/')">{{ $t("menu.recent") }}</li>
           <li v-on:click.prevent="navigateTo('/settings')">{{ $t("menu.settings") }}</li>
-          <li v-on:click.prevent="logout">{{ $t("menu.logout") }}</li>
+          <li v-on:click.prevent="logout" v-if="persistedStore.token !== null">{{ $t("menu.logout") }}</li>
         </ul>
-        <button v-on:click.prevent="navigateTo('/paint')">{{ $t("menu.create_something") }}</button>
+        <button v-on:click.prevent="navigateTo('/paint')" v-if="persistedStore.token !== null">{{ $t("menu.create_something") }}</button>
       </div>
       <div class="aside-box bottom">
         {{ $t("sidebar.shinolabs") }}

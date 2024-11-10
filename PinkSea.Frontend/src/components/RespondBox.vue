@@ -47,18 +47,18 @@ const uploadImage = async () => {
 
 <template>
   <div class="respond-box">
-    <div v-if="identityStore.did === null">Login to respond!</div>
+    <div v-if="identityStore.did === null">{{ $t("response_box.login_to_respond") }}</div>
     <div v-else>
       <div v-if="image === null">
-        <p>Click to open the drawing panel</p>
-        <button v-on:click.prevent="reply">Open painter</button>
+        <p>{{ $t("response_box.click_to_respond") }}</p>
+        <button v-on:click.prevent="reply">{{ $t("response_box.open_panel") }}</button>
       </div>
       <div v-else>
         <img :src="image"/>
         <br />
         <input type="text" placeholder="Add a description!" />
         <input type="checkbox" /><span>NSFW</span>
-        <button v-on:click.prevent="uploadImage">Reply!</button>
+        <button v-on:click.prevent="uploadImage">{{ $t("response_box.reply") }}</button>
       </div>
     </div>
   </div>

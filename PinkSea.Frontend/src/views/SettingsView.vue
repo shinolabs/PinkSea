@@ -16,15 +16,15 @@ watch(persistedStore, () => {
   <PanelLayout>
     <div class="settings-container">
       <fieldset>
-        <legend>general</legend>
-        <span>Language </span>
+        <legend>{{ $t("settings.category_general") }}</legend>
+        <span style="margin-right: 10px;">{{ $t("settings.general_language") }}</span>
         <select v-model="persistedStore.lang" >
           <option v-for="lang in Object.keys(I18n)" v-bind:key="lang" :value="lang">{{ lang }}</option>
         </select>
       </fieldset>
       <fieldset>
-        <legend>sensitive media</legend>
-        <input type="checkbox" v-model="persistedStore.hideNsfw"> <span>Blur NSFW posts</span>
+        <legend>{{ $t("settings.category_sensitive") }}</legend>
+        <input type="checkbox" v-model="persistedStore.hideNsfw"> <span>{{ $t("settings.sensitive_blur_nsfw") }}</span>
       </fieldset>
     </div>
   </PanelLayout>
