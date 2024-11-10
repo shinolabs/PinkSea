@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace PinkSea.AtProto.Server.Xrpc;
 
@@ -64,6 +65,9 @@ public class DefaultXrpcHandler(
             .ToDictionary(k => k.Key, v => v.Value.ToString());
 
         var queryJson = JsonSerializer.Serialize(queryDict);
-        return JsonSerializer.Deserialize(queryJson, typeMapping.RequestType);
+        return JsonSerializer.Deserialize(queryJson, typeMapping.RequestType, new JsonSerializerOptions(JsonSerializerDefaults.Web)
+        {
+            NumberHandling = JsonNumberHandling.AllowReadingFromString
+        });
     }
 }
