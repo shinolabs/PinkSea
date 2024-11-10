@@ -50,6 +50,10 @@ public partial class OekakiService(
         // As per the lexicon: maxSize=1048576
         if (bytes.Length > 1048576)
             return new OekakiUploadResult(OekakiUploadState.UploadTooBig);
+        
+        // A maximum of 800x800.
+        if (!PngHeaderHelper.ValidateDimensionsForOekaki(bytes))
+            return new OekakiUploadResult(OekakiUploadState.ExceedsDimensions);
 
         var parent = request.ParentAtUrl is not null
             ? await GetParentForPost(request.ParentAtUrl)
@@ -274,7 +278,7 @@ public partial class OekakiService(
             .Oekaki
             .AnyAsync(o => o.AuthorDid == authorDid && o.OekakiTid == oekakiTid);
     }
-
+    
     /// <summary>
     /// A regex for the at://(handle)/com.shinolabs.pinksea.oekaki/(id) scheme.
     /// </summary>

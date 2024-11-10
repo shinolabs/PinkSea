@@ -16,6 +16,11 @@ public enum OekakiUploadState
     NotAPng,
     
     /// <summary>
+    /// Oekaki exceeds the dimensions
+    /// </summary>
+    ExceedsDimensions,
+    
+    /// <summary>
     /// The upload was too big.
     /// </summary>
     UploadTooBig,

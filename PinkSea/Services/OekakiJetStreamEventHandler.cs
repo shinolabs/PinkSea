@@ -1,6 +1,8 @@
 using System.Text.Json;
+using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Streaming.JetStream;
 using PinkSea.AtProto.Streaming.JetStream.Events;
+using PinkSea.Helpers;
 using PinkSea.Lexicons.Records;
 
 namespace PinkSea.Services;
@@ -10,6 +12,8 @@ namespace PinkSea.Services;
 /// </summary>
 public class OekakiJetStreamEventHandler(
     OekakiService oekakiService,
+    IDidResolver didResolver,
+    IHttpClientFactory httpClientFactory,
     ILogger<OekakiJetStreamEventHandler> logger) : IJetStreamEventHandler
 {
     /// <inheritdoc />
@@ -45,6 +49,12 @@ public class OekakiJetStreamEventHandler(
         var oekakiRecord = commit.Record!
             .Value
             .Deserialize<Oekaki>()!;
+
+        if (!await ValidateRemoteOekakiDimensions(oekakiRecord, authorDid))
+        {
+            logger.LogInformation($"Received oekaki exceeding dimension limits for at://{authorDid}/com.shinolabs.pinksea.oekaki/{commit.RecordKey}");
+            return;
+        }
         
         // Try to get the parent.
         var parent = oekakiRecord.InResponseTo is not null
@@ -59,5 +69,33 @@ public class OekakiJetStreamEventHandler(
             commit.RecordKey);
         
         logger.LogInformation($"Indexed new oekaki record: at://{authorDid}/com.shinolabs.pinksea.oekaki/{commit.RecordKey}");
+    }
+
+    /// <summary>
+    /// Validates the remote oekaki dimensions.
+    /// </summary>
+    /// <param name="record">The record.</param>
+    /// <param name="authorDid">The DID of the author.</param>
+    /// <returns>Whether they fit within the dimensions.</returns>
+    private async Task<bool> ValidateRemoteOekakiDimensions(
+        Oekaki record,
+        string authorDid)
+    {
+        // Get the PDS of the author.
+        var authorDidResponse = await didResolver.GetDidResponseForDid(authorDid);
+        if (authorDidResponse is null)
+            return false;
+
+        var pds = authorDidResponse.GetPds()!;
+        using var client = httpClientFactory.CreateClient();
+        var response =
+            await client.GetAsync(
+                $"{pds}/xrpc/com.atproto.sync.getBlob?did={authorDid}&cid={record.Image.Blob.Reference.Link}");
+
+        if (!response.IsSuccessStatusCode)
+            return false;
+
+        var data = await response.Content.ReadAsByteArrayAsync();
+        return PngHeaderHelper.ValidateDimensionsForOekaki(data);
     }
 }
