@@ -2,7 +2,7 @@
 
 import { useIdentityStore, usePersistedStore } from '@/state/store'
 import { xrpc } from '@/api/atproto/client'
-import { ref } from 'vue'
+import { ref, useTemplateRef } from 'vue'
 import { Tegaki } from '@/api/tegaki/tegaki';
 import type { Oekaki } from '@/models/oekaki'
 
@@ -11,6 +11,8 @@ const persistedStore = usePersistedStore();
 const image = ref<string | null>(null);
 const alt = ref<string>("");
 const nsfw = ref<boolean>(false);
+
+const button = useTemplateRef<HTMLButtonElement>("upload-button");
 
 const props = defineProps<{
   parent: Oekaki
@@ -22,12 +24,14 @@ const reply = () => {
       image.value = Tegaki.flatten().toDataURL("image/png");
     },
 
-    width: 380,
-    height: 380
+    width: 480,
+    height: 160
   });
 };
 
 const uploadImage = async () => {
+  button.value!.disabled = true;
+
   await xrpc.call("com.shinolabs.pinksea.putOekaki", {
     data: {
       data: image.value as string,
@@ -51,14 +55,16 @@ const uploadImage = async () => {
     <div v-else>
       <div v-if="image === null">
         <p>{{ $t("response_box.click_to_respond") }}</p>
-        <button v-on:click.prevent="reply">{{ $t("response_box.open_panel") }}</button>
+        <button v-on:click.prevent="reply">{{ $t("response_box.open_painter") }}</button>
       </div>
       <div v-else>
         <img :src="image"/>
         <br />
-        <input type="text" placeholder="Add a description!" />
-        <input type="checkbox" /><span>NSFW</span>
-        <button v-on:click.prevent="uploadImage">{{ $t("response_box.reply") }}</button>
+        <div class="respond-extra">
+          <input type="text" placeholder="Add a description!" v-model="alt" />
+          <span><input type="checkbox" v-model="nsfw" /><span>NSFW</span></span>
+        </div>
+        <button v-on:click.prevent="uploadImage" ref="upload-button">{{ $t("response_box.reply") }}</button>
       </div>
     </div>
   </div>
@@ -71,6 +77,20 @@ const uploadImage = async () => {
   padding: 10px;
   display: flex;
   justify-content: center;
+}
+
+img {
+  max-height: 300px;
+}
+
+.respond-extra {
+  width: 100%;
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.respond-extra input[type=text] {
+  flex: 1;
 }
 
 .respond-box button {

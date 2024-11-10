@@ -2847,8 +2847,24 @@ export var Tegaki = {
     self.onDoneCb = opts.onDone;
     self.onCancelCb = opts.onCancel;
 
-    self.baseWidth = opts.width || 0;
-    self.baseHeight = opts.height || 0;
+    const maxWidth = 800;
+    const maxHeight = 800;
+
+    const w = opts.width > maxWidth
+      ? maxWidth
+      : opts.width;
+
+    const h = opts.maxHeight > maxHeight
+      ? maxHeight
+      : opts.height;
+
+    if (opts.width > maxWidth || opts.height > 800)
+    {
+      alert("The max canvas size is 800x800, your canvas has been rescaled to fit it.");
+    }
+
+    self.baseWidth = w;
+    self.baseHeight = h;
 
     self.createTools();
 
@@ -3938,16 +3954,32 @@ export var Tegaki = {
   },
 
   resizeCanvas: function(width, height) {
-    Tegaki.baseWidth = width;
-    Tegaki.baseHeight = height;
+    const maxWidth = 800;
+    const maxHeight = 800;
+
+    const w = width > maxWidth
+      ? maxWidth
+      : width;
+
+    const h = height > maxHeight
+      ? maxHeight
+      : height;
+
+    if (width > maxWidth || height > 800)
+    {
+      alert("The max canvas size is 800x800, your canvas has been rescaled to fit it.");
+    }
+
+    Tegaki.baseWidth = w;
+    Tegaki.baseHeight = h;
 
     Tegaki.createBuffers();
 
-    Tegaki.canvas.width = width;
-    Tegaki.canvas.height = height;
+    Tegaki.canvas.width = w;
+    Tegaki.canvas.height = h;
 
     Tegaki.ctx.fillStyle = Tegaki.bgColor;
-    Tegaki.ctx.fillRect(0, 0, width, height);
+    Tegaki.ctx.fillRect(0, 0, w, h);
 
     Tegaki.activeLayer = null;
 

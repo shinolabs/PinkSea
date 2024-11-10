@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onMounted, ref } from 'vue'
+import { onMounted, ref, useTemplateRef } from 'vue'
   import { Tegaki } from '@/api/tegaki/tegaki';
   import { useRouter } from 'vue-router'
   import PanelLayout from '@/layouts/PanelLayout.vue'
@@ -17,6 +17,8 @@
   const alt = ref<string>("");
   const tags = ref<string[]>([]);
 
+  const button = useTemplateRef<HTMLButtonElement>("upload-button");
+
   onMounted(() => {
     Tegaki.open({
       onDone: () => {
@@ -27,12 +29,14 @@
         router.push('/');
       },
 
-      width: 380,
-      height: 380
+      width: 400,
+      height: 400
     });
   });
 
   const uploadImage = async () => {
+    button.value!.disabled = true;
+
     const { data } = await xrpc.call("com.shinolabs.pinksea.putOekaki", {
       data: {
         data: image.value,
@@ -73,21 +77,62 @@
 
 <template>
   <PanelLayout>
-    <img v-bind:src="image" />
-    <br />
-    <input type="text" v-model="alt" placeholder="Add a description!" />
-    <div class="tag-input">
-      <TagContainer :tags="tags" />
-      <input type="text" placeholder="Tag" v-model="currentTag" v-on:keyup.delete="removeTag" v-on:keyup.space="addTag" v-on:keyup.enter="addTag"/>
+    <div class="image-container">
+      <img v-bind:src="image" />
     </div>
-    <input type="checkbox" value="nsfw" v-model="nsfw"><span>NSFW</span>
-    <button v-on:click="uploadImage">Upload!</button>
+    <br />
+    <div class="response-tools">
+      <div class="response-extra">
+        <input type="text" v-model="alt" placeholder="Add a description!" />
+        <span><input type="checkbox" value="nsfw" v-model="nsfw"><span>NSFW</span></span>
+      </div>
+
+      <div class="tag-input">
+        <TagContainer :tags="tags" />
+        <input type="text" placeholder="Tag" v-model="currentTag" v-on:keyup.delete="removeTag" v-on:keyup.space="addTag" v-on:keyup.enter="addTag"/>
+      </div>
+
+      <button v-on:click="uploadImage" ref="upload-button">Upload!</button>
+    </div>
   </PanelLayout>
 </template>
 
 <style scoped>
+.image-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-height: 400px;
+  background-size: 8px 8px;
+  background-image: repeating-linear-gradient(45deg, #FFB6C1 0, #FFB6C1 0.8px, #FFFFFF 0, #FFFFFF 50%);
+}
+
+.image-container img {
+  max-height: 400px;
+}
+
+.response-extra {
+  width: 100%;
+  display: flex;
+}
+
+.response-extra input[type=text] {
+  flex: 1;
+}
+
+.response-tools {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.response-tools * {
+  margin-bottom: 10px;
+}
+
 .tag-input {
-  border: 1px solid black;
+  border: 1px solid #FFB6C1;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -107,5 +152,9 @@
 .tag-input input:focus {
   border: none;
   outline: none;
+}
+
+button {
+  font-size: 14pt;
 }
 </style>

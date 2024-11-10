@@ -151,6 +151,7 @@ public partial class OekakiService(
             Tags = request.Tags?
                 .Where(t => t.Length <= 640)
                 .Select(t => t.ToNormalizedTag())
+                .Take(10)
                 .ToArray(),
             
             InResponseTo = inResponseTo,

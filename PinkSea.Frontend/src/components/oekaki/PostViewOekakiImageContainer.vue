@@ -20,8 +20,8 @@ const hideNSFWBlur = () => {
 <template>
   <div class="oekaki-image-container">
     <div class="oekaki-image">
-      <img :src="props.oekaki.imageLink" :alt="altText" />
-      <div class="oekaki-nsfw-cover" ref="nsfw-cover" v-if="props.oekaki.nsfw && persistedStore.hideNsfw">
+      <img :src="props.oekaki.imageLink" :alt="altText" :title="altText" />
+      <div class="oekaki-nsfw-cover" ref="nsfw-cover" :title="altText" v-if="props.oekaki.nsfw && persistedStore.hideNsfw">
         <div class="oekaki-nsfw-blur" v-on:click.prevent="hideNSFWBlur">
           NSFW
         </div>

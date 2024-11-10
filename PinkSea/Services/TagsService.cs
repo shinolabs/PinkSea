@@ -19,10 +19,15 @@ public class TagsService(PinkSeaDbContext dbContext)
         OekakiModel model,
         string[] tags)
     {
+        var count = 0;
         foreach (var tag in tags)
         {
             var tagModel = await GetOrCreateTag(tag);
             await CreateOekakiTagRelation(model, tagModel);
+            
+            count++;
+            if (count > 10)
+                return;
         }
     }
 
