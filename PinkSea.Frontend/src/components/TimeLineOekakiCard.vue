@@ -23,6 +23,7 @@ const authorProfileLink = computed(() => `/${props.oekaki.authorDid}`);
 const creationTime = computed(() => {
   return new Date(props.oekaki.creationTime).toLocaleTimeString(persistedStore.lang, options)
 })
+const altText = computed(() => props.oekaki.alt ?? "");
 
 const navigateToPost = () => {
   router.push(`/${props.oekaki.authorDid}/oekaki/${props.oekaki.oekakiRecordKey}`);
@@ -31,7 +32,7 @@ const navigateToPost = () => {
 
 <template>
   <div class="oekaki-card">
-    <div class="oekaki-image" v-on:click.prevent="navigateToPost">
+    <div class="oekaki-image" v-on:click.prevent="navigateToPost" :title="altText">
       <div class="oekaki-nsfw-blur" v-if="props.oekaki.nsfw && persistedStore.hideNsfw">NSFW</div>
     </div>
     <div class="oekaki-meta">

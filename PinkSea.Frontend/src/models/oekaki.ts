@@ -7,5 +7,6 @@ export interface Oekaki {
   oekakiCid: string,
   creationTime: Date,
   tags: string[] | undefined,
-  nsfw: boolean
+  nsfw: boolean,
+  alt: string | undefined
 }

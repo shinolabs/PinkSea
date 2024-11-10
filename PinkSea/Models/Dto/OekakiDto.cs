@@ -50,6 +50,11 @@ public class OekakiDto
     public string[]? Tags { get; set; }
     
     /// <summary>
+    /// The alt text.
+    /// </summary>
+    public string? Alt { get; set; }
+    
+    /// <summary>
     /// Constructs an oekaki DTO from an oekaki model and the author's handle.
     /// </summary>
     /// <param name="oekakiModel">The oekaki model.</param>
@@ -72,6 +77,7 @@ public class OekakiDto
                 : [],
 
             Nsfw = oekakiModel.IsNsfw ?? false,
+            Alt = oekakiModel.AltText,
             
             AtProtoLink = $"at://{authorHandle}/com.shinolabs.pinksea.oekaki/{oekakiModel.OekakiTid}",
             OekakiCid = oekakiModel.RecordCid
