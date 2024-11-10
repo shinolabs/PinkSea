@@ -7,6 +7,8 @@ import { withBreadcrumb } from '@/api/breadcrumb/breadcrumb'
 import PostView from '@/views/PostView.vue'
 import { xrpc } from '@/api/atproto/client'
 import TagView from '@/views/TagView.vue'
+import SettingsView from '@/views/SettingsView.vue'
+import i18next from 'i18next'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,7 +19,7 @@ const router = createRouter({
       component: HomeView,
       meta: {
         resolveBreadcrumb: async () => {
-          return "recent";
+          return i18next.t("breadcrumb.recent");
         }
       }
     },
@@ -32,7 +34,7 @@ const router = createRouter({
       component: PainterView,
       meta: {
         resolveBreadcrumb: async () => {
-          return "painter";
+          return i18next.t("breadcrumb.painter");
         }
       }
     },
@@ -43,7 +45,7 @@ const router = createRouter({
       meta: {
         resolveBreadcrumb: async (route: RouteParamsGeneric) => {
           const { data } = await xrpc.get("com.shinolabs.pinksea.getHandleFromDid", { params: { did: route.did as string }});
-          return `${data.handle}'s profile`;
+          return i18next.t("breadcrumb.user_profile", { handle: data.handle });
         }
       }
     },
@@ -54,7 +56,7 @@ const router = createRouter({
       meta: {
         resolveBreadcrumb: async (route: RouteParamsGeneric) => {
           const { data } = await xrpc.get("com.shinolabs.pinksea.getHandleFromDid", { params: { did: route.did as string }});
-          return `${data.handle}'s post`;
+          return i18next.t("breadcrumb.user_post", { handle: data.handle });
         }
       }
     },
@@ -64,7 +66,17 @@ const router = createRouter({
       component: TagView,
       meta: {
         resolveBreadcrumb: async (route: RouteParamsGeneric) => {
-          return `posts tagged #${route.tag}`;
+          return i18next.t("breadcrumb.tagged", { tag: route.tag });
+        }
+      }
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: SettingsView,
+      meta: {
+        resolveBreadcrumb: async () => {
+          return i18next.t("breadcrumb.settings");
         }
       }
     }

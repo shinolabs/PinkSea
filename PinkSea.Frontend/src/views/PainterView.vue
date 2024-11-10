@@ -14,6 +14,7 @@
 
   const nsfw = ref<boolean>(false);
   const currentTag = ref<string>("");
+  const alt = ref<string>("");
   const tags = ref<string[]>([]);
 
   onMounted(() => {
@@ -37,6 +38,7 @@
         data: image.value,
         tags: tags.value,
         nsfw: nsfw.value,
+        alt: alt.value,
         parent: undefined
       },
       headers: {
@@ -73,7 +75,7 @@
   <PanelLayout>
     <img v-bind:src="image" />
     <br />
-    <input type="text" placeholder="Add a description!" />
+    <input type="text" v-model="alt" placeholder="Add a description!" />
     <div class="tag-input">
       <TagContainer :tags="tags" />
       <input type="text" placeholder="Tag" v-model="currentTag" v-on:keyup.delete="removeTag" v-on:keyup.space="addTag" v-on:keyup.enter="addTag"/>

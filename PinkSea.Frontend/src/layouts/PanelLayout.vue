@@ -6,6 +6,7 @@ import { useIdentityStore, usePersistedStore } from '@/state/store'
 import { useRouter } from 'vue-router'
 import { computed, onBeforeMount } from 'vue'
 import { serviceEndpoint, xrpc } from '@/api/atproto/client'
+import i18next from 'i18next'
 
 const identityStore = useIdentityStore()
 const persistedStore = usePersistedStore()
@@ -30,6 +31,8 @@ onBeforeMount(async () => {
       persistedStore.token = null;
     }
   }
+
+  await i18next.changeLanguage(persistedStore.lang);
 });
 
 const navigateTo = async (url: string) => {
@@ -52,25 +55,25 @@ const logout = async () => {
     </main>
     <aside>
       <div class="title">
-        <h1>PinkSea</h1>
-        <h2>oekaki BBS</h2>
+        <h1>{{ $t("sidebar.title") }}</h1>
+        <h2>{{ $t("sidebar.tag") }}</h2>
       </div>
       <div class="aside-box" v-if="persistedStore.token == null">
-        <div class="prompt">Login to start creating!</div>
+        <div class="prompt">{{ $t("menu.invitation") }}</div>
         <LoginBar />
       </div>
       <div class="aside-box" v-else>
-        <div class="prompt">Hi @{{ identityStore.handle }}!</div>
+        <div class="prompt">{{ $t("menu.greeting", { name: identityStore.handle }) }}</div>
         <ul class="aside-menu">
-          <li v-on:click.prevent="navigateTo(selfProfileUrl)">My oekaki</li>
-          <li v-on:click.prevent="navigateTo('/')">Recent</li>
-          <li>Settings</li>
-          <li v-on:click.prevent="logout">Logout</li>
+          <li v-on:click.prevent="navigateTo(selfProfileUrl)">{{ $t("menu.my_oekaki") }}</li>
+          <li v-on:click.prevent="navigateTo('/')">{{ $t("menu.recent") }}</li>
+          <li v-on:click.prevent="navigateTo('/settings')">{{ $t("menu.settings") }}</li>
+          <li v-on:click.prevent="logout">{{ $t("menu.logout") }}</li>
         </ul>
-        <button v-on:click.prevent="navigateTo('/paint')">Create something</button>
+        <button v-on:click.prevent="navigateTo('/paint')">{{ $t("menu.create_something") }}</button>
       </div>
       <div class="aside-box bottom">
-        a shinonome laboratories project
+        {{ $t("sidebar.shinolabs") }}
       </div>
     </aside>
   </div>

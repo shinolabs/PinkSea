@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { Oekaki } from '@/models/oekaki'
+import PostViewOekakiImageContainer from '@/components/oekaki/PostViewOekakiImageContainer.vue'
 
 const props = defineProps<{
   oekaki: Oekaki
@@ -21,9 +22,7 @@ const creationTime = computed(() => {
 <template>
   <div class="oekaki-card">
     <div class="oekaki-child-info">Response from <b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b> at {{ creationTime }}</div>
-    <div class="oekaki-image-container">
-      <img :src="props.oekaki.imageLink" />
-    </div>
+    <PostViewOekakiImageContainer :oekaki="props.oekaki" style="max-height: 400px;"/>
   </div>
 </template>
 
@@ -66,15 +65,6 @@ const creationTime = computed(() => {
   border-bottom: 2px solid #FFB6C1;
   display: block;
   left: -22px; top: -35%;
-}
-
-.oekaki-image-container {
-  width: 100%;
-  max-height: 400px;
-  display: flex;
-  justify-content: center;
-  background-size: 8px 8px;
-  background-image: repeating-linear-gradient(45deg, #FFB6C1 0, #FFB6C1 0.8px, #FFFFFF 0, #FFFFFF 50%);
 }
 
 .oekaki-image-container img {

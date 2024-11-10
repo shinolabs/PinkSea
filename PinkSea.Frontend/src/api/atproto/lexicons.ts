@@ -23,6 +23,7 @@ declare module '@atcute/client/lexicons' {
     interface Input {
       data: string,
       nsfw: boolean,
+      alt: string,
       tags: string[] | undefined,
       parent: string | undefined,
     }

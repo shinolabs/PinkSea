@@ -1,0 +1,75 @@
+<script setup lang="ts">
+import { computed, useTemplateRef } from 'vue'
+import type { Oekaki } from '@/models/oekaki'
+import { usePersistedStore } from '@/state/store'
+
+const props = defineProps<{
+  oekaki: Oekaki
+}>()
+
+const persistedStore = usePersistedStore();
+const nsfwRef = useTemplateRef<HTMLDivElement>("nsfw-cover");
+const imageLink = computed(() => `url(${props.oekaki.imageLink})`)
+
+const hideNSFWBlur = () => {
+  nsfwRef.value!.style.display = "none";
+};
+</script>
+
+<template>
+  <div class="oekaki-image-container">
+    <div class="oekaki-image">
+      <img :src="props.oekaki.imageLink" />
+      <div class="oekaki-nsfw-cover" ref="nsfw-cover" v-if="props.oekaki.nsfw && persistedStore.hideNsfw">
+        <div class="oekaki-nsfw-blur" v-on:click.prevent="hideNSFWBlur">
+          NSFW
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.oekaki-image-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background-size: 8px 8px;
+  background-image: repeating-linear-gradient(45deg, #FFB6C1 0, #FFB6C1 0.8px, #FFFFFF 0, #FFFFFF 50%);
+}
+
+.oekaki-image {
+  position: relative;
+  max-height: inherit;
+}
+
+.oekaki-image-container .oekaki-image, .oekaki-image-container .oekaki-image img {
+  max-width: 100%;
+}
+
+.oekaki-nsfw-cover {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-image: v-bind(imageLink);
+  cursor: pointer;
+}
+
+.oekaki-nsfw-blur {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: backdrop-filter 0.1s;
+  font-weight: bold;
+  backdrop-filter: blur(30px);
+  background-size: 8px 8px;
+  background-image: repeating-linear-gradient(45deg, #FFB6C122 0, #FFB6C122 0.8px, #FFFFFF22 0, #FFFFFF22 50%);
+}
+
+img {
+  max-height: inherit;
+}
+</style>

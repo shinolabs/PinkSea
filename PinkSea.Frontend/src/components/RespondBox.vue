@@ -9,6 +9,8 @@ import type { Oekaki } from '@/models/oekaki'
 const identityStore = useIdentityStore();
 const persistedStore = usePersistedStore();
 const image = ref<string | null>(null);
+const alt = ref<string>("");
+const nsfw = ref<boolean>(false);
 
 const props = defineProps<{
   parent: Oekaki
@@ -30,6 +32,8 @@ const uploadImage = async () => {
     data: {
       data: image.value as string,
       tags: [],
+      alt: alt.value,
+      nsfw: nsfw.value,
       parent: props.parent.atProtoLink
     },
     headers: {
@@ -50,7 +54,10 @@ const uploadImage = async () => {
         <button v-on:click.prevent="reply">Open painter</button>
       </div>
       <div v-else>
-        <img :src="image" />
+        <img :src="image"/>
+        <br />
+        <input type="text" placeholder="Add a description!" />
+        <input type="checkbox" /><span>NSFW</span>
         <button v-on:click.prevent="uploadImage">Reply!</button>
       </div>
     </div>
