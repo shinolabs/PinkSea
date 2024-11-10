@@ -1,13 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.Extensions.Options;
 using PinkSea.Database.Models;
+using PinkSea.Models;
 
 namespace PinkSea.Database;
 
 /// <summary>
 /// The DB context.
 /// </summary>
-public class PinkSeaDbContext : DbContext
+public class PinkSeaDbContext(
+    IOptions<PostgresConfig> postgresConfig) : DbContext
 {
     /// <summary>
     /// The oekaki table.
@@ -42,6 +45,8 @@ public class PinkSeaDbContext : DbContext
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.UseIdentityColumns();
+        
         if (Database.ProviderName != "Microsoft.EntityFrameworkCore.Sqlite")
             return;
         
@@ -66,5 +71,8 @@ public class PinkSeaDbContext : DbContext
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseSqlite($"Data Source=pinksea.db");
+    {
+        var config = postgresConfig.Value;
+        options.UseNpgsql($"Host={config.Hostname};Port={config.Port};Database={config.Database};Username={config.Username};Password={config.Password};Include Error Detail=True");
+    }
 }

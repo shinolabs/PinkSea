@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using PinkSea.AtProto.Lexicons.AtProto;
 using PinkSea.AtProto.Lexicons.Types;
 using PinkSea.AtProto.Models.OAuth;
@@ -24,7 +25,8 @@ public partial class OekakiService(
     IXrpcClientFactory xrpcClientFactory,
     IDomainDidResolver didResolver,
     PinkSeaDbContext dbContext,
-    TagsService tagsService)
+    TagsService tagsService,
+    IMemoryCache memoryCache)
 {
     /// <summary>
     /// Processes the uploaded oekaki.
@@ -76,16 +78,22 @@ public partial class OekakiService(
             tid,
             oauthState,
             xrpcClient!);
+
         
         if (oekakiRecord is null)
             return new OekakiUploadResult(OekakiUploadState.FailedToUploadRecord);
 
+        var lockKey = $"lock:{oekakiRecord.Value.Item2}";
+        memoryCache.Set(lockKey, true);
+        
         var model = await InsertOekakiIntoDatabase(
             oekakiRecord.Value.Item1,
             parent,
             oekakiRecord.Value.Item2,
             oauthState.Did,
             tid);
+        
+        memoryCache.Remove(lockKey);
         
         return new OekakiUploadResult(OekakiUploadState.Ok, model);
     }

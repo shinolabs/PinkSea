@@ -20,7 +20,7 @@ public class GetTagFeedQueryHandler(FeedBuilder feedBuilder)
         var feed = await feedBuilder
             .Where(o => o.ParentId == null)
             .WithTag(request.Tag)
-            .Since(since)
+            .Since(since.UtcDateTime)
             .Limit(limit)
             .GetFeed();
 

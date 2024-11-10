@@ -1,0 +1,11 @@
+version: "3"
+services:
+  postgresql:
+    image: postgres
+    container_name: pinksea_postgresql
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: pinksea
+      POSTGRES_PASSWORD: pinksea

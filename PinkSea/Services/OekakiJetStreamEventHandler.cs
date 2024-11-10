@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.Extensions.Caching.Memory;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Streaming.JetStream;
 using PinkSea.AtProto.Streaming.JetStream.Events;
@@ -14,7 +15,8 @@ public class OekakiJetStreamEventHandler(
     OekakiService oekakiService,
     IDidResolver didResolver,
     IHttpClientFactory httpClientFactory,
-    ILogger<OekakiJetStreamEventHandler> logger) : IJetStreamEventHandler
+    ILogger<OekakiJetStreamEventHandler> logger,
+    IMemoryCache memoryCache) : IJetStreamEventHandler
 {
     /// <inheritdoc />
     public async Task HandleEvent(JetStreamEvent @event)
@@ -43,6 +45,12 @@ public class OekakiJetStreamEventHandler(
         if (await oekakiService.OekakiRecordExists(authorDid, commit.RecordKey))
         {
             logger.LogInformation($"Received duplicate oekaki record for at://{authorDid}/com.shinolabs.pinksea.oekaki/{commit.RecordKey}");
+            return;
+        }
+
+        if (memoryCache.TryGetValue($"lock:{commit.Cid}", out _))
+        {
+            logger.LogInformation($"Raced JetStream to insert an oekaki record at://{authorDid}/com.shinolabs.pinksea.oekaki/{commit.RecordKey}");
             return;
         }
         

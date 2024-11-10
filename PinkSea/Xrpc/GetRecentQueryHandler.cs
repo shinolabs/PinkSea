@@ -19,7 +19,7 @@ public class GetRecentQueryHandler(
 
         var feed = await feedBuilder
             .Where(o => o.ParentId == null)
-            .Since(since)
+            .Since(since.UtcDateTime)
             .Limit(limit)
             .GetFeed();
 

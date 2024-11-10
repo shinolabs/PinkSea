@@ -19,7 +19,7 @@ public class GetAuthorFeedQueryHandler(FeedBuilder feedBuilder)
 
         var feed = await feedBuilder
             .Where(o => o.AuthorDid == request.Did)
-            .Since(since)
+            .Since(since.UtcDateTime)
             .Limit(limit)
             .GetFeed();
 

@@ -14,6 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<AppViewConfig>(
     builder.Configuration.GetSection("AppViewConfig"));
 
+builder.Services.Configure<PostgresConfig>(
+    builder.Configuration.GetSection("PostgresConfig"));
+
 // Add services to the container.
 builder.Services.AddTransient<StateTokenMiddleware>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
