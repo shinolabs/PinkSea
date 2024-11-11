@@ -28,11 +28,15 @@ const altText = computed(() => props.oekaki.alt ?? "");
 const navigateToPost = () => {
   router.push(`/${props.oekaki.authorDid}/oekaki/${props.oekaki.oekakiRecordKey}`);
 };
+
+const openInNewTab = () => {
+  window.open(`/${props.oekaki.authorDid}/oekaki/${props.oekaki.oekakiRecordKey}`, "_blank");
+};
 </script>
 
 <template>
   <div class="oekaki-card" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
-    <div class="oekaki-image" v-on:click.prevent="navigateToPost" :title="altText">
+    <div class="oekaki-image" v-on:click.prevent="navigateToPost" v-on:click.middle="openInNewTab" :title="altText">
       <div class="oekaki-nsfw-blur" v-if="props.oekaki.nsfw && persistedStore.blurNsfw">NSFW</div>
     </div>
     <div class="oekaki-meta">
