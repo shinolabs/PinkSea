@@ -107,4 +107,11 @@ const navigateToPost = () => {
   border-top: 2px dashed #FFB6C1;
   border-left: 0.525em solid #FFB6C1;
 }
+
+@media (max-width: 768px) {
+  .oekaki-card {
+    display: inline-block;
+    width: calc(100% - 30px);
+  }
+}
 </style>

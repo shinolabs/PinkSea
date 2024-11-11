@@ -83,4 +83,17 @@ const creationTime = computed(() => {
 .oekaki-child-info, .oekaki-child-info * {
   font-size: small;
 }
+
+@media (max-width: 768px) {
+  .oekaki-card {
+    display: inline-block;
+    border: 2px solid #FFB6C1;
+    width: calc(100% - 40px);
+    margin-left: 20px;
+    margin-top: 10px;
+    border-left: 0.525em solid #FFB6C1;
+    box-sizing: border-box;
+    position: relative;
+  }
+}
 </style>

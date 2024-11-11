@@ -61,5 +61,6 @@ const creationTime = computed(() => {
   color: #2f4858;
   border-top: 2px dashed #FFB6C1;
   border-left: 0.525em solid #FFB6C1;
+  background-color: white;
 }
 </style>
