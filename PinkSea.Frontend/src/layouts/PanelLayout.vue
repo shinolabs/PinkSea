@@ -4,13 +4,14 @@ import BreadCrumbBar from '@/components/BreadCrumbBar.vue'
 import LoginBar from '@/components/LoginBar.vue'
 import { useIdentityStore, usePersistedStore } from '@/state/store'
 import { useRouter } from 'vue-router'
-import { computed, onBeforeMount } from 'vue'
+import { computed, onBeforeMount, useTemplateRef } from 'vue'
 import { serviceEndpoint, xrpc } from '@/api/atproto/client'
 import i18next from 'i18next'
 
 const identityStore = useIdentityStore()
 const persistedStore = usePersistedStore()
 const router = useRouter()
+const menuRef = useTemplateRef<HTMLElement>("menu-ref");
 
 const selfProfileUrl = computed(() => {
   return `/${identityStore.did}`;
@@ -43,6 +44,10 @@ const logout = async () => {
   fetch(`${serviceEndpoint}/oauth/invalidate?code=${persistedStore.token}`)
     .then(() => persistedStore.token = null);
 };
+
+const switchMenu = () => {
+  menuRef.value!.classList.toggle("in-view");
+};
 </script>
 
 <template>
@@ -51,9 +56,10 @@ const logout = async () => {
       <section>
         <BreadCrumbBar class="crumb" />
         <slot></slot>
+        <button class="menu-button" v-on:click.prevent="switchMenu">☰</button>
       </section>
     </main>
-    <aside>
+    <aside ref="menu-ref">
       <div class="title">
         <h1>{{ $t("sidebar.title") }}</h1>
         <h2>{{ $t("sidebar.tag") }}</h2>
@@ -141,6 +147,10 @@ const logout = async () => {
   min-height: 100vh;
 }
 
+.container main .menu-button {
+  display: none;
+}
+
 h1 {
   font-size: 20pt;
   margin-bottom: -10px;
@@ -198,12 +208,32 @@ h1, .title h2 {
 }
 
 @media (max-width: 768px) {
+  .container main .menu-button {
+    display: block;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+
+    padding: 10px;
+
+    z-index: 999;
+  }
+
   .container main {
     text-align: center;
   }
 
   .container aside {
-    display: none;
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    left: 100vw;
+    transition: left 0.1s ease-out;
+  }
+
+  .in-view {
+    transition: left 0.1s ease-out;
+    left: calc(100vw - 260px) !important;
   }
 }
 </style>
