@@ -2,7 +2,7 @@
 
 import BreadCrumbBar from '@/components/BreadCrumbBar.vue'
 import LoginBar from '@/components/LoginBar.vue'
-import { useIdentityStore, usePersistedStore } from '@/state/store'
+import { useIdentityStore, useImageStore, usePersistedStore } from '@/state/store'
 import { useRouter } from 'vue-router'
 import { computed, onBeforeMount, useTemplateRef } from 'vue'
 import { serviceEndpoint, xrpc } from '@/api/atproto/client'
@@ -10,6 +10,7 @@ import i18next from 'i18next'
 
 const identityStore = useIdentityStore()
 const persistedStore = usePersistedStore()
+const imageStore = useImageStore()
 const router = useRouter()
 const menuRef = useTemplateRef<HTMLElement>("menu-ref");
 
@@ -35,6 +36,11 @@ onBeforeMount(async () => {
 
   await i18next.changeLanguage(persistedStore.lang);
 });
+
+const openPainter = async () => {
+  imageStore.restartPainting = true;
+  await navigateTo('/paint');
+};
 
 const navigateTo = async (url: string) => {
   await router.push(url);
@@ -76,7 +82,7 @@ const switchMenu = () => {
           <li v-on:click.prevent="navigateTo('/settings')">{{ $t("menu.settings") }}</li>
           <li v-on:click.prevent="logout" v-if="persistedStore.token !== null">{{ $t("menu.logout") }}</li>
         </ul>
-        <button v-on:click.prevent="navigateTo('/paint')" v-if="persistedStore.token !== null">{{ $t("menu.create_something") }}</button>
+        <button v-on:click.prevent="openPainter" v-if="persistedStore.token !== null">{{ $t("menu.create_something") }}</button>
       </div>
       <div class="aside-box bottom">
         {{ $t("sidebar.shinolabs") }}

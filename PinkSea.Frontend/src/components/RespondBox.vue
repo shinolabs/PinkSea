@@ -19,14 +19,20 @@ const props = defineProps<{
 }>();
 
 const reply = () => {
-  Tegaki.open({
-    onDone: () => {
-      image.value = Tegaki.flatten().toDataURL("image/png");
-    },
+  try {
+    Tegaki.destroy();
+  } catch {
 
-    width: 480,
-    height: 160
-  });
+  } finally {
+    Tegaki.open({
+      onDone: () => {
+        image.value = Tegaki.flatten().toDataURL("image/png");
+      },
+
+      width: 480,
+      height: 160
+    });
+  }
 };
 
 const uploadImage = async () => {

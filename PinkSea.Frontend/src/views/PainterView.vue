@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { onMounted, ref, useTemplateRef } from 'vue'
+import { onMounted, ref, useTemplateRef, watch } from 'vue'
   import { Tegaki } from '@/api/tegaki/tegaki';
   import { useRouter } from 'vue-router'
   import PanelLayout from '@/layouts/PanelLayout.vue'
-  import { useIdentityStore, usePersistedStore } from '@/state/store'
+import { useIdentityStore, useImageStore, usePersistedStore } from '@/state/store'
   import { xrpc } from '@/api/atproto/client'
   import TagContainer from '@/components/TagContainer.vue'
 
   const persistedStore = usePersistedStore();
   const identityStore = useIdentityStore();
-  const image = ref<string>("");
+  const imageStore = useImageStore();
+  const image = ref<string>(imageStore.lastDoneImage ?? "");
   const router = useRouter();
 
   const bsky = ref<boolean>(false);
@@ -21,22 +22,44 @@ import { onMounted, ref, useTemplateRef } from 'vue'
   const button = useTemplateRef<HTMLButtonElement>("upload-button");
 
   onMounted(() => {
-    Tegaki.open({
-      onDone: () => {
-        image.value = Tegaki.flatten().toDataURL("image/png");
-      },
+    if (image.value !== "" && !imageStore.restartPainting)
+      return;
 
-      onCancel: () => {
-        router.push('/');
-      },
-
-      width: 400,
-      height: 400
-    });
+    openTegaki();
   });
+
+  watch(imageStore, () => {
+    if (imageStore.restartPainting)
+      openTegaki();
+  });
+
+  const openTegaki = () => {
+    imageStore.restartPainting = false;
+
+    try {
+      Tegaki.destroy();
+    } catch {
+
+    } finally {
+      Tegaki.open({
+        onDone: () => {
+          image.value = Tegaki.flatten().toDataURL("image/png");
+          imageStore.lastDoneImage = image.value;
+        },
+
+        onCancel: () => {
+          router.push('/');
+        },
+
+        width: 400,
+        height: 400
+      });
+    }
+  };
 
   const uploadImage = async () => {
     button.value!.disabled = true;
+    imageStore.lastDoneImage = null;
 
     const { data } = await xrpc.call("com.shinolabs.pinksea.putOekaki", {
       data: {

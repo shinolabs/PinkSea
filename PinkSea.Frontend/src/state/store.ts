@@ -23,3 +23,14 @@ export const useIdentityStore = defineStore(
         }
     }
   });
+
+export const useImageStore = defineStore(
+  'imageStore',
+  {
+    state: () => {
+      return {
+        lastDoneImage: null as (string | null),
+        restartPainting: false
+      }
+    }
+  });
