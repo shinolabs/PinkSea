@@ -2,12 +2,16 @@
 import { useRouter } from 'vue-router'
 
 const props = defineProps<{
-  tags: string[]
+  tags: string[],
+  disableNavigation?: boolean
 }>();
 
 const router = useRouter();
 
 const navigateToTag = async (tag: string) => {
+  if (props.disableNavigation) {
+    return;
+  }
   await router.push(`/tag/${tag}`);
 };
 

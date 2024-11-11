@@ -36,4 +36,10 @@ public class UploadOekakiRequest
     /// </summary>
     [JsonPropertyName("nsfw")]
     public bool? Nsfw { get; set; } = false;
+
+    /// <summary>
+    /// Should the image be crossposted to Bluesky?
+    /// </summary>
+    [JsonPropertyName("bskyCrosspost")]
+    public bool? BlueskyCrosspost { get; set; } = false;
 }

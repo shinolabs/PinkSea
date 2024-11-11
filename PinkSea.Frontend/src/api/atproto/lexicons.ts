@@ -26,6 +26,7 @@ declare module '@atcute/client/lexicons' {
       alt: string,
       tags: string[] | undefined,
       parent: string | undefined,
+      bskyCrosspost: boolean | undefined
     }
     interface Output {
       uri: string,

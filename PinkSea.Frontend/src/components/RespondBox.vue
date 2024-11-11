@@ -38,7 +38,8 @@ const uploadImage = async () => {
       tags: [],
       alt: alt.value,
       nsfw: nsfw.value,
-      parent: props.parent.atProtoLink
+      parent: props.parent.atProtoLink,
+      bskyCrosspost: false
     },
     headers: {
       "Authorization": `Bearer ${persistedStore.token}`

@@ -12,6 +12,7 @@ import { onMounted, ref, useTemplateRef } from 'vue'
   const image = ref<string>("");
   const router = useRouter();
 
+  const bsky = ref<boolean>(false);
   const nsfw = ref<boolean>(false);
   const currentTag = ref<string>("");
   const alt = ref<string>("");
@@ -43,7 +44,8 @@ import { onMounted, ref, useTemplateRef } from 'vue'
         tags: tags.value,
         nsfw: nsfw.value,
         alt: alt.value,
-        parent: undefined
+        parent: undefined,
+        bskyCrosspost: bsky.value
       },
       headers: {
         "Authorization": `Bearer ${persistedStore.token}`
@@ -88,11 +90,14 @@ import { onMounted, ref, useTemplateRef } from 'vue'
       </div>
 
       <div class="tag-input">
-        <TagContainer :tags="tags" />
+        <TagContainer :tags="tags" :disableNavigation="true" />
         <input type="text" placeholder="Tag" v-model="currentTag" v-on:keyup.delete="removeTag" v-on:keyup.space="addTag" v-on:keyup.enter="addTag"/>
       </div>
 
-      <button v-on:click="uploadImage" ref="upload-button">Upload!</button>
+      <div class="response-extra">
+        <button v-on:click="uploadImage" ref="upload-button">Upload!</button>
+        <span><input type="checkbox" value="bsky" v-model="bsky"><span>Cross-post to BlueSky</span></span>
+      </div>
     </div>
   </PanelLayout>
 </template>
@@ -114,6 +119,10 @@ import { onMounted, ref, useTemplateRef } from 'vue'
 .response-extra {
   width: 100%;
   display: flex;
+}
+
+.response-extra button {
+  flex: 1;
 }
 
 .response-extra input[type=text] {

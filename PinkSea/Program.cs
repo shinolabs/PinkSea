@@ -8,6 +8,7 @@ using PinkSea.Database;
 using PinkSea.Middleware;
 using PinkSea.Models;
 using PinkSea.Services;
+using PinkSea.Services.Integration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,9 @@ builder.Services.Configure<AppViewConfig>(
 
 builder.Services.Configure<PostgresConfig>(
     builder.Configuration.GetSection("PostgresConfig"));
+
+builder.Services.Configure<FrontendConfig>(
+    builder.Configuration.GetSection("FrontendConfig"));
 
 // Add services to the container.
 builder.Services.AddTransient<StateTokenMiddleware>();
@@ -27,6 +31,7 @@ builder.Services.AddSingleton<SigningKeyService>();
 builder.Services.AddSingleton<ConfigurationService>();
 builder.Services.AddScoped<OekakiService>();
 builder.Services.AddScoped<TagsService>();
+builder.Services.AddScoped<BlueskyIntegrationService>();
 builder.Services.AddTransient<FeedBuilder>();
 builder.Services.AddDbContext<PinkSeaDbContext>();
 builder.Services.AddAtProtoClientServices();

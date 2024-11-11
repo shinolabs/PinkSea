@@ -14,6 +14,7 @@ using PinkSea.Helpers;
 using PinkSea.Lexicons.Records;
 using PinkSea.Models;
 using PinkSea.Models.Oekaki;
+using PinkSea.Services.Integration;
 
 namespace PinkSea.Services;
 
@@ -21,6 +22,7 @@ namespace PinkSea.Services;
 /// The oekaki processing service.
 /// </summary>
 public partial class OekakiService(
+    BlueskyIntegrationService blueskyIntegrationService,
     IOAuthStateStorageProvider oauthStateStorageProvider,
     IXrpcClientFactory xrpcClientFactory,
     IDomainDidResolver didResolver,
@@ -78,7 +80,6 @@ public partial class OekakiService(
             tid,
             oauthState,
             xrpcClient!);
-
         
         if (oekakiRecord is null)
             return new OekakiUploadResult(OekakiUploadState.FailedToUploadRecord);
@@ -94,6 +95,9 @@ public partial class OekakiService(
             tid);
         
         memoryCache.Remove(lockKey);
+
+        if (request.BlueskyCrosspost == true)
+            await blueskyIntegrationService.CrosspostToBluesky(oekakiRecord.Value.Item1, stateId, tid);
         
         return new OekakiUploadResult(OekakiUploadState.Ok, model);
     }
