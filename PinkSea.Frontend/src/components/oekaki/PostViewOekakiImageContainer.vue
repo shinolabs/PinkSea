@@ -63,14 +63,20 @@ const hideNSFWBlur = () => {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: white;
   transition: backdrop-filter 0.1s;
   font-weight: bold;
-  backdrop-filter: blur(30px);
-  background-size: 8px 8px;
-  background-image: repeating-linear-gradient(45deg, #FFB6C122 0, #FFB6C122 0.8px, #FFFFFF22 0, #FFFFFF22 50%);
+  overflow: clip;
 }
 
 img {
   max-height: inherit;
+}
+
+@-moz-document url-prefix() {
+  .oekaki-nsfw-blur {
+    backdrop-filter: blur(30px);
+    background-color: transparent;
+  }
 }
 </style>

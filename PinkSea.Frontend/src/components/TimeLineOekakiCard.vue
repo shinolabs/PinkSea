@@ -66,15 +66,18 @@ const navigateToPost = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: backdrop-filter 0.1s;
-  font-weight: bold;
-  backdrop-filter: blur(30px);
   background-size: 8px 8px;
-  background-image: repeating-linear-gradient(45deg, #FFB6C122 0, #FFB6C122 0.8px, #FFFFFF22 0, #FFFFFF22 50%);
+  background-image: repeating-linear-gradient(45deg, #FFB6C1FF 0, #FFB6C1FF 0.8px, #FFFFFFFF 0, #FFFFFFFF 50%);
+  opacity: 1;
+  transition: backdrop-filter 0.1s, opacity 0.1s;
+  font-weight: bold;
+  overflow: clip;
 }
 
 .oekaki-nsfw-blur:hover {
-  transition: backdrop-filter 0.1s;
+  transition: backdrop-filter 0.1s, opacity 0.1s;
+  opacity: 0;
+  background-color: transparent;
   background-image: none;
   backdrop-filter: none;
   font-size: 0;
@@ -94,6 +97,7 @@ const navigateToPost = () => {
   background-position: center;
   margin: 2px;
   background-image: v-bind(imageLink);
+  overflow: clip;
 }
 
 .oekaki-image:hover {
@@ -106,6 +110,13 @@ const navigateToPost = () => {
   color: #2f4858;
   border-top: 2px dashed #FFB6C1;
   border-left: 0.525em solid #FFB6C1;
+}
+
+@-moz-document url-prefix() {
+  .oekaki-nsfw-blur {
+    backdrop-filter: blur(30px);
+    background-image: none;
+  }
 }
 
 @media (max-width: 768px) {
