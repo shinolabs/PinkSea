@@ -18,7 +18,7 @@ public class GetAuthorFeedQueryHandler(FeedBuilder feedBuilder)
         var since = request.Since ?? DateTimeOffset.Now.AddMinutes(5);
 
         var feed = await feedBuilder
-            .Where(o => o.AuthorDid == request.Did)
+            .Where(o => o.ParentId == null && o.AuthorDid == request.Did)
             .Since(since.UtcDateTime)
             .Limit(limit)
             .GetFeed();
