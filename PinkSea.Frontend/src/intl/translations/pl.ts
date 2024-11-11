@@ -43,6 +43,7 @@ export default {
     general_language: "Język",
 
     category_sensitive: "media",
-    sensitive_blur_nsfw: "Zamazuj posty NSFW"
+    sensitive_blur_nsfw: "Zamazuj posty NSFW",
+    sensitive_hide_nsfw: "Ukrywaj posty NSFW"
   }
 };

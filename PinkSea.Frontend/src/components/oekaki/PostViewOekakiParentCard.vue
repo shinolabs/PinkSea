@@ -25,7 +25,7 @@ const creationTime = computed(() => {
 </script>
 
 <template>
-  <div class="oekaki-card">
+  <div class="oekaki-card" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
     <PostViewOekakiImageContainer :oekaki="props.oekaki" />
     <div class="oekaki-meta">
       <span>{{ $t("timeline.by_before_handle" )}}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b>{{ $t("timeline.by_after_handle" )}}</span><br>

@@ -24,7 +24,9 @@ watch(persistedStore, () => {
       </fieldset>
       <fieldset>
         <legend>{{ $t("settings.category_sensitive") }}</legend>
-        <input type="checkbox" v-model="persistedStore.hideNsfw"> <span>{{ $t("settings.sensitive_blur_nsfw") }}</span>
+        <input type="checkbox" v-model="persistedStore.blurNsfw"> <span>{{ $t("settings.sensitive_blur_nsfw") }}</span><br />
+        <input type="checkbox" v-model="persistedStore.hideNsfw"> <span>{{ $t("settings.sensitive_hide_nsfw") }}</span>
+
       </fieldset>
     </div>
   </PanelLayout>
@@ -37,5 +39,20 @@ watch(persistedStore, () => {
 
   .settings-container fieldset {
     margin-bottom: 10px;
+  }
+
+  legend {
+    font-weight: bold;
+  }
+
+  legend:before {
+    content: ">>";
+    color: #FFB6C1;
+    letter-spacing: -4px;
+    margin-left: -6.5px; margin-right: 4px;
+  }
+
+  fieldset {
+    border: 2px solid #FFB6C1;
   }
 </style>

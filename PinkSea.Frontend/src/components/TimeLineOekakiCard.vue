@@ -31,9 +31,9 @@ const navigateToPost = () => {
 </script>
 
 <template>
-  <div class="oekaki-card">
+  <div class="oekaki-card" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
     <div class="oekaki-image" v-on:click.prevent="navigateToPost" :title="altText">
-      <div class="oekaki-nsfw-blur" v-if="props.oekaki.nsfw && persistedStore.hideNsfw">NSFW</div>
+      <div class="oekaki-nsfw-blur" v-if="props.oekaki.nsfw && persistedStore.blurNsfw">NSFW</div>
     </div>
     <div class="oekaki-meta">
       <span>{{ $t("timeline.by_before_handle") }}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b>{{ $t("timeline.by_after_handle") }}</span><br>
