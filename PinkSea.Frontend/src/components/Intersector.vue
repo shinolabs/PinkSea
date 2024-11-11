@@ -5,7 +5,6 @@ const emit = defineEmits(["intersected"]);
 const trigger = useTemplateRef<HTMLSpanElement>("intersector-ref");
 
 const handleIntersection = (entry: IntersectionObserverEntry) => {
-  console.log("abcd");
   if (entry.isIntersecting) {
     emit('intersected');
   }

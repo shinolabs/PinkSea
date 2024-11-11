@@ -27,7 +27,6 @@ import Intersector from '@/components/Intersector.vue'
   });
 
   const loadMore = async () => {
-    console.log(`${oekaki.value === null || oekaki.value.length < 1 || !keepLoading.value}`);
     if (oekaki.value === null || oekaki.value.length < 1 || !keepLoading.value) {
       return;
     }
