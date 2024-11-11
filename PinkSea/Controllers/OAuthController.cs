@@ -31,8 +31,11 @@ public class OAuthController(
         [FromQuery] string handle,
         [FromQuery] string redirectUrl)
     {
+        var normalizedHandle = handle.TrimStart('@')
+            .ToLower();
+        
         var authorizationServer = await oAuthClient.BeginOAuthFlow(
-            handle,
+            normalizedHandle,
             redirectUrl);
         
         if (authorizationServer is null)
