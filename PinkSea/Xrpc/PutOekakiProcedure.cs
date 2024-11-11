@@ -26,10 +26,12 @@ public class PutOekakiProcedure(
         
         return result.State switch
         {
+            OekakiUploadState.NotAuthorized => null!,
             OekakiUploadState.NotAPng => null!,
             OekakiUploadState.UploadTooBig => null!,
             OekakiUploadState.FailedToUploadBlob => null!,
             OekakiUploadState.FailedToUploadRecord => null!,
+            OekakiUploadState.ExceedsDimensions => null!,
             _ => new PutOekakiProcedureResponse
             {
                 AtLink = $"at://{result.Oekaki!.AuthorDid}/com.shinolabs.pinksea.oekaki/{result.Oekaki.OekakiTid}",
