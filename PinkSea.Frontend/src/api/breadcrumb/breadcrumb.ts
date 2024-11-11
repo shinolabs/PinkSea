@@ -13,6 +13,7 @@ export const withBreadcrumb = (router: Router) : void => {
     if (bar.pop) {
       bar.crumbs.pop();
       bar.pop = false;
+      document.title = `${bar.crumbs[bar.crumbs.length - 1].name} / PinkSea`;
       next();
       return;
     }
