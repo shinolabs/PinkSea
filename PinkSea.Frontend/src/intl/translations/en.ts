@@ -45,5 +45,12 @@ export default {
     category_sensitive: "sensitive media",
     sensitive_blur_nsfw: "Blur NSFW posts",
     sensitive_hide_nsfw: "Don't display NSFW posts"
+  },
+  painter: {
+    do_you_want_to_restore: "The last upload has errored out and your image has been saved. Do you want to restore it?",
+    could_not_send_post: "There was an issue uploading the post. Please try again later. Your post has been saved in your browser."
+  },
+  profile: {
+    bluesky_profile: "Bluesky profile"
   }
 };

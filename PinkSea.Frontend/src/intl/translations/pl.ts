@@ -45,5 +45,12 @@ export default {
     category_sensitive: "media",
     sensitive_blur_nsfw: "Zamazuj posty NSFW",
     sensitive_hide_nsfw: "Ukrywaj posty NSFW"
+  },
+  painter: {
+    do_you_want_to_restore: "Ostatnia próba wysłania posta zakończyła się niepowodzeniem i zapisano Twoją ostatnią próbę. Czy ją otworzyć?",
+    could_not_send_post: "Wystąpił błąd podczas wysyłania posta. Prosimy spróbować później. Twój post został zapisany w przeglądarce."
+  },
+  profile: {
+    bluesky_profile: "Profil Bluesky"
   }
 };

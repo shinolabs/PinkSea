@@ -6,6 +6,7 @@
   import { useIdentityStore, useImageStore, usePersistedStore } from '@/state/store'
   import { xrpc } from '@/api/atproto/client'
   import TagContainer from '@/components/TagContainer.vue'
+  import i18next from 'i18next'
 
   const persistedStore = usePersistedStore();
   const identityStore = useIdentityStore();
@@ -27,7 +28,7 @@
 
     if (imageStore.lastUploadErrored)
     {
-      if (confirm("The last upload has errored out and your image has been saved. Do you want to restore it?"))
+      if (confirm(i18next.t("painter.do_you_want_to_restore")))
         return;
     }
 
@@ -39,7 +40,7 @@
     {
       if (imageStore.lastUploadErrored)
       {
-        if (confirm("The last upload has errored out and your image has been saved. Do you want to restore it?"))
+        if (confirm(i18next.t("painter.do_you_want_to_restore")))
           return;
       }
 
@@ -109,7 +110,7 @@
       button.value!.disabled = false;
       imageStore.lastUploadErrored = true;
 
-      alert("There was an issue uploading the post. Please try again later. Your post has been saved in your browser.");
+      alert(i18next.t("painter.could_not_send_post"));
     }
   };
 

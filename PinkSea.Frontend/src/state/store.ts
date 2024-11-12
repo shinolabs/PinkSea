@@ -33,7 +33,11 @@ export const useImageStore = defineStore(
       return {
         lastDoneImage: null as (string | null),
         restartPainting: false,
-        lastUploadErrored: false
+        lastUploadErrored: false,
+
+        lastDoneReply: null as (string | null),
+        lastReplyErrored: false,
+        lastReplyId: ""
       }
     },
     persist: true
