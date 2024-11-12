@@ -103,6 +103,10 @@ declare module '@atcute/client/lexicons' {
     'com.shinolabs.pinksea.putOekaki': {
       input: ComShinolabsPinkseaPutOekaki.Input,
       output: ComShinolabsPinkseaPutOekaki.Output
+    },
+    'com.shinolabs.pinksea.refreshSession': {
+      input: EmptyParams,
+      output: EmptyParams
     }
   }
 }

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref, useTemplateRef, watch } from 'vue'
+  import { onMounted, ref, useTemplateRef, watch } from 'vue'
   import { Tegaki } from '@/api/tegaki/tegaki';
   import { useRouter } from 'vue-router'
   import PanelLayout from '@/layouts/PanelLayout.vue'
-import { useIdentityStore, useImageStore, usePersistedStore } from '@/state/store'
+  import { useIdentityStore, useImageStore, usePersistedStore } from '@/state/store'
   import { xrpc } from '@/api/atproto/client'
   import TagContainer from '@/components/TagContainer.vue'
 
@@ -25,16 +25,31 @@ import { useIdentityStore, useImageStore, usePersistedStore } from '@/state/stor
     if (image.value !== "" && !imageStore.restartPainting)
       return;
 
+    if (imageStore.lastUploadErrored)
+    {
+      if (confirm("The last upload has errored out and your image has been saved. Do you want to restore it?"))
+        return;
+    }
+
     openTegaki();
   });
 
   watch(imageStore, () => {
     if (imageStore.restartPainting)
+    {
+      if (imageStore.lastUploadErrored)
+      {
+        if (confirm("The last upload has errored out and your image has been saved. Do you want to restore it?"))
+          return;
+      }
+
       openTegaki();
+    }
   });
 
   const openTegaki = () => {
     imageStore.restartPainting = false;
+    imageStore.lastUploadErrored = false;
 
     try {
       Tegaki.destroy();
@@ -58,24 +73,44 @@ import { useIdentityStore, useImageStore, usePersistedStore } from '@/state/stor
   };
 
   const uploadImage = async () => {
-    button.value!.disabled = true;
-    imageStore.lastDoneImage = null;
+    try {
+      button.value!.disabled = true;
 
-    const { data } = await xrpc.call("com.shinolabs.pinksea.putOekaki", {
-      data: {
-        data: image.value,
-        tags: tags.value,
-        nsfw: nsfw.value,
-        alt: alt.value,
-        parent: undefined,
-        bskyCrosspost: bsky.value
-      },
-      headers: {
-        "Authorization": `Bearer ${persistedStore.token}`
+      // If the last upload failed, we should try refreshing the session. Just to be sure.
+      if (imageStore.lastUploadErrored)
+      {
+        await xrpc.call("com.shinolabs.pinksea.refreshSession", {
+          data: {},
+          headers: {
+            "Authorization": `Bearer ${persistedStore.token}`
+          }
+        });
       }
-    });
 
-    await router.push(`/${identityStore.did}/oekaki/${data.rkey}`);
+      const { data } = await xrpc.call("com.shinolabs.pinksea.putOekaki", {
+        data: {
+          data: image.value,
+          tags: tags.value,
+          nsfw: nsfw.value,
+          alt: alt.value,
+          parent: undefined,
+          bskyCrosspost: bsky.value
+        },
+        headers: {
+          "Authorization": `Bearer ${persistedStore.token}`
+        }
+      });
+
+      imageStore.lastDoneImage = null;
+      imageStore.lastUploadErrored = false;
+
+      await router.push(`/${identityStore.did}/oekaki/${data.rkey}`);
+    } catch {
+      button.value!.disabled = false;
+      imageStore.lastUploadErrored = true;
+
+      alert("There was an issue uploading the post. Please try again later. Your post has been saved in your browser.");
+    }
   };
 
   const addTag = () => {

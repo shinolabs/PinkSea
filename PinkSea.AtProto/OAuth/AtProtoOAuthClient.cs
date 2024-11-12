@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using PinkSea.AtProto.Http;
 using PinkSea.AtProto.Models.OAuth;
@@ -21,7 +22,8 @@ public class AtProtoOAuthClient(
     IDidResolver didResolver,
     IJwtSigningProvider jwtSigningProvider,
     IOAuthStateStorageProvider oAuthStateStorageProvider,
-    IOAuthClientDataProvider clientDataProvider) : IAtProtoOAuthClient, IDisposable
+    IOAuthClientDataProvider clientDataProvider,
+    ILogger<AtProtoOAuthClient> logger) : IAtProtoOAuthClient, IDisposable
 {
     /// <summary>
     /// The JWT client assertion type.
@@ -158,7 +160,7 @@ public class AtProtoOAuthClient(
         var resp = await _client.Post(oauthState.TokenEndpoint, body, oauthState.KeyPair);
         if (!resp.IsSuccessStatusCode)
         {
-            Console.WriteLine($"Failed to retrieve the token: {await resp.Content.ReadAsStringAsync()}");
+            logger.LogError($"Failed to retrieve the token: {await resp.Content.ReadAsStringAsync()}");
             return false;
         }
 
@@ -176,11 +178,11 @@ public class AtProtoOAuthClient(
     }
 
     /// <inheritdoc />
-    public async Task Refresh(string stateId)
+    public async Task<bool> Refresh(string stateId)
     {
         var oauthState = await oAuthStateStorageProvider.GetForStateId(stateId);
         if (oauthState is null)
-            return;
+            return false;
         
         var clientData = clientDataProvider.ClientData;
         var assertion = jwtSigningProvider.GenerateClientAssertion(new JwtSigningData
@@ -204,13 +206,16 @@ public class AtProtoOAuthClient(
         var resp = await _client.Post(oauthState.TokenEndpoint, tokenRequest, oauthState.KeyPair);
         if (!resp.IsSuccessStatusCode)
         {
-            Console.WriteLine($"Failed to refresh the token: {await resp.Content.ReadAsStringAsync()}");
-            return;
+            logger.LogError($"Failed to refresh the token: {await resp.Content.ReadAsStringAsync()}");
+            return false;
         }
 
         var tokenResponse = await resp.Content.ReadFromJsonAsync<TokenResponse>();
         if (tokenResponse is null)
-            return;
+        {
+            logger.LogError("Failed to fetch the refresh token response.");
+            return false;
+        }
         
         oauthState.AuthorizationCode = tokenResponse.AccessToken;
         oauthState.ExpiresAt = DateTimeOffset.UtcNow
@@ -218,6 +223,7 @@ public class AtProtoOAuthClient(
         oauthState.RefreshToken = tokenResponse.RefreshToken ?? oauthState.RefreshToken;
         
         await oAuthStateStorageProvider.SetForStateId(stateId, oauthState);
+        return true;
     }
 
     /// <inheritdoc />
