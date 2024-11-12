@@ -40,6 +40,7 @@ public partial class BlueskyIntegrationService(
         
         using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(stateId);
         var oauthState = await oAuthStateStorageProvider.GetForStateId(stateId);
+        
         var text = $"{config.FrontendUrl}/{oauthState!.Did}/oekaki/{oekakiRecordId}\n\n#pinksea";
         
         var record = new Post
