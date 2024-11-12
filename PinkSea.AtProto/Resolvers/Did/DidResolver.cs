@@ -19,7 +19,7 @@ public class DidResolver(
             async e =>
             {
                 e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return await ResolveDidViaPlcDirectory(did);
+                return await ResolveDid(did);
             });
     }
 
@@ -38,11 +38,11 @@ public class DidResolver(
     }
 
     /// <summary>
-    /// Resolves a DID via the PLC directory.
+    /// Resolves a DID.
     /// </summary>
     /// <param name="did">The DID.</param>
     /// <returns>The response, if it exists.</returns>
-    private async Task<DidResponse?> ResolveDidViaPlcDirectory(
+    private async Task<DidResponse?> ResolveDid(
         string did)
     {
         Uri uri;
@@ -58,11 +58,36 @@ public class DidResolver(
         if (uri.Scheme != "did")
             return null;
 
-        // TODO: Web.
         var segments = uri.Segments[0].Split(':');
-        if (segments[0] != "plc")
-            return null;
         
+        return segments[0] switch
+        {
+            "plc" => await ResolveDidViaPlcDirectory(did),
+            "web" => await ResolveDidViaWeb(segments[1]),
+            _ => null
+        };
+    }
+
+    /// <summary>
+    /// Resolves the DID using the did:web method.
+    /// </summary>
+    /// <param name="domain">The domain.</param>
+    /// <returns>The did response.</returns>
+    private async Task<DidResponse?> ResolveDidViaWeb(string domain)
+    {
+        const string wellKnownUri = $"/.well-known/did.json";
+        
+        using var client = clientFactory.CreateClient();
+        return await client.GetFromJsonAsync<DidResponse>($"https://{domain}{wellKnownUri}");
+    }
+
+    /// <summary>
+    /// Resolves a DID using the did:plc method.
+    /// </summary>
+    /// <param name="did">The DID.</param>
+    /// <returns>The did response.</returns>
+    private async Task<DidResponse?> ResolveDidViaPlcDirectory(string did)
+    {
         using var client = clientFactory.CreateClient("did-resolver");
         return await client.GetFromJsonAsync<DidResponse>($"/{did}");
     }
