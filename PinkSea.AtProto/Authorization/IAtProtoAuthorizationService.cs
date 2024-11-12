@@ -10,6 +10,6 @@ public interface IAtProtoAuthorizationService
     /// </summary>
     /// <param name="handle">The handle.</param>
     /// <param name="password">The password.</param>
-    /// <returns>Whether the user's logged in or not.</returns>
-    public Task<bool> LoginWithPassword(string handle, string password);
+    /// <returns>The state code for the user.</returns>
+    public Task<string?> LoginWithPassword(string handle, string password);
 }
