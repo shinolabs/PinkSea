@@ -97,7 +97,16 @@ public partial class OekakiService(
         memoryCache.Remove(lockKey);
 
         if (request.BlueskyCrosspost == true)
-            await blueskyIntegrationService.CrosspostToBluesky(oekakiRecord.Value.Item1, stateId, tid);
+        {
+            var (width, height) = PngHeaderHelper.GetPngDimensions(bytes);
+            
+            await blueskyIntegrationService.CrosspostToBluesky(
+                oekakiRecord.Value.Item1,
+                stateId, 
+                tid,
+                width,
+                height);
+        }
         
         return new OekakiUploadResult(OekakiUploadState.Ok, model);
     }

@@ -25,10 +25,14 @@ public partial class BlueskyIntegrationService(
     /// <param name="oekaki">The oekaki record.</param>
     /// <param name="stateId">The state id.</param>
     /// <param name="oekakiRecordId">The oekaki record id.</param>
+    /// <param name="width">The width of the image.</param>
+    /// <param name="height">The height of the image.</param>
     public async Task CrosspostToBluesky(
         Oekaki oekaki,
         string stateId,
-        string oekakiRecordId)
+        string oekakiRecordId,
+        int width,
+        int height)
     {
         var config = frontendOptions.Value;
         if (config.FrontendUrl is null)
@@ -49,7 +53,12 @@ public partial class BlueskyIntegrationService(
                     new Image
                     {
                         Alt = oekaki.Image.ImageLink.Alt,
-                        Blob = oekaki.Image.Blob
+                        Blob = oekaki.Image.Blob,
+                        AspectRatio = new AspectRatio
+                        {
+                            Width = width,
+                            Height = height
+                        }
                     }
                 ]
             },
