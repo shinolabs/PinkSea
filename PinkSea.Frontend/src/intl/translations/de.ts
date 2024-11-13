@@ -10,7 +10,7 @@ export default {
     input_placeholder: "@deine.coole.tld",
     atp_login: "@ Login",
     my_oekaki: "Meine Oekaki",
-    recent: "Neu",
+    recent: "Neuste",
     settings: "Einstellungen",
     logout: "Ausloggen",
     create_something: "Zeichne etwas"

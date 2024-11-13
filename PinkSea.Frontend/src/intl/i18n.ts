@@ -4,6 +4,7 @@ import Pl from '@/intl/translations/pl'
 import Ja from '@/intl/translations/ja'
 import De from '@/intl/translations/de'
 import Fr from '@/intl/translations/fr'
+import It from '@/intl/translations/it'
 
 export default {
   en: {
@@ -23,5 +24,8 @@ export default {
   },
   fr: {
     translation: Fr
+  },
+  it: {
+    translation: It
   }
 };
