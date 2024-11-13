@@ -1,10 +1,11 @@
 <script setup lang="ts">
 
-import { useIdentityStore, usePersistedStore } from '@/state/store'
+import { useIdentityStore, useImageStore, usePersistedStore } from '@/state/store'
 import { xrpc } from '@/api/atproto/client'
-import { ref, useTemplateRef } from 'vue'
+import { onBeforeMount, onMounted, ref, useTemplateRef } from 'vue'
 import { Tegaki } from '@/api/tegaki/tegaki';
 import type { Oekaki } from '@/models/oekaki'
+import i18next from 'i18next'
 
 const identityStore = useIdentityStore();
 const persistedStore = usePersistedStore();
@@ -13,6 +14,8 @@ const alt = ref<string>("");
 const nsfw = ref<boolean>(false);
 
 const button = useTemplateRef<HTMLButtonElement>("upload-button");
+
+const imageStore = useImageStore();
 
 const props = defineProps<{
   parent: Oekaki
@@ -35,25 +38,55 @@ const reply = () => {
   }
 };
 
-const uploadImage = async () => {
-  button.value!.disabled = true;
+const cancel = () => {
+  image.value = null;
 
-  await xrpc.call("com.shinolabs.pinksea.putOekaki", {
-    data: {
-      data: image.value as string,
-      tags: [],
-      alt: alt.value,
-      nsfw: nsfw.value,
-      parent: props.parent.atProtoLink,
-      bskyCrosspost: false
-    },
-    headers: {
-      "Authorization": `Bearer ${persistedStore.token}`
-    }
-  });
-
-  window.location.reload();
+  imageStore.lastDoneReply = null;
+  imageStore.lastReplyErrored = false;
+  imageStore.lastReplyId = "";
 };
+
+const uploadImage = async () => {
+  try {
+    button.value!.disabled = true;
+
+    await xrpc.call("com.shinolabs.pinksea.putOekaki", {
+      data: {
+        data: image.value as string,
+        tags: [],
+        alt: alt.value,
+        nsfw: nsfw.value,
+        parent: props.parent.atProtoLink,
+        bskyCrosspost: false
+      },
+      headers: {
+        "Authorization": `Bearer ${persistedStore.token}`
+      }
+    });
+
+    imageStore.lastDoneReply = null;
+    imageStore.lastReplyErrored = false;
+    imageStore.lastReplyId = "";
+
+    window.location.reload();
+  } catch {
+    button.value!.disabled = false;
+
+    imageStore.lastDoneReply = image.value;
+    imageStore.lastReplyErrored = true;
+    imageStore.lastReplyId = props.parent.oekakiRecordKey;
+
+    alert(i18next.t("painter.could_not_send_post"));
+  }
+};
+
+onBeforeMount(() => {
+  if (imageStore.lastReplyId == props.parent.oekakiRecordKey
+    && imageStore.lastDoneReply !== null && imageStore.lastReplyErrored)
+  {
+    image.value = imageStore.lastDoneReply;
+  }
+})
 </script>
 
 <template>
@@ -71,7 +104,10 @@ const uploadImage = async () => {
           <input type="text" placeholder="Add a description!" v-model="alt" />
           <span><input type="checkbox" v-model="nsfw" /><span>NSFW</span></span>
         </div>
-        <button v-on:click.prevent="uploadImage" ref="upload-button">{{ $t("response_box.reply") }}</button>
+        <div class="two-buttons">
+          <button v-on:click.prevent="cancel">Cancel</button>
+          <button v-on:click.prevent="uploadImage" ref="upload-button">{{ $t("response_box.reply") }}</button>
+        </div>
       </div>
     </div>
   </div>
@@ -102,5 +138,9 @@ img {
 
 .respond-box button {
   width: 100%;
+}
+
+.two-buttons {
+    display: flex;
 }
 </style>

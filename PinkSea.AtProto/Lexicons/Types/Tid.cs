@@ -32,7 +32,7 @@ public readonly struct Tid
     /// <returns>The current time.</returns>
     public static Tid NewTid()
     {
-        var microseconds = DateTimeOffset.UtcNow.Ticks / 10;
+        var microseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() * 1000;
         var randomness = (uint)RandomNumberGenerator.GetInt32(int.MaxValue);
 
         var value = (ulong)(((microseconds & 0x1F_FFFF_FFFF_FFFF) << 10) | (randomness & 0x3FF));

@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 using PinkSea.AtProto.Lexicons.AtProto;
@@ -40,7 +41,27 @@ public partial class BlueskyIntegrationService(
         
         using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(stateId);
         var oauthState = await oAuthStateStorageProvider.GetForStateId(stateId);
-        var text = $"{config.FrontendUrl}/{oauthState!.Did}/oekaki/{oekakiRecordId}\n\n#pinksea";
+
+        var postBuilder = new StringBuilder();
+        
+        postBuilder.Append($"{config.FrontendUrl}/{oauthState!.Did}/oekaki/{oekakiRecordId}\n\n#pinksea");
+
+        // Build the tag array.
+        if (oekaki.Tags is not null && oekaki.Tags.Length > 0)
+        {
+            foreach (var tag in oekaki.Tags)
+            {
+                // The 2 is the length of " #"
+                var newLength = postBuilder.Length + 2 + tag.Length;
+                if (newLength > 300)
+                    break;
+
+                postBuilder.Append(" #");
+                postBuilder.Append(tag);
+            }
+        }
+
+        var text = postBuilder.ToString();
         
         var record = new Post
         {
@@ -134,6 +155,6 @@ public partial class BlueskyIntegrationService(
     /// The tag regex.
     /// </summary>
     /// <returns></returns>
-    [GeneratedRegex("(?<=#)\\w+")]
+    [GeneratedRegex("(?<=#)\\p{L}+")]
     private static partial Regex TagRegex();
 }
