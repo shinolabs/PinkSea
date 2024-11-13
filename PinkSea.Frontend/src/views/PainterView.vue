@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onMounted, ref, useTemplateRef, watch } from 'vue'
+import { onMounted, ref, useTemplateRef, watch } from 'vue'
   import { Tegaki } from '@/api/tegaki/tegaki';
   import { useRouter } from 'vue-router'
   import PanelLayout from '@/layouts/PanelLayout.vue'
@@ -144,18 +144,18 @@
     <br />
     <div class="response-tools">
       <div class="response-extra">
-        <input type="text" v-model="alt" placeholder="Add a description!" />
+        <input type="text" v-model="alt" :placeholder="i18next.t('painter.add_a_description')" />
         <span><input type="checkbox" value="nsfw" v-model="nsfw"><span>NSFW</span></span>
       </div>
 
       <div class="tag-input">
         <TagContainer :tags="tags" :disableNavigation="true" />
-        <input type="text" placeholder="Tag" v-model="currentTag" v-on:keyup.delete="removeTag" v-on:keyup.space="addTag" v-on:keyup.enter="addTag"/>
+        <input type="text" :placeholder="i18next.t('painter.tag')" v-model="currentTag" v-on:keyup.delete="removeTag" v-on:keyup.space="addTag" v-on:keyup.enter="addTag"/>
       </div>
 
       <div class="response-extra">
         <button v-on:click="uploadImage" ref="upload-button">Upload!</button>
-        <span><input type="checkbox" value="bsky" v-model="bsky"><span>Cross-post to BlueSky</span></span>
+        <span><input type="checkbox" value="bsky" v-model="bsky"><span>{{ $t("painter.crosspost_to_bluesky")}} </span></span>
       </div>
     </div>
   </PanelLayout>

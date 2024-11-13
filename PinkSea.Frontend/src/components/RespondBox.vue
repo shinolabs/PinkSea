@@ -6,6 +6,7 @@ import { onBeforeMount, onMounted, ref, useTemplateRef } from 'vue'
 import { Tegaki } from '@/api/tegaki/tegaki';
 import type { Oekaki } from '@/models/oekaki'
 import i18next from 'i18next'
+import i18n from '@/intl/i18n'
 
 const identityStore = useIdentityStore();
 const persistedStore = usePersistedStore();
@@ -101,11 +102,11 @@ onBeforeMount(() => {
         <img :src="image"/>
         <br />
         <div class="respond-extra">
-          <input type="text" placeholder="Add a description!" v-model="alt" />
+          <input type="text" :placeholder="i18next.t('painter.add_a_description')" v-model="alt" />
           <span><input type="checkbox" v-model="nsfw" /><span>NSFW</span></span>
         </div>
         <div class="two-buttons">
-          <button v-on:click.prevent="cancel">Cancel</button>
+          <button v-on:click.prevent="cancel">{{ $t("response_box.cancel") }}</button>
           <button v-on:click.prevent="uploadImage" ref="upload-button">{{ $t("response_box.reply") }}</button>
         </div>
       </div>

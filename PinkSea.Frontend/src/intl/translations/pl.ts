@@ -36,7 +36,8 @@ export default {
     login_to_respond: "Zaloguj się aby odpowiedzieć!",
     click_to_respond: "Kliknij przycisk aby otworzyć narzędzie do rysowania",
     open_painter: "Otwórz rysownik",
-    reply: "Odpowiedz!"
+    reply: "Odpowiedz!",
+    cancel: "Anuluj"
   },
   settings: {
     category_general: "ogólne",
@@ -48,7 +49,10 @@ export default {
   },
   painter: {
     do_you_want_to_restore: "Ostatnia próba wysłania posta zakończyła się niepowodzeniem i zapisano Twoją ostatnią próbę. Czy ją otworzyć?",
-    could_not_send_post: "Wystąpił błąd podczas wysyłania posta. Prosimy spróbować później. Twój post został zapisany w przeglądarce."
+    could_not_send_post: "Wystąpił błąd podczas wysyłania posta. Prosimy spróbować później. Twój post został zapisany w przeglądarce.",
+    add_a_description: "Dodaj opis!",
+    tag: "Tag",
+    crosspost_to_bluesky: "Wyślij dodatkowo na BlueSky"
   },
   profile: {
     bluesky_profile: "Profil Bluesky"

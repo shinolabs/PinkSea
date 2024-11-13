@@ -36,7 +36,8 @@ export default {
     login_to_respond: "Login to respond!",
     click_to_respond: "Click to open the drawing panel",
     open_painter: "Open painter",
-    reply: "Reply!"
+    reply: "Reply!",
+    cancel: "Cancel"
   },
   settings: {
     category_general: "general",
@@ -48,7 +49,10 @@ export default {
   },
   painter: {
     do_you_want_to_restore: "The last upload has errored out and your image has been saved. Do you want to restore it?",
-    could_not_send_post: "There was an issue uploading the post. Please try again later. Your post has been saved in your browser."
+    could_not_send_post: "There was an issue uploading the post. Please try again later. Your post has been saved in your browser.",
+    add_a_description: "Add a description!",
+    tag: "Tag",
+    crosspost_to_bluesky: "Cross-post to BlueSky"
   },
   profile: {
     bluesky_profile: "Bluesky profile"
