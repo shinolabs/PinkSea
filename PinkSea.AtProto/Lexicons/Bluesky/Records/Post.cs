@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using PinkSea.AtProto.Lexicons.AtProto.Records;
 
 namespace PinkSea.AtProto.Lexicons.Bluesky.Records;
 
@@ -39,4 +40,10 @@ public class Post : BaseLexiconObject
     /// </summary>
     [JsonPropertyName("facets")]
     public IEnumerable<Facet>? Facets { get; set; }
+    
+    /// <summary>
+    /// The self-labels.
+    /// </summary>
+    [JsonPropertyName("labels")]
+    public SelfLabels? SelfLabel { get; set; }
 }

@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 using PinkSea.AtProto.Lexicons.AtProto;
+using PinkSea.AtProto.Lexicons.AtProto.Records;
 using PinkSea.AtProto.Lexicons.Bluesky.Records;
 using PinkSea.AtProto.Lexicons.Types;
 using PinkSea.AtProto.Providers.Storage;
@@ -62,6 +63,18 @@ public partial class BlueskyIntegrationService(
         }
 
         var text = postBuilder.ToString();
+
+        var labels = oekaki.Nsfw == true
+            ? new SelfLabels
+            {
+                Values = [
+                    new SelfLabel
+                    {
+                        Value = "sexual"
+                    }
+                ]
+            }
+            : null;
         
         var record = new Post
         {
@@ -83,6 +96,7 @@ public partial class BlueskyIntegrationService(
                     }
                 ]
             },
+            SelfLabel = labels,
             Facets = ExtractFacets(text)
         };
         
