@@ -32,18 +32,18 @@ public class Post : BaseLexiconObject
     /// <summary>
     /// The image embed.
     /// </summary>
-    [JsonPropertyName("embed")]
+    [JsonPropertyName("embed"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public ImageEmbed? Embed { get; set; }
 
     /// <summary>
     /// The facets used by this post.
     /// </summary>
-    [JsonPropertyName("facets")]
+    [JsonPropertyName("facets"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IEnumerable<Facet>? Facets { get; set; }
     
     /// <summary>
     /// The self-labels.
     /// </summary>
-    [JsonPropertyName("labels")]
+    [JsonPropertyName("labels"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public SelfLabels? SelfLabel { get; set; }
 }

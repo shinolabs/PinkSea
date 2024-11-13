@@ -116,7 +116,7 @@ public partial class BlueskyIntegrationService(
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>The facets.</returns>
-    private IEnumerable<Facet> ExtractFacets(string text)
+    private static IEnumerable<Facet> ExtractFacets(string text)
     {
         var facets = new List<Facet>();
         
@@ -144,8 +144,8 @@ public partial class BlueskyIntegrationService(
             {
                 Index = new Facet.FacetIndex
                 {
-                    ByteStart = tag.Index - 1,
-                    ByteEnd = tag.Index + tag.Length
+                    ByteStart = StringToByteIndex(text, tag.Index),
+                    ByteEnd = StringToByteIndex(text, tag.Index + tag.Length)
                 },
                 Features = [
                     new TagFacet
@@ -160,15 +160,28 @@ public partial class BlueskyIntegrationService(
     }
 
     /// <summary>
+    /// Converts a string index to a byte index.
+    /// </summary>
+    /// <param name="str">The string.</param>
+    /// <param name="index">The index.</param>
+    /// <returns>The byte index.</returns>
+    private static int StringToByteIndex(string str, int index)
+    {
+        // Not very optimal but it works.
+        var subtr = str[..index];
+        return Encoding.UTF8.GetByteCount(subtr);
+    }
+
+    /// <summary>
     /// The URL regex.
     /// </summary>
-    [GeneratedRegex("https?:\\/\\/(?:www\\.)?[a-zA-Z0-9-]+(?:\\.[a-zA-Z]{2,})(?:[\\/\\w\\.\\-:]*)*\\/?")]
+    [GeneratedRegex(@"https?:\/\/(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})(?:[\/\w\.\-:]*)*\/?")]
     private static partial Regex UrlRegex();
 
     /// <summary>
     /// The tag regex.
     /// </summary>
     /// <returns></returns>
-    [GeneratedRegex("(?<=#)\\p{L}+")]
+    [GeneratedRegex(@"(?:^|\s)(#[^\d\s]\S*)(?=\s)?")]
     private static partial Regex TagRegex();
 }
