@@ -140,17 +140,18 @@ public partial class BlueskyIntegrationService(
 
         foreach (Match tag in TagRegex().Matches(text))
         {
+            var group = tag.Groups[1];
             facets.Add(new Facet
             {
                 Index = new Facet.FacetIndex
                 {
-                    ByteStart = StringToByteIndex(text, tag.Index),
-                    ByteEnd = StringToByteIndex(text, tag.Index + tag.Length)
+                    ByteStart = StringToByteIndex(text, group.Index),
+                    ByteEnd = StringToByteIndex(text, group.Index + group.Length)
                 },
                 Features = [
                     new TagFacet
                     {
-                        Tag = tag.Value
+                        Tag = group.Value[1..]
                     }
                 ]
             });
