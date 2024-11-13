@@ -48,7 +48,7 @@ export default {
   },
   painter: {
     do_you_want_to_restore: "L'ultimo caricamento ha avuto un' errore e la tua immagine è stata salvata. Vuoi ripristinarlo?",
-	could_not_send_post: "C'è stato un problema con il caricamento della tua pubblicazione. Riprova dopo, perfavore. La tua pubblicazione è stata salvata nel tuo browser."
+    could_not_send_post: "C'è stato un problema con il caricamento della tua pubblicazione. Riprova dopo, perfavore. La tua pubblicazione è stata salvata nel tuo browser."
   },
   profile: {
     bluesky_profile: "Profilo Bluesky"
