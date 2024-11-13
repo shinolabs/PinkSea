@@ -3,6 +3,7 @@ import Id from '@/intl/translations/id'
 import Pl from '@/intl/translations/pl'
 import Ja from '@/intl/translations/ja'
 import De from '@/intl/translations/de'
+import Fr from '@/intl/translations/fr'
 import It from '@/intl/translations/it'
 
 export default {
@@ -20,6 +21,9 @@ export default {
   },
   de: {
     translation: De
+  },
+  fr: {
+    translation: Fr
   },
   it: {
     translation: It
