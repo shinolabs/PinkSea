@@ -52,7 +52,8 @@ export default {
     could_not_send_post: "There was an issue uploading the post. Please try again later. Your post has been saved in your browser.",
     add_a_description: "Add a description!",
     tag: "Tag",
-    crosspost_to_bluesky: "Cross-post to BlueSky"
+    crosspost_to_bluesky: "Cross-post to BlueSky",
+    upload: "Upload!"
   },
   profile: {
     bluesky_profile: "Bluesky profile",
