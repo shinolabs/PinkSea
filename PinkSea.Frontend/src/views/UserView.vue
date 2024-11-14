@@ -14,8 +14,12 @@ onBeforeMount(async () => {
   handle.value = data.handle;
 });
 
-const url = computed(() => {
+const bskyUrl = computed(() => {
   return `https://bsky.app/profile/${route.params.did}`;
+});
+
+const domainUrl = computed(() => {
+  return `http://${handle.value}`;
 });
 
 </script>
@@ -24,7 +28,9 @@ const url = computed(() => {
   <PanelLayout>
     <div class="user-card">
       <h2>{{ $t("breadcrumb.user_profile", { handle: handle }) }}</h2>
-      <div><a :href="url" target="_blank">{{ $t("profile.bluesky_profile") }}</a></div>
+      <div><a class="bluesky-link" :href="bskyUrl" target="_blank">{{ $t("profile.bluesky_profile") }}</a></div>
+      <div><a class="domain-link" :href="domainUrl" target="_blank">{{ $t("profile.domain") }}</a></div>
+
     </div>
     <TimeLine endpoint="com.shinolabs.pinksea.getAuthorFeed" :xrpc-params="{ did: $route.params.did }" />
   </PanelLayout>
@@ -43,8 +49,12 @@ const url = computed(() => {
     color: #0085FF;
     text-decoration: 1px dotted underline;
   }
-  .user-card a:before {
+  .user-card .bluesky-link:before {
     content: "☁ ";
+  }
+
+  .user-card .domain-link:before {
+    content: "⌂ ";
   }
 
   .user-card a:hover {

@@ -55,6 +55,7 @@ export default {
     crosspost_to_bluesky: "Wyślij dodatkowo na BlueSky"
   },
   profile: {
-    bluesky_profile: "Profil Bluesky"
+    bluesky_profile: "Profil Bluesky",
+    domain: "Strona internetowa"
   }
 };

@@ -55,6 +55,7 @@ export default {
     crosspost_to_bluesky: "Cross-post to BlueSky"
   },
   profile: {
-    bluesky_profile: "Bluesky profile"
+    bluesky_profile: "Bluesky profile",
+    domain: "Website"
   }
 };
