@@ -8,7 +8,7 @@ namespace PinkSea.AtProto.Xrpc.Client;
 /// <summary>
 /// An XRPC client.
 /// </summary>
-public class XrpcClient(
+public class DPopXrpcClient(
     DpopHttpClient client,
     OAuthState clientState)
     : IXrpcClient
