@@ -2,12 +2,12 @@ export default {
   sidebar: {
     title: "PinkSea",
     tag: "oekaki BBS",
-    shinolabs: "shinonome laboratories プロジェクト"
+    shinolabs: "プロジェクト shinonome laboratories"
   },
   menu: {
     greeting: "@{{name}} さん、こんにちは！",
     invitation: "ログインしてお絵かきしよう！",
-    input_placeholder: "あなたのBluesky ID （例： @あなたのID.bsky.social）",
+    input_placeholder: "@あなたのID.bsky.social",
     atp_login: "ログイン",
     my_oekaki: "投稿記録",
     recent: "最近の投稿",
@@ -18,7 +18,7 @@ export default {
   breadcrumb: {
     recent: "最近の投稿",
     painter: "作者",
-    settings: "あなたのお絵かき設定",
+    settings: "PinkSeaの設定",
     user_profile: "{{handle}} のプロフィール",
     user_post: "{{handle}} の投稿",
     tagged: "#{{tag}} タグの投稿一覧"
@@ -36,7 +36,8 @@ export default {
     login_to_respond: "ログインして返信！",
     click_to_respond: "クリックしてお絵かき画面を表示",
     open_painter: "お絵かき画面を表示",
-    reply: "返信！"
+    reply: "返信！",
+    cancel: "キャンセル"
   },
   settings: {
     category_general: "総合",
@@ -45,5 +46,16 @@ export default {
     category_sensitive: "センシティブな投稿",
     sensitive_blur_nsfw: "NSFWな投稿を「ぼかして」表示",
     sensitive_hide_nsfw: "NSFWな投稿を表示しない"
+  },
+  painter: {
+    do_you_want_to_restore: "直前の作品をアップロードする時にエラーが発生しました。保存された作品を復元しますか？",
+    could_not_send_post: "直前の作品をアップロードする際にエラーが発生しました。作品はブラウザ内に保存されているため、後でもう一度投稿をお試しください。",
+    add_a_description: "画像の説明文をここに記入",
+    tag: "タグ",
+    upload: "投稿！",
+    crosspost_to_bluesky: "BlueSkyにも投稿する"
+  },
+  profile: {
+    bluesky_profile: "Bluesky上のプロフィール"
   }
 };

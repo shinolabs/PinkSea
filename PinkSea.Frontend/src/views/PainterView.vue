@@ -154,7 +154,7 @@ import { onMounted, ref, useTemplateRef, watch } from 'vue'
       </div>
 
       <div class="response-extra">
-        <button v-on:click="uploadImage" ref="upload-button">Upload!</button>
+        <button v-on:click="uploadImage" ref="upload-button">{{ $t("painter.upload")}}</button>
         <span><input type="checkbox" value="bsky" v-model="bsky"><span>{{ $t("painter.crosspost_to_bluesky")}} </span></span>
       </div>
     </div>
