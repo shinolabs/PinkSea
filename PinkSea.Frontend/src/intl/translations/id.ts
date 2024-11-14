@@ -51,6 +51,7 @@ export default {
     could_not_send_post: "Terjadi kesalahan saat mengunggah postingan. Silahkan coba lagi setelah menunggu sejenak. Untuk sementara postingan disimpan di browser.",
     add_a_description: "Tambahkan deskripsi!",
     tag: "Tag",
+    upload: "Unggah!",
     crosspost_to_bluesky: "Post-silang ke BlueSky"
   },
   profile: {
