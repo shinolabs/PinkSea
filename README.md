@@ -1,3 +1,4 @@
+
 <p align="center">
 	<b>PinkSea</b><br>
 	<span>poniko's house</span>
@@ -20,6 +21,7 @@ In order to run the AppView, you need the [.NET 8 SDK](https://dotnet.microsoft.
 1. Run `docker compose up -d` inside of the root folder to start PostgreSQL (if you do not have PostgreSQL installed yet.)
 2. Open the `PinkSea` folder
 3. Copy the sample `appsettings.example.json` file to `appsettings.json`
+	
 	a. Modify the `PostgresConfig` to point to your PostgreSQL settings. If you're using the supplied docker compose, you do not need to change this.
 	b. Point the `AppViewConfig` URL to where your AppView will reside, this is the URL that will be used to identify your PinkSea instance. (As an example, for the official PinkSea instance, it's `https://api.pinksea.art`)
 	c. (OPTIONAL) Point the `FrontendConfig` to point to where your PinkSea frontend resides. This is used for BlueSky cross-posting with a link. Leaving it blank will disallow cross-posting. (Again, as an example, for the official PinkSea instance it's `https://pinksea.art`)
