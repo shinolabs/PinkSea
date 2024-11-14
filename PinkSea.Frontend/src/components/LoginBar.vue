@@ -1,15 +1,31 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { serviceEndpoint } from '@/api/atproto/client'
+import { ref, useTemplateRef } from 'vue'
 import i18next from 'i18next'
+import { xrpc } from '@/api/atproto/client'
 
 const handle = ref<string>('')
 const password = ref<string>('');
-const beginOAuth = () => {
-  if (password.value.length > 0) {
-    document.location = `${serviceEndpoint}/oauth/login?handle=${handle.value}&password=${password.value}&redirectUrl=${location.origin}/callback`
+
+const loginButton = useTemplateRef<HTMLButtonElement>("login-button");
+
+const beginOAuth = async () => {
+  loginButton.value!.disabled = true;
+  const { data } = await xrpc.call("com.shinolabs.pinksea.beginLoginFlow", {
+    data: {
+      handle: handle.value,
+      redirectUrl: `${location.origin}/callback`,
+
+      password: password.value.length > 0
+        ? password.value
+        : null
+    }
+  });
+
+  if (data.redirect !== null && data.redirect !== undefined) {
+    document.location = data.redirect;
   } else {
-    document.location = `${serviceEndpoint}/oauth/login?handle=${handle.value}&redirectUrl=${location.origin}/callback`
+    alert(`Failed to log in: ${data.failureReason}`);
+    loginButton.value!.disabled = false;
   }
 }
 </script>
@@ -19,7 +35,7 @@ const beginOAuth = () => {
     <input type="text" :placeholder="i18next.t('menu.input_placeholder')" v-model="handle">
     <input type="password" placeholder="Password (Optional)" v-model="password">
     <br />
-    <button v-on:click.prevent="beginOAuth">{{ $t("menu.atp_login") }}</button>
+    <button v-on:click.prevent="beginOAuth" ref="loginButton">{{ $t("menu.atp_login") }}</button>
   </div>
 </template>
 

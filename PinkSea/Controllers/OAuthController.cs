@@ -17,50 +17,8 @@ public class OAuthController(
     SigningKeyService signingKeyService,
     IAtProtoOAuthClient oAuthClient,
     IOAuthClientDataProvider clientDataProvider,
-    IOAuthStateStorageProvider oAuthStateStorageProvider,
-    IAtProtoAuthorizationService atProtoAuthorizationService) : ControllerBase
+    IOAuthStateStorageProvider oAuthStateStorageProvider) : ControllerBase
 {
-    /// <summary>
-    /// Begins the OAuth login flow.
-    /// </summary>
-    /// <param name="handle">The handle of the user wanting to log in.</param>
-    /// <param name="redirectUrl">The final redirect url.</param>
-    /// <param name="password">The optional password, for the session login flow.</param>
-    /// <returns>A redirect.</returns>
-    [Route("login")]
-    public async Task<IActionResult> BeginLogin(
-        [FromQuery] string handle,
-        [FromQuery] string redirectUrl,
-        [FromQuery] string? password)
-    {
-        var normalizedHandle = handle.TrimStart('@')
-            .ToLower();
-
-        // If we don't have a domain, that is, we don't have a '.' in the name
-        // let's just assume '.bsky.social' at the end.
-        // Usually people with custom domains don't do that.
-        if (!normalizedHandle.Contains('.'))
-            normalizedHandle += ".bsky.social";
-
-        if (password is not null)
-        {
-            var authorized = await atProtoAuthorizationService.LoginWithPassword(handle, password);
-            if (authorized is not null)
-                return Redirect($"{redirectUrl}?code={authorized}");
-
-            return BadRequest();
-        }
-        
-        var authorizationServer = await oAuthClient.BeginOAuthFlow(
-            normalizedHandle,
-            redirectUrl);
-        
-        if (authorizationServer is null)
-            return BadRequest();
-        
-        return Redirect(authorizationServer);
-    }
-
     /// <summary>
     /// The OAuth callback.
     /// </summary>
