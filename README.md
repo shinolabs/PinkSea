@@ -22,9 +22,10 @@ In order to run the AppView, you need the [.NET 8 SDK](https://dotnet.microsoft.
 2. Open the `PinkSea` folder
 3. Copy the sample `appsettings.example.json` file to `appsettings.json`
 	
-	a. Modify the `PostgresConfig` to point to your PostgreSQL settings. If you're using the supplied docker compose, you do not need to change this.
-	b. Point the `AppViewConfig` URL to where your AppView will reside, this is the URL that will be used to identify your PinkSea instance. (As an example, for the official PinkSea instance, it's `https://api.pinksea.art`)
-	c. (OPTIONAL) Point the `FrontendConfig` to point to where your PinkSea frontend resides. This is used for BlueSky cross-posting with a link. Leaving it blank will disallow cross-posting. (Again, as an example, for the official PinkSea instance it's `https://pinksea.art`)
+	1. Modify the `PostgresConfig` to point to your PostgreSQL settings. If you're using the supplied docker compose, you do not need to change this.
+	2. Point the `AppViewConfig` URL to where your AppView will reside, this is the URL that will be used to identify your PinkSea instance. (As an example, for the official PinkSea instance, it's `https://api.pinksea.art`)
+	3. (OPTIONAL) Point the `FrontendConfig` to point to where your PinkSea frontend resides. This is used for BlueSky cross-posting with a link. Leaving it blank will disallow cross-posting. (Again, as an example, for the official PinkSea instance it's `https://pinksea.art`)
+
 4. Perform `dotnet ef database update` to run the neccessary migrations.
 5. Run `dotnet run --configuration Release` to start the PinkSea AppView.
 
