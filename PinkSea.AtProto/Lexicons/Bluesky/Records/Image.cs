@@ -19,4 +19,10 @@ public class Image
     /// </summary>
     [JsonPropertyName("alt")]
     public string? Alt { get; set; }
+    
+    /// <summary>
+    /// The aspect ratio.
+    /// </summary>
+    [JsonPropertyName("aspectRatio")]
+    public AspectRatio? AspectRatio { get; set; }
 }

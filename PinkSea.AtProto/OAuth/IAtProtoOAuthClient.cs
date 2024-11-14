@@ -31,7 +31,7 @@ public interface IAtProtoOAuthClient
     /// Refreshes a state.
     /// </summary>
     /// <param name="stateId">The state id.</param>
-    Task Refresh(string stateId);
+    Task<bool> Refresh(string stateId);
     
     /// <summary>
     /// Gets the OAuth protected resource for a given PDS.

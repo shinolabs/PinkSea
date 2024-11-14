@@ -29,6 +29,7 @@ const navigateToTag = async (tag: string) => {
   justify-content: left;
   margin-top: 10px;
   overflow: clip;
+  flex-wrap: wrap;
 }
 
 .oekaki-tag {
@@ -37,6 +38,7 @@ const navigateToTag = async (tag: string) => {
   background-color: #FFB6C1;
   border-radius: 4px;
   color: #263B48;
+  margin-bottom: 2px;
 }
 
 .oekaki-tag:hover {

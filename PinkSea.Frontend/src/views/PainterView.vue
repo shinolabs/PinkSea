@@ -3,9 +3,10 @@ import { onMounted, ref, useTemplateRef, watch } from 'vue'
   import { Tegaki } from '@/api/tegaki/tegaki';
   import { useRouter } from 'vue-router'
   import PanelLayout from '@/layouts/PanelLayout.vue'
-import { useIdentityStore, useImageStore, usePersistedStore } from '@/state/store'
+  import { useIdentityStore, useImageStore, usePersistedStore } from '@/state/store'
   import { xrpc } from '@/api/atproto/client'
   import TagContainer from '@/components/TagContainer.vue'
+  import i18next from 'i18next'
 
   const persistedStore = usePersistedStore();
   const identityStore = useIdentityStore();
@@ -25,16 +26,31 @@ import { useIdentityStore, useImageStore, usePersistedStore } from '@/state/stor
     if (image.value !== "" && !imageStore.restartPainting)
       return;
 
+    if (imageStore.lastUploadErrored)
+    {
+      if (confirm(i18next.t("painter.do_you_want_to_restore")))
+        return;
+    }
+
     openTegaki();
   });
 
   watch(imageStore, () => {
     if (imageStore.restartPainting)
+    {
+      if (imageStore.lastUploadErrored)
+      {
+        if (confirm(i18next.t("painter.do_you_want_to_restore")))
+          return;
+      }
+
       openTegaki();
+    }
   });
 
   const openTegaki = () => {
     imageStore.restartPainting = false;
+    imageStore.lastUploadErrored = false;
 
     try {
       Tegaki.destroy();
@@ -58,24 +74,44 @@ import { useIdentityStore, useImageStore, usePersistedStore } from '@/state/stor
   };
 
   const uploadImage = async () => {
-    button.value!.disabled = true;
-    imageStore.lastDoneImage = null;
+    try {
+      button.value!.disabled = true;
 
-    const { data } = await xrpc.call("com.shinolabs.pinksea.putOekaki", {
-      data: {
-        data: image.value,
-        tags: tags.value,
-        nsfw: nsfw.value,
-        alt: alt.value,
-        parent: undefined,
-        bskyCrosspost: bsky.value
-      },
-      headers: {
-        "Authorization": `Bearer ${persistedStore.token}`
+      // If the last upload failed, we should try refreshing the session. Just to be sure.
+      if (imageStore.lastUploadErrored)
+      {
+        await xrpc.call("com.shinolabs.pinksea.refreshSession", {
+          data: {},
+          headers: {
+            "Authorization": `Bearer ${persistedStore.token}`
+          }
+        });
       }
-    });
 
-    await router.push(`/${identityStore.did}/oekaki/${data.rkey}`);
+      const { data } = await xrpc.call("com.shinolabs.pinksea.putOekaki", {
+        data: {
+          data: image.value,
+          tags: tags.value,
+          nsfw: nsfw.value,
+          alt: alt.value,
+          parent: undefined,
+          bskyCrosspost: bsky.value
+        },
+        headers: {
+          "Authorization": `Bearer ${persistedStore.token}`
+        }
+      });
+
+      imageStore.lastDoneImage = null;
+      imageStore.lastUploadErrored = false;
+
+      await router.push(`/${identityStore.did}/oekaki/${data.rkey}`);
+    } catch {
+      button.value!.disabled = false;
+      imageStore.lastUploadErrored = true;
+
+      alert(i18next.t("painter.could_not_send_post"));
+    }
   };
 
   const addTag = () => {
@@ -108,18 +144,18 @@ import { useIdentityStore, useImageStore, usePersistedStore } from '@/state/stor
     <br />
     <div class="response-tools">
       <div class="response-extra">
-        <input type="text" v-model="alt" placeholder="Add a description!" />
+        <input type="text" v-model="alt" :placeholder="i18next.t('painter.add_a_description')" />
         <span><input type="checkbox" value="nsfw" v-model="nsfw"><span>NSFW</span></span>
       </div>
 
       <div class="tag-input">
         <TagContainer :tags="tags" :disableNavigation="true" />
-        <input type="text" placeholder="Tag" v-model="currentTag" v-on:keyup.delete="removeTag" v-on:keyup.space="addTag" v-on:keyup.enter="addTag"/>
+        <input type="text" :placeholder="i18next.t('painter.tag')" v-model="currentTag" v-on:keyup.delete="removeTag" v-on:keyup.space="addTag" v-on:keyup.enter="addTag"/>
       </div>
 
       <div class="response-extra">
         <button v-on:click="uploadImage" ref="upload-button">Upload!</button>
-        <span><input type="checkbox" value="bsky" v-model="bsky"><span>Cross-post to BlueSky</span></span>
+        <span><input type="checkbox" value="bsky" v-model="bsky"><span>{{ $t("painter.crosspost_to_bluesky")}} </span></span>
       </div>
     </div>
   </PanelLayout>

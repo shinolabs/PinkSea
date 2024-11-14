@@ -1,6 +1,8 @@
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
 using PinkSea.AtProto.Lexicons.AtProto;
+using PinkSea.AtProto.Lexicons.AtProto.Records;
 using PinkSea.AtProto.Lexicons.Bluesky.Records;
 using PinkSea.AtProto.Lexicons.Types;
 using PinkSea.AtProto.Providers.Storage;
@@ -25,10 +27,14 @@ public partial class BlueskyIntegrationService(
     /// <param name="oekaki">The oekaki record.</param>
     /// <param name="stateId">The state id.</param>
     /// <param name="oekakiRecordId">The oekaki record id.</param>
+    /// <param name="width">The width of the image.</param>
+    /// <param name="height">The height of the image.</param>
     public async Task CrosspostToBluesky(
         Oekaki oekaki,
         string stateId,
-        string oekakiRecordId)
+        string oekakiRecordId,
+        int width,
+        int height)
     {
         var config = frontendOptions.Value;
         if (config.FrontendUrl is null)
@@ -36,7 +42,39 @@ public partial class BlueskyIntegrationService(
         
         using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(stateId);
         var oauthState = await oAuthStateStorageProvider.GetForStateId(stateId);
-        var text = $"{config.FrontendUrl}/{oauthState!.Did}/oekaki/{oekakiRecordId}\n\n#pinksea";
+
+        var postBuilder = new StringBuilder();
+        
+        postBuilder.Append($"{config.FrontendUrl}/{oauthState!.Did}/oekaki/{oekakiRecordId}\n\n#pinksea");
+
+        // Build the tag array.
+        if (oekaki.Tags is not null && oekaki.Tags.Length > 0)
+        {
+            foreach (var tag in oekaki.Tags)
+            {
+                // The 2 is the length of " #"
+                var newLength = postBuilder.Length + 2 + tag.Length;
+                if (newLength > 300)
+                    break;
+
+                postBuilder.Append(" #");
+                postBuilder.Append(tag);
+            }
+        }
+
+        var text = postBuilder.ToString();
+
+        var labels = oekaki.Nsfw == true
+            ? new SelfLabels
+            {
+                Values = [
+                    new SelfLabel
+                    {
+                        Value = "sexual"
+                    }
+                ]
+            }
+            : null;
         
         var record = new Post
         {
@@ -49,10 +87,16 @@ public partial class BlueskyIntegrationService(
                     new Image
                     {
                         Alt = oekaki.Image.ImageLink.Alt,
-                        Blob = oekaki.Image.Blob
+                        Blob = oekaki.Image.Blob,
+                        AspectRatio = new AspectRatio
+                        {
+                            Width = width,
+                            Height = height
+                        }
                     }
                 ]
             },
+            SelfLabel = labels,
             Facets = ExtractFacets(text)
         };
         
@@ -72,7 +116,7 @@ public partial class BlueskyIntegrationService(
     /// </summary>
     /// <param name="text">The text.</param>
     /// <returns>The facets.</returns>
-    private IEnumerable<Facet> ExtractFacets(string text)
+    private static IEnumerable<Facet> ExtractFacets(string text)
     {
         var facets = new List<Facet>();
         
@@ -96,17 +140,18 @@ public partial class BlueskyIntegrationService(
 
         foreach (Match tag in TagRegex().Matches(text))
         {
+            var group = tag.Groups[1];
             facets.Add(new Facet
             {
                 Index = new Facet.FacetIndex
                 {
-                    ByteStart = tag.Index - 1,
-                    ByteEnd = tag.Index + tag.Length
+                    ByteStart = StringToByteIndex(text, group.Index),
+                    ByteEnd = StringToByteIndex(text, group.Index + group.Length)
                 },
                 Features = [
                     new TagFacet
                     {
-                        Tag = tag.Value
+                        Tag = group.Value[1..]
                     }
                 ]
             });
@@ -116,15 +161,28 @@ public partial class BlueskyIntegrationService(
     }
 
     /// <summary>
+    /// Converts a string index to a byte index.
+    /// </summary>
+    /// <param name="str">The string.</param>
+    /// <param name="index">The index.</param>
+    /// <returns>The byte index.</returns>
+    private static int StringToByteIndex(string str, int index)
+    {
+        // Not very optimal but it works.
+        var subtr = str[..index];
+        return Encoding.UTF8.GetByteCount(subtr);
+    }
+
+    /// <summary>
     /// The URL regex.
     /// </summary>
-    [GeneratedRegex("https?:\\/\\/(?:www\\.)?[a-zA-Z0-9-]+(?:\\.[a-zA-Z]{2,})(?:[\\/\\w\\.\\-:]*)*\\/?")]
+    [GeneratedRegex(@"https?:\/\/(?:www\.)?[a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})(?:[\/\w\.\-:]*)*\/?")]
     private static partial Regex UrlRegex();
 
     /// <summary>
     /// The tag regex.
     /// </summary>
     /// <returns></returns>
-    [GeneratedRegex("(?<=#)\\w+")]
+    [GeneratedRegex(@"(?:^|\s)(#[^\d\s]\S*)(?=\s)?")]
     private static partial Regex TagRegex();
 }
