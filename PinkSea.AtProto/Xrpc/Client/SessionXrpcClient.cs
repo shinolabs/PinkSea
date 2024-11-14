@@ -51,7 +51,7 @@ public class SessionXrpcClient(
         var request = new HttpRequestMessage
         {
             RequestUri = new Uri(actualEndpoint),
-            Method = HttpMethod.Get,
+            Method = HttpMethod.Post,
             
             Content = JsonContent.Create(parameters),
 
@@ -80,7 +80,7 @@ public class SessionXrpcClient(
         var request = new HttpRequestMessage
         {
             RequestUri = new Uri(actualEndpoint),
-            Method = HttpMethod.Get,
+            Method = HttpMethod.Post,
             
             Content = bodyContent,
 

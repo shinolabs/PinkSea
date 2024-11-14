@@ -1,6 +1,8 @@
 using System.Net.Http.Json;
 using Microsoft.Extensions.Logging;
+using PinkSea.AtProto.Helpers;
 using PinkSea.AtProto.Lexicons.AtProto;
+using PinkSea.AtProto.Models.Authorization;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.Providers.Storage;
 using PinkSea.AtProto.Resolvers.Did;
@@ -53,7 +55,27 @@ public class AtProtoAuthorizationService(
         if (tokenResponse is null || !tokenResponse.Active)
             return null;
 
-        // TODO
-        return "";
+        var oauthState = new OAuthState
+        {
+            AuthorizationType = AuthorizationType.PdsSession,
+            AuthorizationCode = tokenResponse.AccessToken,
+            RefreshToken = tokenResponse.RefreshToken,
+            Did = identifier,
+            Pds = pds,
+            PkceString = "",
+            Issuer = "",
+            TokenEndpoint = "",
+            KeyPair = new DpopKeyPair()
+            {
+                PrivateKey = "",
+                PublicKey = ""
+            },
+            ExpiresAt = DateTimeOffset.UtcNow.AddYears(1)
+        };
+
+        var stateId = StateHelper.GenerateRandomState();
+        await oauthStateStorageProvider.SetForStateId(stateId, oauthState);
+        
+        return stateId;
     }
 }

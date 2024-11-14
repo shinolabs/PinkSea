@@ -1,7 +1,6 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PinkSea.AtProto.Authorization;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.Storage;
@@ -18,18 +17,21 @@ public class OAuthController(
     SigningKeyService signingKeyService,
     IAtProtoOAuthClient oAuthClient,
     IOAuthClientDataProvider clientDataProvider,
-    IOAuthStateStorageProvider oAuthStateStorageProvider) : ControllerBase
+    IOAuthStateStorageProvider oAuthStateStorageProvider,
+    IAtProtoAuthorizationService atProtoAuthorizationService) : ControllerBase
 {
     /// <summary>
     /// Begins the OAuth login flow.
     /// </summary>
     /// <param name="handle">The handle of the user wanting to log in.</param>
     /// <param name="redirectUrl">The final redirect url.</param>
+    /// <param name="password">The optional password, for the session login flow.</param>
     /// <returns>A redirect.</returns>
     [Route("login")]
     public async Task<IActionResult> BeginLogin(
         [FromQuery] string handle,
-        [FromQuery] string redirectUrl)
+        [FromQuery] string redirectUrl,
+        [FromQuery] string? password)
     {
         var normalizedHandle = handle.TrimStart('@')
             .ToLower();
@@ -39,6 +41,15 @@ public class OAuthController(
         // Usually people with custom domains don't do that.
         if (!normalizedHandle.Contains('.'))
             normalizedHandle += ".bsky.social";
+
+        if (password is not null)
+        {
+            var authorized = await atProtoAuthorizationService.LoginWithPassword(handle, password);
+            if (authorized is not null)
+                return Redirect($"{redirectUrl}?code={authorized}");
+
+            return BadRequest();
+        }
         
         var authorizationServer = await oAuthClient.BeginOAuthFlow(
             normalizedHandle,

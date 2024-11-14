@@ -4,7 +4,9 @@ using System.Text;
 using System.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using PinkSea.AtProto.Helpers;
 using PinkSea.AtProto.Http;
+using PinkSea.AtProto.Models.Authorization;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.Providers.OAuth;
 using PinkSea.AtProto.Providers.Storage;
@@ -81,7 +83,7 @@ public class AtProtoOAuthClient(
         });
 
         var keyPair = GenerateDPopKeypair();
-        var state = GenerateRandomState();
+        var state = StateHelper.GenerateRandomState();
         var (codeVerifier, codeChallenge) = GetPkcePair();
         
         var body = new AuthorizationRequest()
@@ -116,6 +118,7 @@ public class AtProtoOAuthClient(
         await oAuthStateStorageProvider.SetForStateId(state,
             new OAuthState
             {
+                AuthorizationType = AuthorizationType.OAuth2,
                 Did = did,
                 PkceString = codeVerifier,
                 Issuer = authServer.Issuer,
@@ -267,15 +270,6 @@ public class AtProtoOAuthClient(
             PublicKey = ecdsa.ExportSubjectPublicKeyInfoPem(),
             PrivateKey = ecdsa.ExportECPrivateKeyPem()
         };
-    }
-
-    /// <summary>
-    /// Generates a random state string.
-    /// </summary>
-    /// <returns>The state string.</returns>
-    private static string GenerateRandomState()
-    {
-        return RandomNumberGenerator.GetString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-", 64);
     }
 
     /// <summary>
