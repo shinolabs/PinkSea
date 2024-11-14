@@ -48,7 +48,7 @@ export default {
     sensitive_hide_nsfw: "NSFWな投稿を表示しない"
   },
   painter: {
-    do_you_want_to_restore: "直前の作品をアップロードする時にエラーが発生しました。保存された作品を復元しますか？",
+    do_you_want_to_restore: "直前の作品をアップロードする際にエラーが発生しました。保存された作品を復元しますか？",
     could_not_send_post: "直前の作品をアップロードする際にエラーが発生しました。作品はブラウザ内に保存されているため、後でもう一度投稿をお試しください。",
     add_a_description: "画像の説明文をここに記入",
     tag: "タグ",
