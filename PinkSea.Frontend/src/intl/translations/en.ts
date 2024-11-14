@@ -7,7 +7,7 @@ export default {
   menu: {
     greeting: "Hi @{{name}}!",
     invitation: "Login to start creating!",
-    input_placeholder: "@your.cool.tld",
+    input_placeholder: "@alice.bsky.social",
     atp_login: "@ Login",
     my_oekaki: "My oekaki",
     recent: "Recent",
