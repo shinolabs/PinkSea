@@ -7,7 +7,7 @@ export default {
   menu: {
     greeting: "Cześć @{{name}}!",
     invitation: "Zaloguj się aby tworzyć!",
-    input_placeholder: "@twoja.domena.pl",
+    input_placeholder: "@alicja.bsky.social",
     atp_login: "@ Zaloguj",
     my_oekaki: "Moje oekaki",
     recent: "Ostatnie",

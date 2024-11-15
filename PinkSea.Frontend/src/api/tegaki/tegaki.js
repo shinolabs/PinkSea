@@ -3480,21 +3480,6 @@ export var Tegaki = {
     }
   },
 
-  onOpenClick: function() {
-    var el, tainted;
-
-    tainted = TegakiHistory.undoStack[0] || TegakiHistory.redoStack[0];
-
-    if (tainted || Tegaki.saveReplay) {
-      if (!confirm(TegakiStrings.confirmChangeCanvas)) {
-        return;
-      }
-    }
-
-    el = $T.id('tegaki-filepicker');
-    el.click();
-  },
-
   loadReplayFromFile: function() {
     Tegaki.replayViewer.debugLoadLocal();
   },
@@ -3909,49 +3894,6 @@ export var Tegaki = {
   },
 
   onLayerStackChanged: function() {},
-
-  onOpenFileSelected: function() {
-    var img;
-
-    if (this.files && this.files[0]) {
-      img = new Image();
-      img.onload = Tegaki.onOpenImageLoaded;
-      img.onerror = Tegaki.onOpenImageError;
-
-      img.src = URL.createObjectURL(this.files[0]);
-    }
-  },
-
-  onOpenImageLoaded: function() {
-    var tmp = {}, self = Tegaki;
-
-    self.hasCustomCanvas = true;
-
-    self.copyContextState(self.activeLayer.ctx, tmp);
-    self.resizeCanvas(this.naturalWidth, this.naturalHeight);
-    self.activeLayer.ctx.drawImage(this, 0, 0);
-    TegakiLayers.syncLayerImageData(self.activeLayer);
-    self.copyContextState(tmp, self.activeLayer.ctx);
-
-    self.setZoom(0);
-
-    TegakiHistory.clear();
-
-    TegakiUI.updateLayerPreviewSize(true);
-
-    self.startTimeStamp = Date.now();
-
-    if (self.saveReplay) {
-      self.replayRecorder.stop();
-      self.replayRecorder = null;
-      self.saveReplay = false;
-      TegakiUI.setRecordingStatus(false);
-    }
-  },
-
-  onOpenImageError: function() {
-    TegakiUI.printMsg(TegakiStrings.errorLoadImage);
-  },
 
   resizeCanvas: function(width, height) {
     const maxWidth = 800;
@@ -5572,8 +5514,6 @@ var TegakiUI = {
 
     bg.appendChild(el);
 
-    bg.appendChild(TegakiUI.buildDummyFilePicker());
-
     //
     // Tools area
     //
@@ -5629,18 +5569,6 @@ var TegakiUI = {
     return [bg, canvasCnt, layersCnt];
   },
 
-  buildDummyFilePicker: function() {
-    var el = $T.el('input');
-
-    el.type = 'file';
-    el.id = 'tegaki-filepicker';
-    el.className = 'tegaki-hidden';
-    el.accept = 'image/png, image/jpeg';
-    $T.on(el, 'change', Tegaki.onOpenFileSelected);
-
-    return el;
-  },
-
   buildMenuBar: function() {
     var frag, btn;
 
@@ -5651,12 +5579,6 @@ var TegakiUI = {
     btn.className = 'tegaki-mb-btn';
     btn.textContent = TegakiStrings.newCanvas;
     $T.on(btn, 'click', Tegaki.onNewClick);
-    frag.appendChild(btn);
-
-    btn = $T.el('span');
-    btn.className = 'tegaki-mb-btn';
-    btn.textContent = TegakiStrings.open;
-    $T.on(btn, 'click', Tegaki.onOpenClick);
     frag.appendChild(btn);
 
     btn = $T.el('span');

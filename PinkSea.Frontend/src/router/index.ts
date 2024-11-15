@@ -19,7 +19,7 @@ const router = createRouter({
       component: HomeView,
       meta: {
         resolveBreadcrumb: async () => {
-          return i18next.t("breadcrumb.recent");
+          return { name: "breadcrumb.recent" };
         }
       }
     },
@@ -34,7 +34,7 @@ const router = createRouter({
       component: PainterView,
       meta: {
         resolveBreadcrumb: async () => {
-          return i18next.t("breadcrumb.painter");
+          return { name: "breadcrumb.painter" };
         }
       }
     },
@@ -45,7 +45,7 @@ const router = createRouter({
       meta: {
         resolveBreadcrumb: async (route: RouteParamsGeneric) => {
           const { data } = await xrpc.get("com.shinolabs.pinksea.getHandleFromDid", { params: { did: route.did as string }});
-          return i18next.t("breadcrumb.user_profile", { handle: data.handle });
+          return { name: 'breadcrumb.user_profile', params: { handle: data.handle } };
         }
       }
     },
@@ -56,7 +56,7 @@ const router = createRouter({
       meta: {
         resolveBreadcrumb: async (route: RouteParamsGeneric) => {
           const { data } = await xrpc.get("com.shinolabs.pinksea.getHandleFromDid", { params: { did: route.did as string }});
-          return i18next.t("breadcrumb.user_post", { handle: data.handle });
+          return { name: "breadcrumb.user_post", params: { handle: data.handle } };
         }
       }
     },
@@ -66,7 +66,7 @@ const router = createRouter({
       component: TagView,
       meta: {
         resolveBreadcrumb: async (route: RouteParamsGeneric) => {
-          return i18next.t("breadcrumb.tagged", { tag: route.tag });
+          return { name: "breadcrumb.tagged", params: { tag: route.tag } };
         }
       }
     },
@@ -76,7 +76,7 @@ const router = createRouter({
       component: SettingsView,
       meta: {
         resolveBreadcrumb: async () => {
-          return i18next.t("breadcrumb.settings");
+          return {  name: 'breadcrumb.settings' };
         }
       }
     }

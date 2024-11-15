@@ -33,6 +33,12 @@ public class OAuthController(
     {
         var normalizedHandle = handle.TrimStart('@')
             .ToLower();
+
+        // If we don't have a domain, that is, we don't have a '.' in the name
+        // let's just assume '.bsky.social' at the end.
+        // Usually people with custom domains don't do that.
+        if (!normalizedHandle.Contains('.'))
+            normalizedHandle += ".bsky.social";
         
         var authorizationServer = await oAuthClient.BeginOAuthFlow(
             normalizedHandle,

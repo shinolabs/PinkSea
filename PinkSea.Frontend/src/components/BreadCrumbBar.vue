@@ -1,16 +1,27 @@
 <script setup lang="ts">
   import { useBreadcrumbBarStore } from '@/api/breadcrumb/store'
+  import { resolveCrumb } from '@/api/breadcrumb/breadcrumb'
+  import { onBeforeMount, ref } from 'vue'
+  import i18next from 'i18next'
+
+  const forceRerenderKey = ref<number>(0);
 
   const store = useBreadcrumbBarStore();
+
+  onBeforeMount(() => {
+    i18next.on('languageChanged', () => {
+      forceRerenderKey.value += 1
+    });
+  })
 </script>
 
 <template>
   <div class="bar">
     <RouterLink to="/" class="bar-current link">PinkSea</RouterLink>
-    <span>
-      <span v-for="crumb of store.crumbs" v-bind:key="crumb.name">
+    <span :key="forceRerenderKey">
+      <span v-for="crumb of store.crumbs" v-bind:key="crumb.path">
         <span> &gt; </span>
-        <RouterLink :to="crumb.path" class="link">{{ crumb.name }}</RouterLink>
+        <RouterLink :to="crumb.path" class="link">{{ resolveCrumb(crumb) }}</RouterLink>
       </span>
     </span>
   </div>
