@@ -19,7 +19,7 @@ watch(persistedStore, () => {
         <legend>{{ $t("settings.category_general") }}</legend>
         <span style="margin-right: 10px;">{{ $t("settings.general_language") }}</span>
         <select v-model="persistedStore.lang" >
-          <option v-for="lang in Object.keys(I18n)" v-bind:key="lang" :value="lang">{{ lang }}</option>
+          <option v-for="(lang, code) in I18n" :key="code" :value="code">{{ lang.name }}</option>
         </select>
       </fieldset>
       <fieldset>
