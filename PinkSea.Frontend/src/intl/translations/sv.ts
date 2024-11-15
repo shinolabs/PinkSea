@@ -1,0 +1,62 @@
+export default {
+  sidebar: {
+    title: "PinkSea",
+    tag: "oekaki BBS",
+    shinolabs: "ett shinonome laboratories project"
+  },
+  menu: {
+    greeting: "Hej @{{name}}!",
+    invitation: "Logga in och börja skapa",
+    input_placeholder: "@alice.bsky.social",
+    atp_login: "@ Login",
+    my_oekaki: "Min oekaki",
+    recent: "Senaste",
+    settings: "Inställningar",
+    logout: "Logga ut",
+    create_something: "Skapa något"
+  },
+  breadcrumb: {
+    recent: "senaste",
+    painter: "tecknare",
+    settings: "dina inställningar",
+    user_profile: "{{handle}}'s profil",
+    user_post: "{{handle}}'s inlägg",
+    tagged: "inlägg märkta #{{tag}}"
+  },
+  timeline: {
+    by_before_handle: "Av ",
+    by_after_handle: "",
+  },
+  post: {
+    response_from_before_handle: "Svar från ",
+    response_from_after_handle: "",
+    response_from_at_date: " vid ",
+  },
+  response_box: {
+    login_to_respond: "Logga in för att svara!",
+    click_to_respond: "Klicka för att öppna ritpanelen",
+    open_painter: "Öppna tecknare",
+    reply: "Svara!",
+    cancel: "Avbryt"
+  },
+  settings: {
+    category_general: "allmänt",
+    general_language: "Språk",
+
+    category_sensitive: "sensitive media",
+    sensitive_blur_nsfw: "Gör NSFW inlägg suddiga",
+    sensitive_hide_nsfw: "Visa inte NSFW inlägg"
+  },
+  painter: {
+    do_you_want_to_restore: "Den senaste uppladdningen har gett ett felmeddelande och din bild har sparats. Vill du återställa det?",
+    could_not_send_post: "Det uppstod problem vid publiceringen av inlägget. Försök igen senare. Ditt inlägg har sparats i din webbläsare.",
+    add_a_description: "Lägg till beskrivning!",
+    tag: "Tagg",
+    crosspost_to_bluesky: "Kors-publicera till BlueSky",
+    upload: "Ladda up!"
+  },
+  profile: {
+    bluesky_profile: "Bluesky profil",
+    domain: "Hemsida"
+  }
+};
