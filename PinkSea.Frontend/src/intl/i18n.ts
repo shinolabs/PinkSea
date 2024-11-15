@@ -8,24 +8,31 @@ import It from '@/intl/translations/it'
 
 export default {
   en: {
-    translation: En
+    name: "English",
+    translation: En,
   },
   id: {
-    translation: Id
+    name: "Bahasa Indonesia",
+    translation: Id,
   },
   pl: {
-    translation: Pl
+    name: "Polski",
+    translation: Pl,
   },
   ja: {
-    translation: Ja
+    name: "日本語",
+    translation: Ja,
   },
   de: {
-    translation: De
+    name: "Deutsch",
+    translation: De,
   },
   fr: {
-    translation: Fr
+    name: "Français",
+    translation: Fr,
   },
   it: {
-    translation: It
-  }
+    name: "Italiano",
+    translation: It,
+  },
 };
