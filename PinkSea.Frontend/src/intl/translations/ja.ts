@@ -28,7 +28,7 @@ export default {
     by_after_handle: "",
   },
   post: {
-    response_from_before_handle: "次の投稿への返信 ",
+    response_from_before_handle: "この投稿への返信 ",
     response_from_after_handle: "",
     response_from_at_date: " の ",
   },
