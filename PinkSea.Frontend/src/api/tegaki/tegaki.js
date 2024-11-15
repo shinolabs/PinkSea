@@ -3993,7 +3993,9 @@ export var Tegaki = {
     var events, x, y, tool, ts, p;
 
     if (Tegaki.cursor) {
-      TegakiCursor.render(e.clientX, e.clientY);
+      TegakiCursor.render(
+        e.clientX + window.pageXOffset,
+        e.clientY + window.pageYOffset);
     }
 
     if (e.mozInputSource !== undefined) {
