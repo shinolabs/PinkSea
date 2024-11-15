@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, ref, watch } from 'vue'
 import TimeLineOekakiCard from '@/components/TimeLineOekakiCard.vue'
 import type { Oekaki } from '@/models/oekaki'
 import type { GenericTimelineQueryOutput, Queries } from '@atcute/client/lexicons'
@@ -16,7 +16,7 @@ import Intersector from '@/components/Intersector.vue'
 
   const oekaki = ref<Oekaki[] | null>(null);
 
-  onBeforeMount(async () => {
+  watch(() => props.xrpcParams,(async () => {
     const opts = props.xrpcParams !== undefined
       ? { params: { ...props.xrpcParams } }
       : {};
@@ -24,7 +24,7 @@ import Intersector from '@/components/Intersector.vue'
     // @ts-expect-error I do not understand TypeScript but xrpcParams is of the params type of the endpoint.
     const { data } = await xrpc.get(props.endpoint, opts);
     oekaki.value = (data as GenericTimelineQueryOutput).oekaki;
-  });
+  }), { immediate: true });
 
   const loadMore = async () => {
     if (oekaki.value === null || oekaki.value.length < 1 || !keepLoading.value) {
