@@ -5,7 +5,7 @@ import Ja from '@/intl/translations/ja'
 import De from '@/intl/translations/de'
 import Fr from '@/intl/translations/fr'
 import It from '@/intl/translations/it'
-import It from '@/intl/translations/sv'
+import Sv from '@/intl/translations/sv'
 
 export default {
   en: {
