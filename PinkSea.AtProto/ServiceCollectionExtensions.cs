@@ -1,5 +1,6 @@
 using DnsClient;
 using Microsoft.Extensions.DependencyInjection;
+using PinkSea.AtProto.Authorization;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.OAuth;
 using PinkSea.AtProto.Resolvers.Did;
@@ -19,6 +20,7 @@ public static class ServiceCollectionExtensions
         collection.AddScoped<IDidResolver, DidResolver>();
         collection.AddScoped<IAtProtoOAuthClient, AtProtoOAuthClient>();
         collection.AddScoped<IXrpcClientFactory, DefaultXrpcClientFactory>();
+        collection.AddScoped<IAtProtoAuthorizationService, AtProtoAuthorizationService>();
 
         collection.AddHttpClient("did-resolver", client =>
         {

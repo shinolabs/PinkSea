@@ -1,3 +1,4 @@
+using PinkSea.AtProto.Models;
 using PinkSea.AtProto.Models.OAuth;
 
 namespace PinkSea.AtProto.OAuth;
@@ -13,7 +14,7 @@ public interface IAtProtoOAuthClient
     /// <param name="handle">The handle.</param>
     /// <param name="redirectUrl">The final redirect url.</param>
     /// <returns>The redirect URI.</returns>
-    Task<string?> BeginOAuthFlow(
+    Task<ErrorOr<string>> BeginOAuthFlow(
         string handle,
         string? redirectUrl = null);
 

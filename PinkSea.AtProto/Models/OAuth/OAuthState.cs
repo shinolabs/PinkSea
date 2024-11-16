@@ -1,3 +1,5 @@
+using PinkSea.AtProto.Models.Authorization;
+
 namespace PinkSea.AtProto.Models.OAuth;
 
 /// <summary>
@@ -5,6 +7,11 @@ namespace PinkSea.AtProto.Models.OAuth;
 /// </summary>
 public class OAuthState
 {
+    /// <summary>
+    /// The current authorization type.
+    /// </summary>
+    public required AuthorizationType AuthorizationType { get; set; }
+    
     /// <summary>
     /// The issuer.
     /// </summary>

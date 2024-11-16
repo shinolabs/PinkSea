@@ -51,6 +51,14 @@ const uploadImage = async () => {
   try {
     button.value!.disabled = true;
 
+    // Force refresh the session, just to be sure.
+    await xrpc.call("com.shinolabs.pinksea.refreshSession", {
+      data: {},
+      headers: {
+        "Authorization": `Bearer ${persistedStore.token}`
+      }
+    });
+
     await xrpc.call("com.shinolabs.pinksea.putOekaki", {
       data: {
         data: image.value as string,

@@ -1,3 +1,5 @@
+using PinkSea.AtProto.Authorization;
+using PinkSea.AtProto.Models.Authorization;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.Storage;
 using PinkSea.Extensions;
@@ -10,6 +12,7 @@ namespace PinkSea.Middleware;
 public class StateTokenMiddleware(
     IOAuthStateStorageProvider oAuthStateStorageProvider,
     IAtProtoOAuthClient oAuthClient,
+    IAtProtoAuthorizationService atProtoAuthorizationService,
     ILogger<StateTokenMiddleware> logger) : IMiddleware
 {
     /// <inheritdoc />
@@ -31,8 +34,6 @@ public class StateTokenMiddleware(
     /// <param name="token">The token.</param>
     private async Task TryRefreshTokenIfRequired(string token)
     {
-        const int secondsToWaitAfterRefresh = 5;
-        
         var state = await oAuthStateStorageProvider.GetForStateId(token);
         if (state is null)
             return;
@@ -41,9 +42,15 @@ public class StateTokenMiddleware(
             return;
         
         logger.LogInformation($"Refreshing OAuth token for state {token}");
-        
-        await oAuthClient.Refresh(token);
-        await Task.Delay(TimeSpan.FromSeconds(secondsToWaitAfterRefresh));
+
+        if (state.AuthorizationType == AuthorizationType.PdsSession)
+        {
+            await atProtoAuthorizationService.RefreshSession(token);
+        }
+        else
+        {
+            await oAuthClient.Refresh(token);
+        }
     }
 
     /// <summary>

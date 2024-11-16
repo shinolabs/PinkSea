@@ -1,4 +1,5 @@
 using PinkSea.AtProto.Http;
+using PinkSea.AtProto.Models.Authorization;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.OAuth;
 using PinkSea.AtProto.Providers.Storage;
@@ -22,9 +23,14 @@ public class DefaultXrpcClientFactory(
             return null;
 
         var httpClient = httpClientFactory.CreateClient("xrpc-client");
-        var dpopClient = new DpopHttpClient(httpClient, jwtSigningProvider, clientDataProvider.ClientData);
-        dpopClient.SetAuthorizationCode(oauthState.AuthorizationCode);
+
+        if (oauthState.AuthorizationType == AuthorizationType.OAuth2)
+        {
+            var dpopClient = new DpopHttpClient(httpClient, jwtSigningProvider, clientDataProvider.ClientData);
+            dpopClient.SetAuthorizationCode(oauthState.AuthorizationCode);
+            return new DPopXrpcClient(dpopClient, oauthState);
+        }
         
-        return new XrpcClient(dpopClient, oauthState);
+        return new SessionXrpcClient(httpClient, oauthState);
     }
 }

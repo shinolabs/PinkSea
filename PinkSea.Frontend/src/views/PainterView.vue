@@ -77,16 +77,13 @@ import { onMounted, ref, useTemplateRef, watch } from 'vue'
     try {
       button.value!.disabled = true;
 
-      // If the last upload failed, we should try refreshing the session. Just to be sure.
-      if (imageStore.lastUploadErrored)
-      {
-        await xrpc.call("com.shinolabs.pinksea.refreshSession", {
-          data: {},
-          headers: {
-            "Authorization": `Bearer ${persistedStore.token}`
-          }
-        });
-      }
+      // Force refresh the session, just to be sure.
+      await xrpc.call("com.shinolabs.pinksea.refreshSession", {
+        data: {},
+        headers: {
+          "Authorization": `Bearer ${persistedStore.token}`
+        }
+      });
 
       const { data } = await xrpc.call("com.shinolabs.pinksea.putOekaki", {
         data: {

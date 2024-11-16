@@ -1724,7 +1724,7 @@ var TegakiCursor = {
   },
 
   clear: function() {
-    this.cursorCtx.clearRect(this.lastX, this.lastY, this.lastSize, this.lastSize);
+    this.cursorCtx.clearRect(this.lastX - 5, this.lastY - 5, this.lastSize + 10, this.lastSize + 10);
   },
 
   clearAll: function() {
@@ -3948,7 +3948,9 @@ export var Tegaki = {
     var events, x, y, tool, ts, p;
 
     if (Tegaki.cursor) {
-      TegakiCursor.render(e.clientX, e.clientY);
+      TegakiCursor.render(
+        e.clientX + window.pageXOffset,
+        e.clientY + window.pageYOffset);
     }
 
     if (e.mozInputSource !== undefined) {
@@ -5558,18 +5560,18 @@ var TegakiUI = {
     $T.on(btn, 'click', Tegaki.onRedoClick);
     frag.appendChild(btn);
 
-    btn = $T.el('span');
-    btn.className = 'tegaki-mb-btn';
-    btn.textContent = TegakiStrings().close;
-    $T.on(btn, 'click', Tegaki.onCancelClick);
-    frag.appendChild(btn);
+    var cancelButton = $T.el('span');
+    cancelButton.className = 'tegaki-mb-btn';
+    cancelButton.textContent = TegakiStrings().close;
+    $T.on(cancelButton, 'click', Tegaki.onCancelClick);
+    frag.appendChild(cancelButton);
 
-    btn = $T.el('span');
-    btn.id = 'tegaki-finish-btn';
-    btn.className = 'tegaki-mb-btn';
-    btn.textContent = TegakiStrings().finish;
-    $T.on(btn, 'click', Tegaki.onDoneClick);
-    frag.appendChild(btn);
+    var finishButton = $T.el('span');
+    finishButton.id = 'tegaki-finish-btn';
+    finishButton.className = 'tegaki-mb-btn';
+    finishButton.textContent = TegakiStrings().finish;
+    $T.on(finishButton, 'click', Tegaki.onDoneClick);
+    frag.appendChild(finishButton);
 
     return frag;
   },

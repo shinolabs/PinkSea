@@ -4,7 +4,10 @@ using System.Text;
 using System.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using PinkSea.AtProto.Helpers;
 using PinkSea.AtProto.Http;
+using PinkSea.AtProto.Models;
+using PinkSea.AtProto.Models.Authorization;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.Providers.OAuth;
 using PinkSea.AtProto.Providers.Storage;
@@ -54,7 +57,7 @@ public class AtProtoOAuthClient(
         clientDataProvider.ClientData);
 
     /// <inheritdoc />
-    public async Task<string?> BeginOAuthFlow(
+    public async Task<ErrorOr<string>> BeginOAuthFlow(
         string handle,
         string? redirectUrl = null)
     {
@@ -63,12 +66,12 @@ public class AtProtoOAuthClient(
             did = await domainDidResolver.GetDidForDomainHandle(handle);
 
         if (did is null)
-            return null;
+            return ErrorOr<string>.Fail($"Could not resolve the DID for {handle}");
         
         var resolved = await didResolver.GetDidResponseForDid(did!);
         var pds = resolved?.GetPds();
         if (pds is null)
-            return null;
+            return ErrorOr<string>.Fail($"Could not resolve the PDS for {did}");
 
         var authServer = await GetOAuthAuthorizationServerDataForPds(pds);
         var clientData = clientDataProvider.ClientData;
@@ -81,7 +84,7 @@ public class AtProtoOAuthClient(
         });
 
         var keyPair = GenerateDPopKeypair();
-        var state = GenerateRandomState();
+        var state = StateHelper.GenerateRandomState();
         var (codeVerifier, codeChallenge) = GetPkcePair();
         
         var body = new AuthorizationRequest()
@@ -101,8 +104,10 @@ public class AtProtoOAuthClient(
         var resp = await _client.Post(authServer!.PushedAuthorizationRequestEndpoint!, body, keyPair);
         if (!resp.IsSuccessStatusCode)
         {
-            Console.WriteLine($"Failed to send a PAR: {await resp.Content.ReadAsStringAsync()}");
-            return null;
+            var reason = await resp.Content.ReadAsStringAsync();
+            Console.WriteLine($"Failed to send a PAR: {reason}");
+            
+            return ErrorOr<string>.Fail($"PDS returned a non-OK response while sending the PAR: {reason}");
         }
 
         var parResponse = await resp.Content.ReadFromJsonAsync<PushedAuthorizationRequestResponse>();
@@ -116,6 +121,7 @@ public class AtProtoOAuthClient(
         await oAuthStateStorageProvider.SetForStateId(state,
             new OAuthState
             {
+                AuthorizationType = AuthorizationType.OAuth2,
                 Did = did,
                 PkceString = codeVerifier,
                 Issuer = authServer.Issuer,
@@ -125,7 +131,7 @@ public class AtProtoOAuthClient(
                 ClientRedirectUrl = redirectUrl
             });
         
-        return finalUrl.ToString();
+        return ErrorOr<string>.Ok(finalUrl.ToString());
     }
 
     /// <inheritdoc />
@@ -267,15 +273,6 @@ public class AtProtoOAuthClient(
             PublicKey = ecdsa.ExportSubjectPublicKeyInfoPem(),
             PrivateKey = ecdsa.ExportECPrivateKeyPem()
         };
-    }
-
-    /// <summary>
-    /// Generates a random state string.
-    /// </summary>
-    /// <returns>The state string.</returns>
-    private static string GenerateRandomState()
-    {
-        return RandomNumberGenerator.GetString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-", 64);
     }
 
     /// <summary>
