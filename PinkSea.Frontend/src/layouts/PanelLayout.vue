@@ -48,8 +48,15 @@ const navigateTo = async (url: string) => {
 };
 
 const logout = async () => {
-  fetch(`${serviceEndpoint}/oauth/invalidate?code=${persistedStore.token}`)
-    .then(() => persistedStore.token = null);
+  try {
+    await xrpc.call("com.shinolabs.pinksea.invalidateSession", {
+      data: {},
+      headers: {
+        "Authorization": `Bearer ${persistedStore.token}`
+      }});
+  } finally {
+    persistedStore.token = null;
+  }
 };
 
 const switchMenu = () => {

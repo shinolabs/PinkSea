@@ -48,17 +48,7 @@ public class OAuthController(
         
         return Ok(state);
     }
-    
-    /// <summary>
-    /// Invalidates the current session.
-    /// </summary>
-    [Route("invalidate")]
-    public async Task<IActionResult> Invalidate([FromQuery] string code)
-    {
-        await oAuthStateStorageProvider.DeleteForStateId(code);
-        return NoContent();
-    }
-    
+
     /// <summary>
     /// Returns the client metadata.
     /// </summary>

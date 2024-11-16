@@ -122,6 +122,10 @@ declare module '@atcute/client/lexicons' {
       input: EmptyParams,
       output: EmptyParams
     },
+    'com.shinolabs.pinksea.invalidateSession': {
+      input: EmptyParams,
+      output: EmptyParams
+    },
     'com.shinolabs.pinksea.beginLoginFlow': {
       input: ComShinolabsPinkseaBeginLoginFlow.Input,
       output: ComShinolabsPinkseaBeginLoginFlow.Output
