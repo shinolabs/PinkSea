@@ -7,6 +7,7 @@ import Fr from '@/intl/translations/fr'
 import It from '@/intl/translations/it'
 import Sv from '@/intl/translations/sv'
 import Es from '@/intl/translations/es'
+import Bg from '@/intl/translations/bg'
 
 export default {
   en: {
@@ -44,5 +45,9 @@ export default {
   es: {
     name: "Español",
     translation: Es
+  },
+  bg: {
+    name: "български",
+    translation: Bg
   }
 };
