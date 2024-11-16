@@ -27,6 +27,7 @@ onBeforeMount(async () => {
         headers: {
           "Authorization": `Bearer ${persistedStore.token}`
         }});
+
       identityStore.did = data.did;
       identityStore.handle = data.handle;
     } catch {
