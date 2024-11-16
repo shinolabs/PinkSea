@@ -8,12 +8,14 @@ export default {
     greeting: "Hi @{{name}}!",
     invitation: "Login to start creating!",
     input_placeholder: "@alice.bsky.social",
+    password: "Password (Optional)",
     atp_login: "@ Login",
     my_oekaki: "My oekaki",
     recent: "Recent",
     settings: "Settings",
     logout: "Logout",
-    create_something: "Create something"
+    create_something: "Create something",
+    oauth2_info: "If you leave the password field blank, PinkSea will use OAuth2 to log into your PDS. It is generally more secure than password login."
   },
   breadcrumb: {
     recent: "recent",

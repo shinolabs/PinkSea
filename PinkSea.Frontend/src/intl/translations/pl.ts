@@ -13,7 +13,9 @@ export default {
     recent: "Ostatnie",
     settings: "Ustawienia",
     logout: "Wyloguj",
-    create_something: "Stwórz nowe"
+    create_something: "Stwórz nowe",
+    password: "Hasło (opcjonalne)",
+    oauth2_info: "Jeżeli zostawisz to pole puste, PinkSea użyje OAuth2 aby zalogować się do twojego PDSa. Jest to bezpieczniejsze."
   },
   breadcrumb: {
     recent: "ostatnie",

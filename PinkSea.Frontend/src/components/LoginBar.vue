@@ -33,9 +33,9 @@ const beginOAuth = async () => {
 <template>
   <div>
     <input type="text" :placeholder="i18next.t('menu.input_placeholder')" v-model="handle">
-    <input type="password" placeholder="Password (Optional)" v-model="password">
+    <input type="password" :placeholder="i18next.t('menu.password')" :title="i18next.t('menu.oauth2_info')" v-model="password">
     <br />
-    <button v-on:click.prevent="beginOAuth" ref="loginButton">{{ $t("menu.atp_login") }}</button>
+    <button v-on:click.prevent="beginOAuth" ref="login-button">{{ $t("menu.atp_login") }}</button>
   </div>
 </template>
 
