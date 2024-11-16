@@ -6,6 +6,7 @@ import De from '@/intl/translations/de'
 import Fr from '@/intl/translations/fr'
 import It from '@/intl/translations/it'
 import Sv from '@/intl/translations/sv'
+import Es from '@/intl/translations/es'
 
 export default {
   en: {
@@ -40,4 +41,8 @@ export default {
     name: "Svenska",
     translation: Sv,
   },
+  es: {
+    name: "Español",
+    translation: Es
+  }
 };
