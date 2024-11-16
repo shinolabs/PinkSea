@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using PinkSea.AtProto.Resolvers.Did;
@@ -100,9 +101,15 @@ public class FeedBuilder(
         var list = await _query.ToListAsync();
         
         var dids = list.Select(o => o.AuthorDid);
-        var map = new Dictionary<string, string>();
-        foreach (var did in dids)
+        var map = new ConcurrentDictionary<string, string>();
+
+        await Parallel.ForEachAsync(dids, new ParallelOptions
+        {
+            MaxDegreeOfParallelism = 5
+        }, async (did, _) =>
+        {
             map[did] = await didResolver.GetHandleFromDid(did) ?? "Invalid handle";
+        });
 
         var oekakiDtos = list
             .Select(o => OekakiDto.FromOekakiModel(o, map[o.AuthorDid]))
