@@ -1769,7 +1769,7 @@ var TegakiCursor = {
   },
 
   clear: function() {
-    this.cursorCtx.clearRect(this.lastX, this.lastY, this.lastSize, this.lastSize);
+    this.cursorCtx.clearRect(this.lastX - 5, this.lastY - 5, this.lastSize + 10, this.lastSize + 10);
   },
 
   clearAll: function() {
