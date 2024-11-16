@@ -1,3 +1,5 @@
+using PinkSea.AtProto.Models;
+
 namespace PinkSea.AtProto.Authorization;
 
 /// <summary>
@@ -11,5 +13,12 @@ public interface IAtProtoAuthorizationService
     /// <param name="handle">The handle.</param>
     /// <param name="password">The password.</param>
     /// <returns>The state code for the user.</returns>
-    public Task<string?> LoginWithPassword(string handle, string password);
+    public Task<ErrorOr<string>> LoginWithPassword(string handle, string password);
+
+    /// <summary>
+    /// Refreshes the session.
+    /// </summary>
+    /// <param name="stateId"></param>
+    /// <returns></returns>
+    public Task<bool> RefreshSession(string stateId);
 }

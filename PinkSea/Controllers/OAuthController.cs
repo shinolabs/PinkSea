@@ -1,7 +1,6 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PinkSea.AtProto.Authorization;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.Storage;
@@ -20,36 +19,6 @@ public class OAuthController(
     IOAuthClientDataProvider clientDataProvider,
     IOAuthStateStorageProvider oAuthStateStorageProvider) : ControllerBase
 {
-    /// <summary>
-    /// Begins the OAuth login flow.
-    /// </summary>
-    /// <param name="handle">The handle of the user wanting to log in.</param>
-    /// <param name="redirectUrl">The final redirect url.</param>
-    /// <returns>A redirect.</returns>
-    [Route("login")]
-    public async Task<IActionResult> BeginLogin(
-        [FromQuery] string handle,
-        [FromQuery] string redirectUrl)
-    {
-        var normalizedHandle = handle.TrimStart('@')
-            .ToLower();
-
-        // If we don't have a domain, that is, we don't have a '.' in the name
-        // let's just assume '.bsky.social' at the end.
-        // Usually people with custom domains don't do that.
-        if (!normalizedHandle.Contains('.'))
-            normalizedHandle += ".bsky.social";
-        
-        var authorizationServer = await oAuthClient.BeginOAuthFlow(
-            normalizedHandle,
-            redirectUrl);
-        
-        if (authorizationServer is null)
-            return BadRequest();
-        
-        return Redirect(authorizationServer);
-    }
-
     /// <summary>
     /// The OAuth callback.
     /// </summary>
@@ -79,17 +48,7 @@ public class OAuthController(
         
         return Ok(state);
     }
-    
-    /// <summary>
-    /// Invalidates the current session.
-    /// </summary>
-    [Route("invalidate")]
-    public async Task<IActionResult> Invalidate([FromQuery] string code)
-    {
-        await oAuthStateStorageProvider.DeleteForStateId(code);
-        return NoContent();
-    }
-    
+
     /// <summary>
     /// Returns the client metadata.
     /// </summary>

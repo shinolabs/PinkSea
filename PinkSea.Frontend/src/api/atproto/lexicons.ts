@@ -72,6 +72,20 @@ declare module '@atcute/client/lexicons' {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace ComShinolabsPinkseaBeginLoginFlow {
+    interface Input {
+      handle: string,
+      redirectUrl: string,
+      password?: string | null
+    }
+
+    interface Output {
+      redirect?: string | undefined,
+      failureReason?: string | undefined
+    }
+  }
+
   interface Queries {
     'com.shinolabs.pinksea.getRecent': {
       params: GenericTimelineQueryRequest,
@@ -107,6 +121,14 @@ declare module '@atcute/client/lexicons' {
     'com.shinolabs.pinksea.refreshSession': {
       input: EmptyParams,
       output: EmptyParams
+    },
+    'com.shinolabs.pinksea.invalidateSession': {
+      input: EmptyParams,
+      output: EmptyParams
+    },
+    'com.shinolabs.pinksea.beginLoginFlow': {
+      input: ComShinolabsPinkseaBeginLoginFlow.Input,
+      output: ComShinolabsPinkseaBeginLoginFlow.Output
     }
   }
 }

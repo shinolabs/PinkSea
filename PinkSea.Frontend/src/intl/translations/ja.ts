@@ -13,7 +13,8 @@ export default {
     recent: "最近の投稿",
     settings: "設定",
     logout: "ログアウト",
-    create_something: "お絵かきする"
+    create_something: "お絵かきする",
+    password: "パスワード（オプション）"
   },
   breadcrumb: {
     recent: "最近の投稿",

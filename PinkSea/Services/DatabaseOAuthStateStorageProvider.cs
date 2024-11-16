@@ -16,23 +16,28 @@ public class DatabaseOAuthStateStorageProvider(PinkSeaDbContext pinkSeaDbContext
     /// <inheritdoc />
     public async Task SetForStateId(string id, OAuthState state)
     {
+        var stateIdExists = await pinkSeaDbContext
+            .OAuthStates
+            .AnyAsync(o => o.Id == id);
+        
         var serialized = JsonSerializer.Serialize(state);
-        try
+        
+        if (!stateIdExists)
         {
             await pinkSeaDbContext.OAuthStates.AddAsync(new OAuthStateModel()
             {
                 Id = id,
                 Json = serialized
             });
+
             await pinkSeaDbContext.SaveChangesAsync();
         }
-        catch (Exception)
+        else
         {
             await pinkSeaDbContext.OAuthStates
                 .Where(o => o.Id == id)
                 .ExecuteUpdateAsync(
                     setters => setters.SetProperty(o => o.Json, serialized));
-            await pinkSeaDbContext.SaveChangesAsync();
         }
     }
 
