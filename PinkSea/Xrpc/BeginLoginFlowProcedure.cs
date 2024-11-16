@@ -26,7 +26,7 @@ public class BeginLoginFlowProcedure(
             // If we don't have a domain, that is, we don't have a '.' in the name
             // let's just assume '.bsky.social' at the end.
             // Usually people with custom domains don't do that.
-            if (!normalizedHandle.Contains('.'))
+            if (!normalizedHandle.Contains('.') && !normalizedHandle.StartsWith("did:"))
                 normalizedHandle += ".bsky.social";
 
             if (request.Password is { Length: > 0 })
