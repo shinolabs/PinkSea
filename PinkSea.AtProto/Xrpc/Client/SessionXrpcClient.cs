@@ -46,6 +46,12 @@ public class SessionXrpcClient(
     /// <inheritdoc />
     public async Task<TResponse?> Procedure<TResponse>(string nsid, object? parameters = null)
     {
+        // Hack but as long as it works :3
+        const string refreshNsid = "com.atproto.server.refreshSession";
+        var authCode = nsid == refreshNsid
+            ? clientState.RefreshToken
+            : clientState.AuthorizationCode;
+        
         var actualEndpoint = $"{clientState.Pds}/xrpc/{nsid}";
         
         var request = new HttpRequestMessage
@@ -57,7 +63,7 @@ public class SessionXrpcClient(
 
             Headers =
             {
-                { "Authorization", $"Bearer {clientState.AuthorizationCode}" }
+                { "Authorization", $"Bearer {authCode}" }
             }
         };
         

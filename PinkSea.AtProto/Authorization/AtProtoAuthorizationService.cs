@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Json;
 using Microsoft.Extensions.Logging;
 using PinkSea.AtProto.Helpers;
@@ -8,6 +9,7 @@ using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.Providers.Storage;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Resolvers.Domain;
+using PinkSea.AtProto.Xrpc.Client;
 
 namespace PinkSea.AtProto.Authorization;
 
@@ -19,6 +21,7 @@ public class AtProtoAuthorizationService(
     IDomainDidResolver domainDidResolver,
     IOAuthStateStorageProvider oauthStateStorageProvider,
     IHttpClientFactory httpClientFactory,
+    IXrpcClientFactory xrpcClientFactory,
     ILogger<AtProtoAuthorizationService> logger) : IAtProtoAuthorizationService
 {
     /// <inheritdoc />
@@ -58,6 +61,12 @@ public class AtProtoAuthorizationService(
         if (tokenResponse is null || !tokenResponse.Active)
             return ErrorOr<string>.Fail($"The password token is not active.");
 
+        var jwt = new JwtSecurityTokenHandler();
+        var jwtToken = jwt.ReadJwtToken(tokenResponse.AccessToken);
+
+        var expiry = new DateTimeOffset(jwtToken.ValidTo)
+            .UtcDateTime;
+        
         var oauthState = new OAuthState
         {
             AuthorizationType = AuthorizationType.PdsSession,
@@ -73,12 +82,39 @@ public class AtProtoAuthorizationService(
                 PrivateKey = "",
                 PublicKey = ""
             },
-            ExpiresAt = DateTimeOffset.UtcNow.AddYears(1)
+            ExpiresAt = expiry
         };
 
         var stateId = StateHelper.GenerateRandomState();
         await oauthStateStorageProvider.SetForStateId(stateId, oauthState);
         
         return ErrorOr<string>.Ok(stateId);
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> RefreshSession(string stateId)
+    {
+        using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(stateId);
+        if (xrpcClient is null)
+            return false;
+
+        var resp = await xrpcClient.Procedure<CreateSessionResponse>("com.atproto.server.refreshSession");
+        if (resp is null)
+            return false;
+
+        var jwt = new JwtSecurityTokenHandler();
+        var jwtToken = jwt.ReadJwtToken(resp.AccessToken);
+
+        var expiry = new DateTimeOffset(jwtToken.ValidTo)
+            .UtcDateTime;
+        
+        var oauthState = await oauthStateStorageProvider.GetForStateId(stateId);
+        oauthState!.AuthorizationCode = resp.AccessToken;
+        oauthState.RefreshToken = resp.RefreshToken;
+        oauthState.ExpiresAt = expiry;
+
+        await oauthStateStorageProvider.SetForStateId(stateId, oauthState);
+
+        return true;
     }
 }

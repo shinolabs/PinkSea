@@ -14,4 +14,11 @@ public interface IAtProtoAuthorizationService
     /// <param name="password">The password.</param>
     /// <returns>The state code for the user.</returns>
     public Task<ErrorOr<string>> LoginWithPassword(string handle, string password);
+
+    /// <summary>
+    /// Refreshes the session.
+    /// </summary>
+    /// <param name="stateId"></param>
+    /// <returns></returns>
+    public Task<bool> RefreshSession(string stateId);
 }
