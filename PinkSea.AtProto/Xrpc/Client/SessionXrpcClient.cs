@@ -53,19 +53,19 @@ public class SessionXrpcClient(
             : clientState.AuthorizationCode;
         
         var actualEndpoint = $"{clientState.Pds}/xrpc/{nsid}";
-        
+
         var request = new HttpRequestMessage
         {
             RequestUri = new Uri(actualEndpoint),
             Method = HttpMethod.Post,
-            
-            Content = JsonContent.Create(parameters),
-
             Headers =
             {
                 { "Authorization", $"Bearer {authCode}" }
             }
         };
+
+        if (parameters is not null)
+            request.Content = JsonContent.Create(parameters);
         
         var resp = await client.SendAsync(request);
         

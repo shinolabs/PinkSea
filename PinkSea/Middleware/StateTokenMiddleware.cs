@@ -34,8 +34,6 @@ public class StateTokenMiddleware(
     /// <param name="token">The token.</param>
     private async Task TryRefreshTokenIfRequired(string token)
     {
-        const int secondsToWaitAfterRefresh = 5;
-        
         var state = await oAuthStateStorageProvider.GetForStateId(token);
         if (state is null)
             return;
@@ -53,7 +51,6 @@ public class StateTokenMiddleware(
         {
             await oAuthClient.Refresh(token);
         }
-        await Task.Delay(TimeSpan.FromSeconds(secondsToWaitAfterRefresh));
     }
 
     /// <summary>
