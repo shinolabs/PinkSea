@@ -1,74 +1,29 @@
 /*! tegaki.js, MIT License */'use strict';
-export var TegakiStrings = {
-  // Messages
-  badDimensions: 'Invalid dimensions.',
-  promptWidth: 'Canvas width in pixels',
-  promptHeight: 'Canvas height in pixels',
-  confirmDelLayers: 'Delete selected layers?',
-  confirmMergeLayers: 'Merge selected layers?',
-  tooManyLayers: 'Layer limit reached.',
-  errorLoadImage: 'Could not load the image.',
-  noActiveLayer: 'No active layer.',
-  hiddenActiveLayer: 'The active layer is not visible.',
-  confirmCancel: 'Are you sure? Your work will be lost.',
-  confirmChangeCanvas: 'Are you sure? Changing the canvas will clear all layers and history and disable replay recording.',
 
-  // Controls
-  color: 'Color',
-  size: 'Size',
-  alpha: 'Opacity',
-  flow: 'Flow',
-  zoom: 'Zoom',
-  layers: 'Layers',
-  switchPalette: 'Switch color palette',
-  paletteSlotReplace: 'Right click to replace with the current color',
+import { TegakiStringsEn } from './lang/en.js';
+import { TegakiStringsJa } from './lang/ja.js';
+import { useLanguageStore } from "../../state/store.ts";
 
-  // Layers
-  layer: 'Layer',
-  addLayer: 'Add layer',
-  delLayers: 'Delete layers',
-  mergeLayers: 'Merge layers',
-  moveLayerUp: 'Move up',
-  moveLayerDown: 'Move down',
-  toggleVisibility: 'Toggle visibility',
+function TegakiStrings() {
+  let currentLanguage = useLanguageStore.getLanguage();
+  let TegakiStrings;
 
-  // Menu bar
-  newCanvas: 'New',
-  open: 'Open',
-  save: 'Save',
-  saveAs: 'Save As',
-  export: 'Export',
-  undo: 'Undo',
-  redo: 'Redo',
-  close: 'Close',
-  finish: 'Finish',
+  try {
+    switch (currentLanguage) {
+      case 'ja':
+        TegakiStrings = TegakiStringsJa;
+        break;
+      case 'en':
+      default:
+        TegakiStrings = TegakiStringsEn;
+    }
+  } catch (error) {
+    TegakiStrings = TegakiStringsEn;
+  }
 
-  // Tool modes
-  tip: 'Tip',
-  pressure: 'Pressure',
-  preserveAlpha: 'Preserve Alpha',
+  return TegakiStrings;
+}
 
-  // Tools
-  pen: 'Pen',
-  pencil: 'Pencil',
-  airbrush: 'Airbrush',
-  pipette: 'Pipette',
-  blur: 'Blur',
-  eraser: 'Eraser',
-  bucket: 'Bucket',
-  tone: 'Tone',
-
-  // Replay
-  gapless: 'Gapless',
-  play: 'Play',
-  pause: 'Pause',
-  rewind: 'Rewind',
-  slower: 'Slower',
-  faster: 'Faster',
-  recordingEnabled: 'Recording replay',
-  errorLoadReplay: 'Could not load the replay: ',
-  loadingReplay: 'Loading replay…',
-};
 export class TegakiTool {
   constructor() {
     this.id = 0;
@@ -2429,7 +2384,7 @@ var TegakiLayers = {
     canvas.setAttribute('data-id', id);
 
     params = {
-      name: TegakiStrings.layer + ' ' + id,
+      name: TegakiStrings().layer + ' ' + id,
       visible: true,
       alpha: 1.0,
     };
@@ -3444,11 +3399,11 @@ export var Tegaki = {
   onNewClick: function() {
     var width, height, tmp, self = Tegaki;
 
-    width = prompt(TegakiStrings.promptWidth, self.canvas.width);
+    width = prompt(TegakiStrings().promptWidth, self.canvas.width);
 
     if (!width) { return; }
 
-    height = prompt(TegakiStrings.promptHeight, self.canvas.height);
+    height = prompt(TegakiStrings().promptHeight, self.canvas.height);
 
     if (!height) { return; }
 
@@ -3456,7 +3411,7 @@ export var Tegaki = {
     height = +height;
 
     if (width < 1 || height < 1) {
-      TegakiUI.printMsg(TegakiStrings.badDimensions);
+      TegakiUI.printMsg(TegakiStrings().badDimensions);
       return;
     }
 
@@ -3485,7 +3440,7 @@ export var Tegaki = {
   },
 
   loadReplayFromURL: function(url) {
-    TegakiUI.printMsg(TegakiStrings.loadingReplay, 0);
+    TegakiUI.printMsg(TegakiStrings().loadingReplay, 0);
     Tegaki.replayViewer.loadFromURL(url);
   },
 
@@ -3526,7 +3481,7 @@ export var Tegaki = {
   },
 
   onCancelClick: function() {
-    if (!confirm(TegakiStrings.confirmCancel)) {
+    if (!confirm(TegakiStrings().confirmCancel)) {
       return;
     }
 
@@ -3784,7 +3739,7 @@ export var Tegaki = {
     var action;
 
     if (Tegaki.layers.length >= Tegaki.maxLayers) {
-      TegakiUI.printMsg(TegakiStrings.tooManyLayers);
+      TegakiUI.printMsg(TegakiStrings().tooManyLayers);
       return;
     }
 
@@ -4066,7 +4021,7 @@ export var Tegaki = {
 
     if (Tegaki.activeLayer === null) {
       if (e.target.parentNode === Tegaki.layersCnt) {
-        TegakiUI.printMsg(TegakiStrings.noActiveLayer);
+        TegakiUI.printMsg(TegakiStrings().noActiveLayer);
       }
 
       return;
@@ -4074,7 +4029,7 @@ export var Tegaki = {
 
     if (!TegakiLayers.getActiveLayer().visible) {
       if (e.target.parentNode === Tegaki.layersCnt) {
-        TegakiUI.printMsg(TegakiStrings.hiddenActiveLayer);
+        TegakiUI.printMsg(TegakiStrings().hiddenActiveLayer);
       }
 
       return;
@@ -5141,7 +5096,7 @@ export class TegakiReplayViewer {
   }
 
   onLoadError(err) {
-    TegakiUI.printMsg(TegakiStrings.errorLoadReplay + err, 0);
+    TegakiUI.printMsg(TegakiStrings().errorLoadReplay + err, 0);
   }
 
   autoPause() {
@@ -5577,20 +5532,20 @@ var TegakiUI = {
 
     btn = $T.el('span');
     btn.className = 'tegaki-mb-btn';
-    btn.textContent = TegakiStrings.newCanvas;
+    btn.textContent = TegakiStrings().newCanvas;
     $T.on(btn, 'click', Tegaki.onNewClick);
     frag.appendChild(btn);
 
     btn = $T.el('span');
     btn.className = 'tegaki-mb-btn';
-    btn.textContent = TegakiStrings.export;
+    btn.textContent = TegakiStrings().export;
     $T.on(btn, 'click', Tegaki.onExportClick);
     frag.appendChild(btn);
 
     btn = $T.el('span');
     btn.id = 'tegaki-undo-btn';
     btn.className = 'tegaki-mb-btn';
-    btn.textContent = TegakiStrings.undo;
+    btn.textContent = TegakiStrings().undo;
     btn.title = TegakiKeybinds.getCaption('undo');
     $T.on(btn, 'click', Tegaki.onUndoClick);
     frag.appendChild(btn);
@@ -5598,21 +5553,21 @@ var TegakiUI = {
     btn = $T.el('span');
     btn.id = 'tegaki-redo-btn';
     btn.className = 'tegaki-mb-btn';
-    btn.textContent = TegakiStrings.redo;
+    btn.textContent = TegakiStrings().redo;
     btn.title = TegakiKeybinds.getCaption('redo');
     $T.on(btn, 'click', Tegaki.onRedoClick);
     frag.appendChild(btn);
 
     btn = $T.el('span');
     btn.className = 'tegaki-mb-btn';
-    btn.textContent = TegakiStrings.close;
+    btn.textContent = TegakiStrings().close;
     $T.on(btn, 'click', Tegaki.onCancelClick);
     frag.appendChild(btn);
 
     btn = $T.el('span');
     btn.id = 'tegaki-finish-btn';
     btn.className = 'tegaki-mb-btn';
-    btn.textContent = TegakiStrings.finish;
+    btn.textContent = TegakiStrings().finish;
     $T.on(btn, 'click', Tegaki.onDoneClick);
     frag.appendChild(btn);
 
@@ -5628,7 +5583,7 @@ var TegakiUI = {
     btn = $T.el('span');
     btn.id = 'tegaki-finish-btn';
     btn.className = 'tegaki-mb-btn';
-    btn.textContent = TegakiStrings.close;
+    btn.textContent = TegakiStrings().close;
     $T.on(btn, 'click', Tegaki.onCloseViewerClick);
     frag.appendChild(btn);
 
@@ -5652,7 +5607,7 @@ var TegakiUI = {
 
     el = $T.el('span');
     el.className = 'tegaki-toolmode-lbl';
-    el.textContent = TegakiStrings.pressure;
+    el.textContent = TegakiStrings().pressure;
     grp.appendChild(el);
 
     el = $T.el('span');
@@ -5662,21 +5617,21 @@ var TegakiUI = {
     btn = $T.el('span');
     btn.id = 'tegaki-tool-mode-dynamics-size';
     btn.className = 'tegaki-sw-btn';
-    btn.textContent = TegakiStrings.size;
+    btn.textContent = TegakiStrings().size;
     $T.on(btn, 'mousedown', Tegaki.onToolPressureSizeClick);
     el.appendChild(btn);
 
     btn = $T.el('span');
     btn.id = 'tegaki-tool-mode-dynamics-alpha';
     btn.className = 'tegaki-sw-btn';
-    btn.textContent = TegakiStrings.alpha;
+    btn.textContent = TegakiStrings().alpha;
     $T.on(btn, 'mousedown', Tegaki.onToolPressureAlphaClick);
     el.appendChild(btn);
 
     btn = $T.el('span');
     btn.id = 'tegaki-tool-mode-dynamics-flow';
     btn.className = 'tegaki-sw-btn';
-    btn.textContent = TegakiStrings.flow;
+    btn.textContent = TegakiStrings().flow;
     $T.on(btn, 'mousedown', Tegaki.onToolPressureFlowClick);
     el.appendChild(btn);
 
@@ -5696,7 +5651,7 @@ var TegakiUI = {
     btn = $T.el('span');
     btn.id = 'tegaki-tool-mode-mask-alpha';
     btn.className = 'tegaki-sw-btn';
-    btn.textContent = TegakiStrings.preserveAlpha;
+    btn.textContent = TegakiStrings().preserveAlpha;
     $T.on(btn, 'mousedown', Tegaki.onToolPreserveAlphaClick);
     el.appendChild(btn);
 
@@ -5711,7 +5666,7 @@ var TegakiUI = {
 
     el = $T.el('span');
     el.className = 'tegaki-toolmode-lbl';
-    el.textContent = TegakiStrings.tip;
+    el.textContent = TegakiStrings().tip;
     grp.appendChild(el);
 
     el = $T.el('span');
@@ -5794,7 +5749,7 @@ var TegakiUI = {
   buildLayersCtrlGroup: function() {
     var el, ctrl, row, cnt;
 
-    ctrl = this.buildCtrlGroup('layers', TegakiStrings.layers);
+    ctrl = this.buildCtrlGroup('layers', TegakiStrings().layers);
 
     // Layer options row
     row = $T.el('div');
@@ -5806,7 +5761,7 @@ var TegakiUI = {
 
     el = $T.el('span');
     el.className = 'tegaki-label-xs tegaki-lbl-c tegaki-drag-lbl';
-    el.textContent = TegakiStrings.alpha;
+    el.textContent = TegakiStrings().alpha;
     $T.on(el, 'pointerdown', Tegaki.onLayerAlphaDragStart);
     cnt.appendChild(el);
 
@@ -5829,27 +5784,27 @@ var TegakiUI = {
     row.id = 'tegaki-layers-ctrl';
 
     el = $T.el('span');
-    el.title = TegakiStrings.addLayer;
+    el.title = TegakiStrings().addLayer;
     el.className = 'tegaki-ui-btn tegaki-icon tegaki-plus';
     $T.on(el, 'click', Tegaki.onLayerAddClick);
     row.appendChild(el);
 
     el = $T.el('span');
-    el.title = TegakiStrings.delLayers;
+    el.title = TegakiStrings().delLayers;
     el.className = 'tegaki-ui-btn tegaki-icon tegaki-minus';
     $T.on(el, 'click', Tegaki.onLayerDeleteClick);
     row.appendChild(el);
 
     el = $T.el('span');
     el.id = 'tegaki-layer-merge';
-    el.title = TegakiStrings.mergeLayers;
+    el.title = TegakiStrings().mergeLayers;
     el.className = 'tegaki-ui-btn tegaki-icon tegaki-level-down';
     $T.on(el, 'click', Tegaki.onMergeLayersClick);
     row.appendChild(el);
 
     el = $T.el('span');
     el.id = 'tegaki-layer-up';
-    el.title = TegakiStrings.moveLayerUp;
+    el.title = TegakiStrings().moveLayerUp;
     el.setAttribute('data-up', '1');
     el.className = 'tegaki-ui-btn tegaki-icon tegaki-up-open';
     $T.on(el, 'click', Tegaki.onMoveLayerClick);
@@ -5857,7 +5812,7 @@ var TegakiUI = {
 
     el = $T.el('span');
     el.id = 'tegaki-layer-down';
-    el.title = TegakiStrings.moveLayerDown;
+    el.title = TegakiStrings().moveLayerDown;
     el.className = 'tegaki-ui-btn tegaki-icon tegaki-down-open';
     $T.on(el, 'click', Tegaki.onMoveLayerClick);
     row.appendChild(el);
@@ -5870,7 +5825,7 @@ var TegakiUI = {
   buildSizeCtrlGroup: function() {
     var el, ctrl, row;
 
-    ctrl = this.buildCtrlGroup('size', TegakiStrings.size);
+    ctrl = this.buildCtrlGroup('size', TegakiStrings().size);
 
     row = $T.el('div');
     row.className = 'tegaki-ctrlrow';
@@ -5900,7 +5855,7 @@ var TegakiUI = {
   buildAlphaCtrlGroup: function() {
     var el, ctrl, row;
 
-    ctrl = this.buildCtrlGroup('alpha', TegakiStrings.alpha);
+    ctrl = this.buildCtrlGroup('alpha', TegakiStrings().alpha);
 
     row = $T.el('div');
     row.className = 'tegaki-ctrlrow';
@@ -5930,7 +5885,7 @@ var TegakiUI = {
   buildFlowCtrlGroup: function() {
     var el, ctrl, row;
 
-    ctrl = this.buildCtrlGroup('flow', TegakiStrings.flow);
+    ctrl = this.buildCtrlGroup('flow', TegakiStrings().flow);
 
     row = $T.el('div');
     row.className = 'tegaki-ctrlrow';
@@ -5960,7 +5915,7 @@ var TegakiUI = {
   buildZoomCtrlGroup: function() {
     var el, btn, ctrl;
 
-    ctrl = this.buildCtrlGroup('zoom', TegakiStrings.zoom);
+    ctrl = this.buildCtrlGroup('zoom', TegakiStrings().zoom);
 
     btn = $T.el('div');
     btn.className = 'tegaki-ui-btn tegaki-icon tegaki-plus';
@@ -5988,7 +5943,7 @@ var TegakiUI = {
 
     edge = / Edge\//i.test(window.navigator.userAgent);
 
-    ctrl = this.buildCtrlGroup('color', TegakiStrings.color);
+    ctrl = this.buildCtrlGroup('color', TegakiStrings().color);
 
     cnt = $T.el('div');
     cnt.id = 'tegaki-color-ctrl';
@@ -6005,7 +5960,7 @@ var TegakiUI = {
 
     btn = $T.el('span');
     btn.id = 'tegaki-palette-prev-btn';
-    btn.title = TegakiStrings.switchPalette;
+    btn.title = TegakiStrings().switchPalette;
     btn.setAttribute('data-prev', '1');
     btn.className = 'tegaki-ui-btn tegaki-icon tegaki-left-open tegaki-disabled';
     $T.on(btn, 'click', Tegaki.onSwitchPaletteClick);
@@ -6013,7 +5968,7 @@ var TegakiUI = {
 
     btn = $T.el('span');
     btn.id = 'tegaki-palette-next-btn';
-    btn.title = TegakiStrings.switchPalette;
+    btn.title = TegakiStrings().switchPalette;
     btn.className = 'tegaki-ui-btn tegaki-icon tegaki-right-open';
     $T.on(btn, 'click', Tegaki.onSwitchPaletteClick);
     el.appendChild(btn);
@@ -6049,7 +6004,7 @@ var TegakiUI = {
 
       for (color of palette) {
         btn = $T.el('div');
-        btn.title = TegakiStrings.paletteSlotReplace;
+        btn.title = TegakiStrings().paletteSlotReplace;
         btn.className = 'tegaki-color-btn';
         btn.setAttribute('data-color', color);
         btn.style.backgroundColor = color;
@@ -6084,7 +6039,7 @@ var TegakiUI = {
       el = $T.el('div');
       el.id = 'tegaki-status-replay';
       el.textContent = '⬤';
-      el.setAttribute('title', TegakiStrings.recordingEnabled);
+      el.setAttribute('title', TegakiStrings().recordingEnabled);
       cnt.appendChild(el);
     }
 
@@ -6119,7 +6074,7 @@ var TegakiUI = {
 
     el = $T.el('span');
     el.className = 'tegaki-menu-lbl';
-    el.textContent = TegakiStrings.gapless;
+    el.textContent = TegakiStrings().gapless;
     btn.appendChild(el);
 
     cnt.appendChild(btn);
@@ -6127,20 +6082,20 @@ var TegakiUI = {
     btn = $T.el('span');
     btn.id = 'tegaki-replay-play-btn';
     btn.className = 'tegaki-ui-btn tegaki-icon tegaki-play';
-    btn.setAttribute('title', TegakiStrings.play);
+    btn.setAttribute('title', TegakiStrings().play);
     $T.on(btn, 'click', Tegaki.onReplayPlayPauseClick);
     cnt.appendChild(btn);
 
     btn = $T.el('span');
     btn.className = 'tegaki-ui-btn tegaki-icon tegaki-to-start';
-    btn.setAttribute('title', TegakiStrings.rewind);
+    btn.setAttribute('title', TegakiStrings().rewind);
     $T.on(btn, 'click', Tegaki.onReplayRewindClick);
     cnt.appendChild(btn);
 
     btn = $T.el('span');
     btn.id = 'tegaki-replay-slower-btn';
     btn.className = 'tegaki-ui-btn tegaki-icon tegaki-fast-bw';
-    btn.setAttribute('title', TegakiStrings.slower);
+    btn.setAttribute('title', TegakiStrings().slower);
     $T.on(btn, 'click', Tegaki.onReplaySlowDownClick);
     cnt.appendChild(btn);
 
@@ -6153,7 +6108,7 @@ var TegakiUI = {
     btn = $T.el('span');
     btn.id = 'tegaki-replay-faster-btn';
     btn.className = 'tegaki-ui-btn tegaki-icon tegaki-fast-fw';
-    btn.setAttribute('title', TegakiStrings.faster);
+    btn.setAttribute('title', TegakiStrings().faster);
     $T.on(btn, 'click', Tegaki.onReplaySpeedUpClick);
     cnt.appendChild(btn);
 
@@ -6200,7 +6155,7 @@ var TegakiUI = {
     el.id = 'tegaki-layers-cb-v-' + layer.id;
     el.className = 'tegaki-ui-cb';
     el.setAttribute('data-id', layer.id);
-    el.title = TegakiStrings.toggleVisibility;
+    el.title = TegakiStrings().toggleVisibility;
     $T.on(el, 'click', Tegaki.onLayerToggleVisibilityClick);
 
     if (layer.visible) {
@@ -6929,12 +6884,12 @@ var TegakiUI = {
     if (r.playing) {
       el.classList.remove('tegaki-play');
       el.classList.add('tegaki-pause');
-      el.setAttribute('title', TegakiStrings.pause);
+      el.setAttribute('title', TegakiStrings().pause);
     }
     else {
       el.classList.add('tegaki-play');
       el.classList.remove('tegaki-pause');
-      el.setAttribute('title', TegakiStrings.play);
+      el.setAttribute('title', TegakiStrings().play);
 
       if (r.getCurrentPos() < r.getDuration()) {
         el.classList.remove('tegaki-disabled');
