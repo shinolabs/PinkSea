@@ -60,5 +60,75 @@ export default {
   profile: {
     bluesky_profile: "Profil Bluesky",
     domain: "Strona internetowa"
+  },
+  tegakijs: {
+    // Messages
+    badDimensions: 'Niepoprawny rozmiar.',
+    promptWidth: 'Szerokość obrazu w pikselach',
+    promptHeight: 'Wysokość obrazu w pikselach',
+    confirmDelLayers: 'Usunąć wybrane warstwy?',
+    confirmMergeLayers: 'Złączyć wybrane warstwy?',
+    tooManyLayers: 'Osiągnięto limit warstw.',
+    errorLoadImage: 'Napotkano błąd podczas ładowania zdjęcia.',
+    noActiveLayer: 'Brak aktywnej warstwy.',
+    hiddenActiveLayer: 'Aktywna warstwa jest ukrytwa.',
+    confirmCancel: 'Czy zamknąć edytor? Zamknięcie edytora kasuje wszystkie zmiany.',
+    confirmChangeCanvas: 'Czy zmienić obraz? Zmiana obrazu wyczyści wszystkie warstwy, historię oraz wyłączy odtwarzanie nagrań.',
+
+    // Controls
+    color: 'Kolor',
+    size: 'Rozmiar',
+    alpha: 'Przezroczystość',
+    flow: 'Płynność',
+    zoom: 'Powiększenie',
+    layers: 'Warstwy',
+    switchPalette: 'Zmień paletę kolorów',
+    paletteSlotReplace: 'Kliknij prawym przyciskiem myszy aby zamienić z aktywnym kolorem',
+
+    // Layers
+    layer: 'Warstwa',
+    addLayer: 'Dodaj warstwę',
+    delLayers: 'Usuń warstwy',
+    mergeLayers: 'Złącz warstwy',
+    moveLayerUp: 'Przesuń w górę',
+    moveLayerDown: 'Przesuń w dół',
+    toggleVisibility: 'Zmień widoczność',
+
+    // Menu bar
+    newCanvas: 'Nowy',
+    open: 'Otwórz',
+    save: 'Zapisz',
+    saveAs: 'Zapisz jako',
+    export: 'Eksportuj',
+    undo: 'Cofnij',
+    redo: 'Powtórz',
+    close: 'Zamknij',
+    finish: 'Zatwierdź',
+
+    // Tool modes
+    tip: 'Końcówka',
+    pressure: 'Nacisk',
+    preserveAlpha: 'Zachowaj kanał alfa',
+
+    // Tools
+    pen: 'Pędzel',
+    pencil: 'Ołówek',
+    airbrush: 'Aerograf',
+    pipette: 'Probówka',
+    blur: 'Rozmycie',
+    eraser: 'Gumka',
+    bucket: 'Wiadro z farbą',
+    tone: 'Ton',
+
+    // Replay
+    gapless: 'Bez przerw',
+    play: 'Odtwórz',
+    pause: 'Pauza',
+    rewind: 'Przewiń',
+    slower: 'Wolniej',
+    faster: 'Szybciej',
+    recordingEnabled: 'Nagrywanie odtwarzania',
+    errorLoadReplay: 'Nie można odtworzyć nagrania: ',
+    loadingReplay: 'Ładowanie nagrania…',
   }
 };

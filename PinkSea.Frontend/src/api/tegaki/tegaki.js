@@ -1,27 +1,25 @@
 /*! tegaki.js, MIT License */'use strict';
 
-import TranslateEn from '../../intl/translations/en.ts';
-import TranslateJa from '../../intl/translations/ja.ts';
+import i18n from '@/intl/i18n.ts'
 import { usePersistedStore } from "../../state/store.ts";
 
 function TegakiStrings() {
   let currentLanguage = usePersistedStore().lang
-  let TegakiStrings;
+  let tegakiStrings;
+
 
   try {
-    switch (currentLanguage) {
-      case 'ja':
-        TegakiStrings = TranslateJa.tegakijs;
-        break;
-      case 'en':
-      default:
-        TegakiStrings = TranslateEn.tegakijs;
+    if (i18n[currentLanguage].translation.tegakijs !== null &&
+        i18n[currentLanguage].translation.tegakijs !== undefined) {
+      tegakiStrings = i18n[currentLanguage].translation.tegakijs;
+    } else {
+      tegakiStrings = i18n.en.translation.tegakijs;
     }
-  } catch (error) {
-    TegakiStrings = TranslateEn.tegakijs;
+  } catch {
+    tegakiStrings = i18n.en.translation.tegakijs;
   }
 
-  return TegakiStrings;
+  return tegakiStrings;
 }
 
 export class TegakiTool {
