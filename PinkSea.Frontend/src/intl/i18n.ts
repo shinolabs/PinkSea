@@ -8,46 +8,51 @@ import It from '@/intl/translations/it'
 import Sv from '@/intl/translations/sv'
 import Es from '@/intl/translations/es'
 import Bg from '@/intl/translations/bg'
+import Zh from '@/intl/translations/zh'
 
 export default {
   en: {
-    name: "English",
+    name: 'English',
     translation: En,
   },
   id: {
-    name: "Bahasa Indonesia",
+    name: 'Bahasa Indonesia',
     translation: Id,
   },
   pl: {
-    name: "Polski",
+    name: 'Polski',
     translation: Pl,
   },
   ja: {
-    name: "日本語",
+    name: '日本語',
     translation: Ja,
   },
   de: {
-    name: "Deutsch",
+    name: 'Deutsch',
     translation: De,
   },
   fr: {
-    name: "Français",
+    name: 'Français',
     translation: Fr,
   },
   it: {
-    name: "Italiano",
+    name: 'Italiano',
     translation: It,
   },
   sv: {
-    name: "Svenska",
+    name: 'Svenska',
     translation: Sv,
   },
   es: {
-    name: "Español",
-    translation: Es
+    name: 'Español',
+    translation: Es,
   },
   bg: {
-    name: "български",
-    translation: Bg
-  }
-};
+    name: 'български',
+    translation: Bg,
+  },
+  zh: {
+    name: '简体中文',
+    translation: Zh,
+  },
+}
