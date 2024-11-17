@@ -51,7 +51,7 @@ export default {
     name: 'български',
     translation: Bg,
   },
-  zh: {
+  "zh-CN": {
     name: '简体中文',
     translation: Zh,
   },

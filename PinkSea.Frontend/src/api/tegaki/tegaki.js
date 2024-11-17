@@ -1,12 +1,11 @@
 /*! tegaki.js, MIT License */'use strict';
 
 import i18n from '@/intl/i18n.ts'
-import { usePersistedStore } from "../../state/store.ts";
+import { usePersistedStore } from '@/state/store.ts';
 
 function TegakiStrings() {
   let currentLanguage = usePersistedStore().lang
   let tegakiStrings;
-
 
   try {
     if (i18n[currentLanguage].translation.tegakijs !== null &&
