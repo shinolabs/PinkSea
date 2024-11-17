@@ -8,7 +8,7 @@ import It from '@/intl/translations/it'
 import Sv from '@/intl/translations/sv'
 import Es from '@/intl/translations/es'
 import Bg from '@/intl/translations/bg'
-import Zh from '@/intl/translations/zh'
+import ZhCN from '@/intl/translations/zh-CN'
 
 export default {
   en: {
@@ -53,6 +53,6 @@ export default {
   },
   "zh-CN": {
     name: '简体中文',
-    translation: Zh,
+    translation: ZhCN,
   },
 }
