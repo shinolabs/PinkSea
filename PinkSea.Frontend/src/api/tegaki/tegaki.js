@@ -1,24 +1,24 @@
 /*! tegaki.js, MIT License */'use strict';
 
-import { TegakiStringsEn } from './lang/en.js';
-import { TegakiStringsJa } from './lang/ja.js';
-import { useLanguageStore } from "../../state/store.ts";
+import TranslateEn from '../../intl/translations/en.ts';
+import TranslateJa from '../../intl/translations/ja.ts';
+import { usePersistedStore } from "../../state/store.ts";
 
 function TegakiStrings() {
-  let currentLanguage = useLanguageStore.getLanguage();
+  let currentLanguage = usePersistedStore().lang
   let TegakiStrings;
 
   try {
     switch (currentLanguage) {
       case 'ja':
-        TegakiStrings = TegakiStringsJa;
+        TegakiStrings = TranslateJa.tegakijs;
         break;
       case 'en':
       default:
-        TegakiStrings = TegakiStringsEn;
+        TegakiStrings = TranslateEn.tegakijs;
     }
   } catch (error) {
-    TegakiStrings = TegakiStringsEn;
+    TegakiStrings = TranslateEn.tegakijs;
   }
 
   return TegakiStrings;

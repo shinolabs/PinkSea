@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import PanelLayout from '@/layouts/PanelLayout.vue'
-import { usePersistedStore, useLanguageStore } from '@/state/store'
+import { usePersistedStore } from '@/state/store'
 import i18next from 'i18next'
 import I18n from '@/intl/i18n'
 import { watch } from 'vue'
@@ -9,7 +9,6 @@ import { watch } from 'vue'
 const persistedStore = usePersistedStore();
 watch(persistedStore, () => {
   i18next.changeLanguage(persistedStore.lang);
-  useLanguageStore.setLanguage(persistedStore.lang);
 });
 </script>
 

@@ -42,11 +42,3 @@ export const useImageStore = defineStore(
     },
     persist: true
   });
-
-let currentLanguage = 'en';
-export const useLanguageStore = {
-  getLanguage: () => currentLanguage,
-  setLanguage: (lang: string): void => {
-    currentLanguage = lang;
-  },
-};
