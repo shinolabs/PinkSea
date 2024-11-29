@@ -95,6 +95,10 @@ declare module '@atcute/client/lexicons' {
       params: ComShinolabsPinkseaGetAuthorFeed.Params,
       output: GenericTimelineQueryOutput,
     },
+    'com.shinolabs.pinksea.getAuthorReplies': {
+      params: ComShinolabsPinkseaGetAuthorFeed.Params,
+      output: GenericTimelineQueryOutput,
+    },
     'com.shinolabs.pinksea.getTagFeed': {
       params: ComShinolabsPinkseaGetTagFeed.Params,
       output: GenericTimelineQueryOutput,
