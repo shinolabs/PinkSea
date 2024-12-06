@@ -13,7 +13,7 @@ app.MapGet("/{did}/oekaki/{rid}", async (string did, string rid) =>
 <meta name=""application-name"" content=""PinkSea"">
 <meta name=""generator"" content=""PinkSea.Gateway"">
 <meta property=""og:site_name"" content=""PinkSea"" />
-<meta property=""og:title"" content=""{did}'s oekaki"" />
+<meta property=""og:title"" content=""{resp!.Parent.AuthorHandle}'s oekaki"" />
 <meta property=""og:type"" content=""website"" />
 <meta property=""og:url"" content=""https://pinksea.art/{did}/oekaki/{rid}"" />
 <meta property=""og:image"" content=""{resp!.Parent.ImageLink}"" />
