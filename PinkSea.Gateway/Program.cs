@@ -10,12 +10,15 @@ app.MapGet("/{did}/oekaki/{rid}", async (string did, string rid) =>
     var resp = await httpClient.GetFromJsonAsync<OekakiResponse>($"https://api.pinksea.art/xrpc/com.shinolabs.pinksea.getOekaki?did={did}&rkey={rid}");
 
     var oembed = $@"
-<meta property=""og:title"" content=""PinkSea"" />
+<meta name=""application-name"" content=""PinkSea"">
+<meta name=""generator"" content=""PinkSea.Gateway"">
+<meta property=""og:site_name"" content=""PinkSea"" />
+<meta property=""og:title"" content=""{did}'s oekaki"" />
 <meta property=""og:type"" content=""website"" />
 <meta property=""og:url"" content=""https://pinksea.art/{did}/oekaki/{rid}"" />
 <meta property=""og:image"" content=""{resp!.Parent.ImageLink}"" />
-<meta property=""og:description"" content=""{resp!.Parent.Alt}"" />
-<meta name=""theme-color"" content=""#FF0000"">
+<meta property=""og:description"" content=""*{resp!.Parent.Alt}*"" />
+<meta name=""theme-color"" content=""#ffe5ea"">
 <meta name=""twitter:card"" content=""summary_large_image"">
 ";
 
