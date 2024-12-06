@@ -17,8 +17,8 @@ app.MapGet("/{did}/oekaki/{rid}", async (string did, string rid) =>
 <meta property=""og:type"" content=""website"" />
 <meta property=""og:url"" content=""https://pinksea.art/{did}/oekaki/{rid}"" />
 <meta property=""og:image"" content=""{resp!.Parent.ImageLink}"" />
-<meta property=""og:description"" content=""*{resp!.Parent.Alt}*"" />
-<meta name=""theme-color"" content=""#ffe5ea"">
+<meta property=""og:description"" content=""{resp!.Parent.Alt}"" />
+<meta name=""theme-color"" content=""#FFB6C1"">
 <meta name=""twitter:card"" content=""summary_large_image"">
 ";
 
