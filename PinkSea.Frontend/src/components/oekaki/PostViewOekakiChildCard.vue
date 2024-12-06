@@ -5,7 +5,8 @@ import PostViewOekakiImageContainer from '@/components/oekaki/PostViewOekakiImag
 import { usePersistedStore } from '@/state/store'
 
 const props = defineProps<{
-  oekaki: Oekaki
+  oekaki: Oekaki,
+  hideLineBar?: boolean
 }>()
 
 const persistedStore = usePersistedStore();
@@ -20,10 +21,16 @@ const authorProfileLink = computed(() => `/${props.oekaki.authorDid}`);
 const creationTime = computed(() => {
   return new Date(props.oekaki.creationTime).toLocaleTimeString(persistedStore.lang, options)
 })
+
+const classList = computed(() => {
+  if (!props.hideLineBar)
+    return "oekaki-card line-bar-element"
+  return "oekaki-card"
+})
 </script>
 
 <template>
-  <div class="oekaki-card" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
+  <div :class="classList" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
     <div class="oekaki-child-info">{{ $t("post.response_from_before_handle") }}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b>{{ $t("post.response_from_after_handle") }}{{ $t("post.response_from_at_date") }}{{ creationTime }}</div>
     <PostViewOekakiImageContainer :oekaki="props.oekaki" style="max-height: 400px;"/>
   </div>
@@ -50,7 +57,7 @@ const creationTime = computed(() => {
   position: relative;
 }
 
-.oekaki-card:before {
+.line-bar-element:before {
   content: ""; z-index: 1;
   position: absolute;
   height: 150%; width: 10px;
@@ -60,7 +67,7 @@ const creationTime = computed(() => {
   left: -22px; top: -100%;
 }
 
-.oekaki-card:nth-of-type(2):before {
+.line-bar-element:nth-of-type(2):before {
   content: ""; z-index: 1;
   position: absolute;
   height: 90%; width: 10px;

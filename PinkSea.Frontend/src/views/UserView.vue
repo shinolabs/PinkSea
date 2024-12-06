@@ -35,11 +35,11 @@ const domainUrl = computed(() => {
       <div><a class="domain-link" :href="domainUrl" target="_blank">{{ $t("profile.domain") }}</a></div>
     </div>
     <div id="profile-tabs">
-      <a id="selected" href="#artwork" v-on:click.prevent="currentTab = UserProfileTab.Posts">Artwork</a>
-      <a href="#replies" v-on:click.prevent="currentTab = UserProfileTab.Replies">Replies</a>
+      <a href="#artwork" v-on:click.prevent="currentTab = UserProfileTab.Posts">Artwork</a>
+      <a id="selected" href="#replies" v-on:click.prevent="currentTab = UserProfileTab.Replies">Replies</a>
     </div>
     <TimeLine v-if="currentTab == UserProfileTab.Posts" endpoint="com.shinolabs.pinksea.getAuthorFeed" :xrpc-params="{ did: $route.params.did }" />
-    <TimeLine v-if="currentTab == UserProfileTab.Replies" endpoint="com.shinolabs.pinksea.getAuthorReplies" :xrpc-params="{ did: $route.params.did }" />
+    <TimeLine v-if="currentTab == UserProfileTab.Replies" endpoint="com.shinolabs.pinksea.getAuthorReplies" :xrpc-params="{ did: $route.params.did }" :show-as-replies="true" />
   </PanelLayout>
 </template>
 
