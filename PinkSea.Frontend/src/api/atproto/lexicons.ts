@@ -86,6 +86,14 @@ declare module '@atcute/client/lexicons' {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace ComShinolabsPinkseaGetParentForReply {
+    interface Params {
+      authorDid: string,
+      rkey: string
+    }
+  }
+
   interface Queries {
     'com.shinolabs.pinksea.getRecent': {
       params: GenericTimelineQueryRequest,
@@ -114,6 +122,10 @@ declare module '@atcute/client/lexicons' {
     'com.shinolabs.pinksea.getHandleFromDid': {
       params: ComShinolabsPinkseaGetHandleFromDid.Params,
       output: ComShinolabsPinkseaGetHandleFromDid.Output
+    },
+    'com.shinolabs.pinksea.getParentForReply': {
+      params: ComShinolabsPinkseaGetParentForReply.Params,
+      output: ComShinolabsPinkseaGetParentForReply.Params
     }
   }
 

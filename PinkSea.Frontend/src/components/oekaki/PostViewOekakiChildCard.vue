@@ -3,12 +3,15 @@ import { computed } from 'vue'
 import type { Oekaki } from '@/models/oekaki'
 import PostViewOekakiImageContainer from '@/components/oekaki/PostViewOekakiImageContainer.vue'
 import { usePersistedStore } from '@/state/store'
+import { useRouter } from 'vue-router'
+import { xrpc } from '@/api/atproto/client'
 
 const props = defineProps<{
   oekaki: Oekaki,
   hideLineBar?: boolean
 }>()
 
+const router = useRouter();
 const persistedStore = usePersistedStore();
 
 const options: Intl.DateTimeFormatOptions = {
@@ -27,12 +30,23 @@ const classList = computed(() => {
     return "oekaki-card line-bar-element"
   return "oekaki-card"
 })
+
+const redirectToParent = async () => {
+  const { data } = await xrpc.get("com.shinolabs.pinksea.getParentForReply", {
+    params: {
+      authorDid: props.oekaki.authorDid,
+      rkey: props.oekaki.oekakiRecordKey
+    }
+  });
+
+  await router.push(`/${data.authorDid}/oekaki/${data.rkey}#${props.oekaki.authorDid}-${props.oekaki.oekakiRecordKey}`);
+};
 </script>
 
 <template>
   <div :class="classList" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
     <div class="oekaki-child-info">{{ $t("post.response_from_before_handle") }}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b>{{ $t("post.response_from_after_handle") }}{{ $t("post.response_from_at_date") }}{{ creationTime }}</div>
-    <PostViewOekakiImageContainer :oekaki="props.oekaki" style="max-height: 400px;"/>
+    <PostViewOekakiImageContainer :oekaki="props.oekaki" v-on:click="redirectToParent" style="max-height: 400px; cursor: pointer;"/>
   </div>
 </template>
 
