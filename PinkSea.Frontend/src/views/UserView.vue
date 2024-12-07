@@ -5,14 +5,28 @@ import PanelLayout from '@/layouts/PanelLayout.vue'
 import { computed, ref, watch } from 'vue'
 import { xrpc } from '@/api/atproto/client'
 import { useRoute } from 'vue-router'
+import { UserProfileTab } from '@/models/user-profile-tab'
+
+const tabs = [
+  {
+    i18n: "profile.posts_tab",
+    id: UserProfileTab.Posts
+  },
+  {
+    i18n: "profile.replies_tab",
+    id: UserProfileTab.Replies
+  }
+];
 
 const handle = ref<string>("");
 const route = useRoute();
 
+const currentTab = ref<UserProfileTab>(UserProfileTab.Posts);
+
 watch(() => route.params.did, async () => {
   const { data } = await xrpc.get("com.shinolabs.pinksea.getHandleFromDid", { params: { did: route.params.did as string }});
   handle.value = data.handle;
-}, {immediate: true});
+}, { immediate: true });
 
 const bskyUrl = computed(() => {
   return `https://bsky.app/profile/${route.params.did}`;
@@ -30,13 +44,44 @@ const domainUrl = computed(() => {
       <h2>{{ $t("breadcrumb.user_profile", { handle: handle }) }}</h2>
       <div><a class="bluesky-link" :href="bskyUrl" target="_blank">{{ $t("profile.bluesky_profile") }}</a></div>
       <div><a class="domain-link" :href="domainUrl" target="_blank">{{ $t("profile.domain") }}</a></div>
-
     </div>
-    <TimeLine endpoint="com.shinolabs.pinksea.getAuthorFeed" :xrpc-params="{ did: $route.params.did }" />
+    <div id="profile-tabs">
+      <a v-for="tab in tabs" :class="tab.id == currentTab ? 'selected' : ''" v-on:click.prevent="currentTab = tab.id" v-bind:key="tab.id">{{ $t(tab.i18n) }}</a>
+    </div>
+    <TimeLine v-if="currentTab == UserProfileTab.Posts" endpoint="com.shinolabs.pinksea.getAuthorFeed" :xrpc-params="{ did: $route.params.did }" />
+    <TimeLine v-if="currentTab == UserProfileTab.Replies" endpoint="com.shinolabs.pinksea.getAuthorReplies" :xrpc-params="{ did: $route.params.did }" :show-as-replies="true" />
   </PanelLayout>
 </template>
 
 <style scoped>
+  #profile-tabs {
+    position: relative;
+    margin: 20px 0px 0px;
+    height: 23px;
+    box-shadow: 0px 3px #ffffff, 0px 4px #ffb6c1;
+  }
+
+  #profile-tabs a {
+    color: #0085ff;
+    vertical-align: middle;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+    width: 50%; height: 20px;
+    padding-top: 3px;
+    cursor: pointer;
+    border-bottom: 1px solid #ffb6c1;
+  }
+
+  #profile-tabs a.selected {
+    background: #ffb6c1; color: #263b48;
+    font-weight: bold;
+  }
+
+  #profile-tabs a:hover:not(.selected) {
+    background: #ffb6c140;
+  }
+
   .user-card {
     display: block; text-align: left;
     margin: 6px 0px -12px 20px;

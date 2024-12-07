@@ -6,10 +6,12 @@ import type { GenericTimelineQueryOutput, Queries } from '@atcute/client/lexicon
 import { xrpc } from '@/api/atproto/client'
 import Loader from '@/components/Loader.vue'
 import Intersector from '@/components/Intersector.vue'
+import PostViewOekakiChildCard from '@/components/oekaki/PostViewOekakiChildCard.vue'
 
   const props = defineProps<{
     endpoint: keyof Queries,
-    xrpcParams?: unknown
+    xrpcParams?: unknown,
+    showAsReplies?: boolean
   }>();
 
   const keepLoading = ref<boolean>(true);
@@ -52,7 +54,10 @@ import Intersector from '@/components/Intersector.vue'
 <template>
   <Loader v-if="oekaki == null" />
   <div class="timeline-container" v-else>
-    <TimeLineOekakiCard v-for="oekakiPost of oekaki" v-bind:key="oekakiPost.atProtoLink" v-bind="oekakiPost" :oekaki="oekakiPost" />
+    <span v-for="oekakiPost of oekaki" v-bind:key="oekakiPost.atProtoLink" v-bind="oekakiPost">
+      <TimeLineOekakiCard v-if="!props.showAsReplies" :oekaki="oekakiPost"/>
+      <PostViewOekakiChildCard v-else :oekaki="oekakiPost" :hide-line-bar="true" />
+    </span>
     <Intersector @intersected="loadMore" />
   </div>
 </template>

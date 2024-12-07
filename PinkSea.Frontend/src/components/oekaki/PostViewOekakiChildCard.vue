@@ -3,11 +3,15 @@ import { computed } from 'vue'
 import type { Oekaki } from '@/models/oekaki'
 import PostViewOekakiImageContainer from '@/components/oekaki/PostViewOekakiImageContainer.vue'
 import { usePersistedStore } from '@/state/store'
+import { useRouter } from 'vue-router'
+import { xrpc } from '@/api/atproto/client'
 
 const props = defineProps<{
-  oekaki: Oekaki
+  oekaki: Oekaki,
+  hideLineBar?: boolean
 }>()
 
+const router = useRouter();
 const persistedStore = usePersistedStore();
 
 const options: Intl.DateTimeFormatOptions = {
@@ -20,12 +24,29 @@ const authorProfileLink = computed(() => `/${props.oekaki.authorDid}`);
 const creationTime = computed(() => {
   return new Date(props.oekaki.creationTime).toLocaleTimeString(persistedStore.lang, options)
 })
+
+const classList = computed(() => {
+  if (!props.hideLineBar)
+    return "oekaki-card line-bar-element"
+  return "oekaki-card"
+})
+
+const redirectToParent = async () => {
+  const { data } = await xrpc.get("com.shinolabs.pinksea.getParentForReply", {
+    params: {
+      authorDid: props.oekaki.authorDid,
+      rkey: props.oekaki.oekakiRecordKey
+    }
+  });
+
+  await router.push(`/${data.authorDid}/oekaki/${data.rkey}#${props.oekaki.authorDid}-${props.oekaki.oekakiRecordKey}`);
+};
 </script>
 
 <template>
-  <div class="oekaki-card" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
+  <div :class="classList" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
     <div class="oekaki-child-info">{{ $t("post.response_from_before_handle") }}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b>{{ $t("post.response_from_after_handle") }}{{ $t("post.response_from_at_date") }}{{ creationTime }}</div>
-    <PostViewOekakiImageContainer :oekaki="props.oekaki" style="max-height: 400px;"/>
+    <PostViewOekakiImageContainer :oekaki="props.oekaki" v-on:click="redirectToParent" style="max-height: 400px; cursor: pointer;"/>
   </div>
 </template>
 
@@ -50,7 +71,7 @@ const creationTime = computed(() => {
   position: relative;
 }
 
-.oekaki-card:before {
+.line-bar-element:before {
   content: ""; z-index: 1;
   position: absolute;
   height: 150%; width: 10px;
@@ -60,7 +81,7 @@ const creationTime = computed(() => {
   left: -22px; top: -100%;
 }
 
-.oekaki-card:nth-of-type(2):before {
+.line-bar-element:nth-of-type(2):before {
   content: ""; z-index: 1;
   position: absolute;
   height: 90%; width: 10px;

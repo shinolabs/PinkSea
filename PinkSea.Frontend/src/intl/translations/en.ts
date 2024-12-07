@@ -59,7 +59,9 @@ export default {
   },
   profile: {
     bluesky_profile: "Bluesky profile",
-    domain: "Website"
+    domain: "Website",
+    posts_tab: "Posts",
+    replies_tab: "Replies"
   },
   tegakijs: {
     // Messages
