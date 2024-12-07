@@ -1,30 +1,25 @@
-using PinkSea.Gateway;
+using Microsoft.AspNetCore.Mvc;
+using PinkSea.Gateway.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<MetaGeneratorService>();
+builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient(
+    "pinksea-xrpc",
+    client =>
+    {
+        client.BaseAddress = new Uri(builder.Configuration["GatewaySettings:PinkSeaEndpoint"]!);
+    });
+
 var app = builder.Build();
 
 app.UseStaticFiles();
-app.MapGet("/{did}/oekaki/{rid}", async (string did, string rid) =>
+app.MapGet("/{did}/oekaki/{rkey}", async ([FromRoute] string did, [FromRoute] string rkey, [FromServices] MetaGeneratorService metaGenerator) =>
 {
-    var httpClient = new HttpClient();
-    var resp = await httpClient.GetFromJsonAsync<OekakiResponse>($"https://api.pinksea.art/xrpc/com.shinolabs.pinksea.getOekaki?did={did}&rkey={rid}");
-
-    var oembed = $@"
-<meta name=""application-name"" content=""PinkSea"">
-<meta name=""generator"" content=""PinkSea.Gateway"">
-<meta property=""og:site_name"" content=""PinkSea"" />
-<meta property=""og:title"" content=""{resp!.Parent.AuthorHandle}'s oekaki"" />
-<meta property=""og:type"" content=""website"" />
-<meta property=""og:url"" content=""https://pinksea.art/{did}/oekaki/{rid}"" />
-<meta property=""og:image"" content=""{resp!.Parent.ImageLink}"" />
-<meta property=""og:description"" content=""{resp!.Parent.Alt}"" />
-<meta name=""theme-color"" content=""#FFB6C1"">
-<meta name=""twitter:card"" content=""summary_large_image"">
-";
-
     var file = File.ReadAllText($"./wwwroot/index.html")
-        .Replace("<!-- META -->", oembed);
-
+        .Replace("<!-- META -->", await metaGenerator.GetMetaFor(did, rkey));
+    
     return Results.Text(file, contentType: "text/html");
 });
 app.MapFallbackToFile("index.html");
