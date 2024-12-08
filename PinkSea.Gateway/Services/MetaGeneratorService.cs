@@ -49,10 +49,9 @@ public class MetaGeneratorService(
                 <meta property="og:site_name" content="PinkSea" />
                 <meta property="og:title" content="oekaki BBS" />
                 <meta property="og:type" content="website" />
-                <meta property="og:image" content="{options.Value.FrontEndEndpoint}/logo.svg" />
+                <meta property="og:image" content="{options.Value.FrontEndEndpoint}/logo.png" />
                 <meta property="og:description" content="PinkSea is an Oekaki BBS running as an AT Protocol application. Log in and draw!" />
                 <meta name="theme-color" content="#FFB6C1">
-                <meta name="twitter:card" content="summary_large_image">
                 """;
     }
 
