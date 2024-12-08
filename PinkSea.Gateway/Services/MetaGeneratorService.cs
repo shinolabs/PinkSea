@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
+using PinkSea.Gateway.Models;
 
 namespace PinkSea.Gateway.Services;
 
@@ -7,7 +9,8 @@ namespace PinkSea.Gateway.Services;
 /// </summary>
 public class MetaGeneratorService(
     IHttpClientFactory httpClientFactory,
-    IMemoryCache memoryCache)
+    IMemoryCache memoryCache,
+    IOptions<GatewaySettings> options)
 {
     /// <summary>
     /// Gets the meta tags for a given did/rkey pair.
@@ -46,7 +49,7 @@ public class MetaGeneratorService(
                 <meta property="og:site_name" content="PinkSea" />
                 <meta property="og:title" content="oekaki BBS" />
                 <meta property="og:type" content="website" />
-                <meta property="og:image" content="{resp!.Parent.ImageLink}" />
+                <meta property="og:image" content="{options.Value.FrontEndEndpoint}/logo.svg" />
                 <meta property="og:description" content="PinkSea is an Oekaki BBS running as an AT Protocol application. Log in and draw!" />
                 <meta name="theme-color" content="#FFB6C1">
                 <meta name="twitter:card" content="summary_large_image">
@@ -67,7 +70,7 @@ public class MetaGeneratorService(
                 <meta property="og:site_name" content="PinkSea" />
                 <meta property="og:title" content="{resp!.Parent.AuthorHandle}'s oekaki" />
                 <meta property="og:type" content="website" />
-                <meta property="og:url" content="https://pinksea.art/{resp.Parent.AuthorDid}/oekaki/{resp.Parent.OekakiRecordKey}" />
+                <meta property="og:url" content="{options.Value.FrontEndEndpoint}/{resp.Parent.AuthorDid}/oekaki/{resp.Parent.OekakiRecordKey}" />
                 <meta property="og:image" content="{resp!.Parent.ImageLink}" />
                 <meta property="og:description" content="{resp!.Parent.Alt}" />
                 <meta name="theme-color" content="#FFB6C1">
