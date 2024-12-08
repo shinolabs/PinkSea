@@ -15,7 +15,7 @@ public class MetaGeneratorService(
     /// <param name="did">The DID.</param>
     /// <param name="rkey">The record key of the oekaki.</param>
     /// <returns>The formatted meta tags.</returns>
-    public Task<string> GetMetaFor(string did, string rkey)
+    public Task<string> GetOekakiMetaFor(string did, string rkey)
     {
         const int cacheExpiry = 30;
         const string endpointTemplate = "/xrpc/com.shinolabs.pinksea.getOekaki?did={0}&rkey={1}";
@@ -32,6 +32,25 @@ public class MetaGeneratorService(
                     ? FormatOekakiResponse(resp)
                     : "";
             })!;
+    }
+
+    /// <summary>
+    /// Gets the regular meta tags.
+    /// </summary>
+    /// <returns>The meta tags.</returns>
+    public string GetRegularMeta()
+    {
+        return $"""
+                <meta name="application-name" content="PinkSea">
+                <meta name="generator" content="PinkSea.Gateway">
+                <meta property="og:site_name" content="PinkSea" />
+                <meta property="og:title" content="oekaki BBS" />
+                <meta property="og:type" content="website" />
+                <meta property="og:image" content="{resp!.Parent.ImageLink}" />
+                <meta property="og:description" content="PinkSea is an Oekaki BBS running as an AT Protocol application. Log in and draw!" />
+                <meta name="theme-color" content="#FFB6C1">
+                <meta name="twitter:card" content="summary_large_image">
+                """;
     }
 
     /// <summary>

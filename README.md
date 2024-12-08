@@ -1,5 +1,6 @@
 
 <p align="center">
+	<img width="200" src="Meta/logo.svg"><br>
 	<b>PinkSea</b><br>
 	<span>poniko's house</span>
 </p>

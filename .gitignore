@@ -166,3 +166,5 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+
+PinkSea.Gateway/wwwroot/
