@@ -63,7 +63,7 @@ public class MetaGeneratorService(
     private string FormatOekakiResponse(OekakiResponse resp)
     {
         return $"""
-                <link rel="alternative" href="at://{resp.Parent.AuthorDid}/com.shinolabs.pinksea.oekaki/{resp.Parent.OekakiRecordKey}" />
+                <link rel="alternate" href="at://{resp.Parent.AuthorDid}/com.shinolabs.pinksea.oekaki/{resp.Parent.OekakiRecordKey}" />
                 <meta name="application-name" content="PinkSea">
                 <meta name="generator" content="PinkSea.Gateway">
                 <meta property="og:site_name" content="PinkSea" />
