@@ -9,7 +9,7 @@ export const usePersistedStore = defineStore(
         blurNsfw: true,
         hideNsfw: false,
 
-        lang: "en"
+        lang: null as (string | null)
       }
     },
     persist: true

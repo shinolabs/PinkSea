@@ -5,8 +5,9 @@ import LoginBar from '@/components/LoginBar.vue'
 import { useIdentityStore, useImageStore, usePersistedStore } from '@/state/store'
 import { useRouter } from 'vue-router'
 import { computed, onBeforeMount, useTemplateRef } from 'vue'
-import { serviceEndpoint, xrpc } from '@/api/atproto/client'
+import { xrpc } from '@/api/atproto/client'
 import i18next from 'i18next'
+import I18n from '@/intl/i18n'
 
 const identityStore = useIdentityStore()
 const persistedStore = usePersistedStore()
@@ -19,6 +20,18 @@ const selfProfileUrl = computed(() => {
 });
 
 onBeforeMount(async () => {
+  if (persistedStore.lang === null) {
+    // Set the default language of the navigator
+    const navigatorLanguage = navigator.language.slice(0, 2);
+    if (navigatorLanguage in I18n) {
+      persistedStore.lang = navigatorLanguage;
+    } else {
+      persistedStore.lang = "en";
+    }
+  }
+
+  await i18next.changeLanguage(persistedStore.lang);
+
   if (persistedStore.token != null &&
     identityStore.handle == null) {
     try {
@@ -34,8 +47,6 @@ onBeforeMount(async () => {
       persistedStore.token = null;
     }
   }
-
-  await i18next.changeLanguage(persistedStore.lang);
 });
 
 const openPainter = async () => {
