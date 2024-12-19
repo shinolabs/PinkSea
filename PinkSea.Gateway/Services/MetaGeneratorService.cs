@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using PinkSea.Gateway.Models;
+using PinkSea.Gateway.Models.Oekaki;
 
 namespace PinkSea.Gateway.Services;
 

@@ -1,12 +1,17 @@
+using System.Text;
+using System.Xml.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using PinkSea.Gateway.Models;
+using PinkSea.Gateway.Models.Rss;
 using PinkSea.Gateway.Services;
+using PinkSea.Gateway.Services.Rss;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<GatewaySettings>(
     builder.Configuration.GetSection("GatewaySettings"));
 builder.Services.AddScoped<MetaGeneratorService>();
+builder.Services.AddScoped<SyndicationBuilderService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient(
     "pinksea-xrpc",
@@ -27,6 +32,21 @@ app.MapGet(
     
     return Results.Text(file, contentType: "text/html");
 });
+
+app.MapGet(
+    "/{did}/rss", 
+    async ([FromRoute] string did, [FromServices] SyndicationBuilderService syndicationBuilderService) =>
+    {
+        using var ms = new MemoryStream();
+        await using var sw = new StreamWriter(ms);
+        
+        var rss = await syndicationBuilderService.BuildSyndicationFeedFor(did);
+        var xmlNamespaces = new XmlSerializerNamespaces();
+        xmlNamespaces.Add("atom", "http://www.w3.org/2005/Atom");
+        var serializer = new XmlSerializer(typeof(RssRoot));
+        serializer.Serialize(sw, rss, xmlNamespaces);
+        return Results.Text(Encoding.UTF8.GetString(ms.ToArray()), contentType: "application/rss+xml");
+    });
 
 app.MapFallback(async ([FromServices] MetaGeneratorService metaGenerator) =>
 {

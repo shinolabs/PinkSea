@@ -1,4 +1,4 @@
-namespace PinkSea.Gateway;
+namespace PinkSea.Gateway.Models.Oekaki;
 
 public class OekakiResponse
 {
