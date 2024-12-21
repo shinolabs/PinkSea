@@ -62,7 +62,7 @@ public class AtProtoOAuthClient(
         string? redirectUrl = null)
     {
         var did = handle;
-        if (!did.StartsWith("did"))
+        if (!did.StartsWith("did:"))
             did = await domainDidResolver.GetDidForDomainHandle(handle);
 
         if (did is null)
