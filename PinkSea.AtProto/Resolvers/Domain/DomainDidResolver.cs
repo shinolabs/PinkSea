@@ -69,6 +69,7 @@ public class DomainDidResolver(
         if (!resp.IsSuccessStatusCode)
             return null;
 
-        return await resp.Content.ReadAsStringAsync();
+        var did = await resp.Content.ReadAsStringAsync();
+        return did.Trim();
     }
 }
