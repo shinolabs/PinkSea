@@ -1,0 +1,65 @@
+{
+  "$schema": "https://internect.info/lexicon-schema.json",
+  "lexicon": 1,
+  "id": "com.shinolabs.pinksea.appViewDefs",
+  "defs": {
+    "hydratedOekaki": {
+      "type": "object",
+      "description": "A hydrated oekaki post returned from the PinkSea app view.",
+      "required": ["oekakiRecordKey", "authorDid", "authorHandle", "imageLink", "atProtoLink", "oekakiCid", "creationTime", "nsfw"],
+      "properties": {
+        "oekakiRecordKey": {
+          "type": "string",
+          "description": "The oekaki record key."
+        },
+        "authorDid": {
+          "type": "string",
+          "format": "at-identifier",
+          "description": "The DID of the author."
+        },
+        "authorHandle": {
+          "type": "string",
+          "format": "handle",
+          "description": "The handle of the author."
+        },
+        "imageLink": {
+          "type": "string",
+          "format": "uri",
+          "description": "The image link."
+        },
+        "atProtoLink": {
+          "type": "string",
+          "format": "uri",
+          "description": "The AT protocol link."
+        },
+        "oekakiCid": {
+          "type": "string",
+          "format": "cid",
+          "description": "The oekaki CID."
+        },
+        "creationTime": {
+          "type": "string",
+          "format": "datetime",
+          "description": "The creation time."
+        },
+        "nsfw": {
+          "type": "boolean",
+          "description": "Is this oekaki NSFW?"
+        },
+        "tags": {
+          "type": "array",
+          "description": "An array of tags this image had.",
+          "maxLength": 10,
+          "items": {
+            "type": "string",
+            "maxLength": 640
+          }
+        },
+        "alt": {
+          "type": "string",
+          "description": "Alt text description of the image, for accessibility."
+        }
+      }
+    }
+  }
+}
