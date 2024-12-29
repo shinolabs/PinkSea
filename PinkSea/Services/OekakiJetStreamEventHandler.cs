@@ -90,7 +90,7 @@ public class OekakiJetStreamEventHandler(
         string authorDid)
     {
         // Get the PDS of the author.
-        var authorDidResponse = await didResolver.GetDidResponseForDid(authorDid);
+        var authorDidResponse = await didResolver.GetDocumentForDid(authorDid);
         if (authorDidResponse is null)
             return false;
 

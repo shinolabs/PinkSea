@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using PinkSea.AtProto.Authorization;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.Storage;
@@ -54,7 +53,7 @@ public class OAuthController(
     /// </summary>
     /// <returns>The client metadata.</returns>
     [Route("client-metadata.json")]
-    public async Task<ActionResult<ClientMetadata>> ClientMetadata()
+    public ActionResult<ClientMetadata> ClientMetadata()
     {
         return Ok(clientDataProvider.ClientMetadata);
     }
@@ -64,17 +63,8 @@ public class OAuthController(
     /// </summary>
     /// <returns>The JSON Web Keys.</returns>
     [Route("jwks.json")]
-    public async Task<ActionResult<JsonWebKeySet>> Jwks()
+    public ActionResult<JsonWebKeySet> Jwks()
     {
-        var set = new JsonWebKeySet();
-        var key = JsonWebKeyConverter.ConvertFromECDsaSecurityKey(signingKeyService.SecurityKey);
-        key.D = null;
-        key.X = Base64UrlEncoder.Encode(signingKeyService.KeyParameters.Q.X!);
-        key.Y = Base64UrlEncoder.Encode(signingKeyService.KeyParameters.Q.Y!);
-        key.KeyOps.Add("verify");
-        key.KeyId = signingKeyService.KeyId;
-        set.Keys.Add(key);
-        
-        return Ok(set);
+        return Ok(signingKeyService.GetJsonWebKeySet());
     }
 }
