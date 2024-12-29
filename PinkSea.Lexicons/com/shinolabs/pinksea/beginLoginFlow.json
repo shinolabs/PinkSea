@@ -1,0 +1,52 @@
+{
+	"$schema": "https://internect.info/lexicon-schema.json",
+	"lexicon": 1,
+	"id": "com.shinolabs.pinksea.beginLoginFlow",
+	"defs": {
+		"main": {
+			"type": "procedure",
+			"description": "Begins the login flow.",
+			"input": {
+				"encoding": "application/json",
+				"schema": {
+					"type": "object",
+					"required": ["handle", "redirectUrl"],
+					"properties": {
+						"handle": {
+							"type": "string",
+							"description": "Either the handle or the DID of the user."
+						},
+						"redirectUrl": {
+							"type": "string",
+							"format": "uri",
+							"description": "The redirect url for the code."
+						},
+						"password": {
+							"type": "string",
+							"description": "The password. Supplying it will begin the login flow using a PDS session."
+						}
+					}
+				}
+			},
+			"output": {
+				"encoding": "application/json",
+				"schema": {
+					"type": "object",
+					"required": [],
+					"properties": {
+						"redirect": {
+							"type": "string",
+							"format": "uri",
+							"description": "The URL to redirect to."
+						},
+						"failureReason": {
+							"type": "string",
+							"description": "The failure reason."
+						}
+					}
+				}
+			},
+			"errors": []
+		}
+	}
+}

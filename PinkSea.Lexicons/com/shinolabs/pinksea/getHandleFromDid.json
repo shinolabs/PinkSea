@@ -1,0 +1,36 @@
+{
+	"$schema": "https://internect.info/lexicon-schema.json",
+	"lexicon": 1,
+	"id": "com.shinolabs.pinksea.getHandleFromDid",
+	"defs": {
+		"main": {
+			"type": "query",
+			"description": "Gets the handle for a DID.",
+			"parameters": {
+				"type": "params",
+				"required": ["did"],
+				"properties": {
+					"did": {
+						"type": "string",
+						"format": "at-identifier",
+						"description": "The DID."
+					}
+				}
+			}
+		},
+		"output": {
+			"encoding": "application/json",
+			"schema": {
+				"type": "object",
+				"required": ["handle"],
+				"properties": {
+					"handle": {
+						"type": "string",
+						"format": "handle",
+						"description": "The handle."
+					}
+				}
+			}
+		}
+	}
+}

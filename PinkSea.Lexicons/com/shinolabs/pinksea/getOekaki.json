@@ -1,0 +1,46 @@
+{
+	"$schema": "https://internect.info/lexicon-schema.json",
+	"lexicon": 1,
+	"id": "com.shinolabs.pinksea.getOekaki",
+	"defs": {
+		"main": {
+			"type": "query",
+			"description": "Gets the data about an oekaki post, with its children",
+			"parameters": {
+				"type": "params",
+				"required": ["did", "rkey"],
+				"properties": {
+					"did": {
+						"type": "string",
+						"format": "at-identifier",
+						"description": "The DID of the author."
+					},
+					"rkey": {
+						"type": "string",
+						"description": "The record key."
+					}
+				}
+			}
+		},
+		"output": {
+			"encoding": "application/json",
+			"schema": {
+				"type": "object",
+				"required": ["parent", "children"],
+				"properties": {
+					"parent": {
+						"type": "ref",
+						"ref": "com.shionlabs.pinksea.appViewDefs#hydratedOekaki"
+					},
+					"children": {
+						"type": "array",
+						"items": {
+							"type": "ref",
+							"ref": "com.shionlabs.pinksea.appViewDefs#hydratedOekaki"
+						}
+					}
+				}
+			}
+		}
+	}
+}

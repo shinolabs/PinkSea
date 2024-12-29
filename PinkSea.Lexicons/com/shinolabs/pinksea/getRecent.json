@@ -1,0 +1,45 @@
+{
+	"$schema": "https://internect.info/lexicon-schema.json",
+	"lexicon": 1,
+	"id": "com.shinolabs.pinksea.getRecent",
+	"defs": {
+		"main": {
+			"type": "query",
+			"description": "Gets the most recent posts on the timeline, in reverse chronological order.",
+			"parameters": {
+				"type": "params",
+				"required": [],
+				"properties": {
+					"since": {
+						"type": "string",
+						"format": "datetime",
+						"description": "Since when should the query begin?"
+					},
+					"limit": {
+						"type": "integer",
+						"minimum": 1,
+						"maximum": 50,
+						"default": 50,
+						"description": "The limit on posts to fetch."
+					}
+				}
+			}
+		},
+		"output": {
+			"encoding": "application/json",
+			"schema": {
+				"type": "object",
+				"required": ["oekaki"],
+				"properties": {
+					"oekaki": {
+						"type": "array",
+						"items": {
+							"type": "ref",
+							"ref": "com.shionlabs.pinksea.appViewDefs#hydratedOekaki"
+						}
+					}
+				}
+			}
+		}
+	}
+}

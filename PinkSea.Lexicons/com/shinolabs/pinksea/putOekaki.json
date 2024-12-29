@@ -1,0 +1,69 @@
+{
+	"$schema": "https://internect.info/lexicon-schema.json",
+	"lexicon": 1,
+	"id": "com.shinolabs.pinksea.putOekaki",
+	"defs": {
+		"main": {
+			"type": "procedure",
+			"description": "Uploads an oekaki drawing and publishes it to the PDS.",
+			"input": {
+				"encoding": "application/json",
+				"schema": {
+					"type": "object",
+					"required": ["data"],
+					"properties": {
+						"data": {
+							"type": "string",
+							"description": "The base64 image/png data of the image."
+						},
+						"tags": {
+							"type": "array",
+							"description": "An array of tags of this oekaki.",
+							"maxLength": 10,
+							"items": {
+								"type": "string",
+								"maxLength": 640
+							}
+						},
+						"alt": {
+							"type": "string",
+							"description": "The alt text."
+						},
+						"parent": {
+							"type": "string",
+							"format": "uri",
+							"description": "The at:// url of the parent post."
+						},
+						"nsfw": {
+							"type": "boolean",
+							"description": "Is this oekaki NSFW?"
+						},
+						"bskyCrosspost": {
+							"type": "boolean",
+							"description": "Should the image be crossposted to Bluesky?"
+						}
+					}
+				}
+			},
+			"output": {
+				"encoding": "application/json",
+				"schema": {
+					"type": "object",
+					"required": ["uri", "rkey"],
+					"properties": {
+						"uri": {
+							"type": "string",
+							"format": "uri",
+							"description": "The at:// uri."
+						},
+						"rkey": {
+							"type": "rkey",
+							"description": "The record key."
+						}
+					}
+				}
+			},
+			"errors": []
+		}
+	}
+}
