@@ -26,12 +26,11 @@ public class GetIdentityQueryHandler(IHttpContextAccessor httpContextAccessor,
         if (oauthState is null)
             return null!;
 
-        var didDocument = await didResolver.GetDidResponseForDid(oauthState.Did);
+        var didDocument = await didResolver.GetDocumentForDid(oauthState.Did);
         return new GetIdentityQueryResponse
         {
             Did = oauthState.Did,
-            Handle = didDocument!.AlsoKnownAs[0]
-                .Replace("at://", "")
+            Handle = didDocument!.GetHandle()!
         };
     }
 }

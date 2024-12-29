@@ -12,7 +12,7 @@ public class DidResolver(
     IMemoryCache memoryCache) : IDidResolver
 {
     /// <inheritdoc />
-    public async Task<DidResponse?> GetDidResponseForDid(string did)
+    public async Task<DidDocument?> GetDocumentForDid(string did)
     {
         return await memoryCache.GetOrCreateAsync(
             $"did:{did}",
@@ -31,9 +31,8 @@ public class DidResolver(
             async e =>
             {
                 e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                var didDocument = await GetDidResponseForDid(did);
-                return didDocument?.AlsoKnownAs[0]
-                    .Replace("at://", "");
+                var didDocument = await GetDocumentForDid(did);
+                return didDocument?.GetHandle();
             });
     }
 
@@ -42,7 +41,7 @@ public class DidResolver(
     /// </summary>
     /// <param name="did">The DID.</param>
     /// <returns>The response, if it exists.</returns>
-    private async Task<DidResponse?> ResolveDid(
+    private async Task<DidDocument?> ResolveDid(
         string did)
     {
         Uri uri;
@@ -73,12 +72,12 @@ public class DidResolver(
     /// </summary>
     /// <param name="domain">The domain.</param>
     /// <returns>The did response.</returns>
-    private async Task<DidResponse?> ResolveDidViaWeb(string domain)
+    private async Task<DidDocument?> ResolveDidViaWeb(string domain)
     {
         const string wellKnownUri = $"/.well-known/did.json";
         
         using var client = clientFactory.CreateClient();
-        return await client.GetFromJsonAsync<DidResponse>($"https://{domain}{wellKnownUri}");
+        return await client.GetFromJsonAsync<DidDocument>($"https://{domain}{wellKnownUri}");
     }
 
     /// <summary>
@@ -86,9 +85,9 @@ public class DidResolver(
     /// </summary>
     /// <param name="did">The DID.</param>
     /// <returns>The did response.</returns>
-    private async Task<DidResponse?> ResolveDidViaPlcDirectory(string did)
+    private async Task<DidDocument?> ResolveDidViaPlcDirectory(string did)
     {
         using var client = clientFactory.CreateClient("did-resolver");
-        return await client.GetFromJsonAsync<DidResponse>($"/{did}");
+        return await client.GetFromJsonAsync<DidDocument>($"/{did}");
     }
 }

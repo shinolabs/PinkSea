@@ -36,7 +36,7 @@ public class AtProtoAuthorizationService(
         if (identifier is null)
             return ErrorOr<string>.Fail($"Could not resolve the DID for {handle}.");
 
-        var didDocument = await didResolver.GetDidResponseForDid(identifier);
+        var didDocument = await didResolver.GetDocumentForDid(identifier);
         if (didDocument is null)
             return ErrorOr<string>.Fail($"Could not fetch the DID document for {identifier}.");
 

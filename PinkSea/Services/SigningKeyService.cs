@@ -58,6 +58,24 @@ public class SigningKeyService(
     public string KeyId => configuration.Configuration.KeyId;
 
     /// <summary>
+    /// Gets the JSON Web Key set for this key service.
+    /// </summary>
+    /// <returns>The JWK set.</returns>
+    public JsonWebKeySet GetJsonWebKeySet()
+    {
+        var set = new JsonWebKeySet();
+        var key = JsonWebKeyConverter.ConvertFromECDsaSecurityKey(SecurityKey);
+        key.D = null;
+        key.X = Base64UrlEncoder.Encode(KeyParameters.Q.X!);
+        key.Y = Base64UrlEncoder.Encode(KeyParameters.Q.Y!);
+        key.KeyOps.Add("verify");
+        key.KeyId = KeyId;
+        set.Keys.Add(key);
+
+        return set;
+    }
+    
+    /// <summary>
     /// Loads the configuration.
     /// </summary>
     private void LoadConfiguration()

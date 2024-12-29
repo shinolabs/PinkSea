@@ -68,7 +68,7 @@ public class AtProtoOAuthClient(
         if (did is null)
             return ErrorOr<string>.Fail($"Could not resolve the DID for {handle}");
         
-        var resolved = await didResolver.GetDidResponseForDid(did!);
+        var resolved = await didResolver.GetDocumentForDid(did!);
         var pds = resolved?.GetPds();
         if (pds is null)
             return ErrorOr<string>.Fail($"Could not resolve the PDS for {did}");

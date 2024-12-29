@@ -118,11 +118,11 @@ public class SessionXrpcClient(
     /// </summary>
     /// <param name="obj">The object.</param>
     /// <returns>The resulting query string.</returns>
-    private string ObjectToQueryParams(object obj)
+    private static string ObjectToQueryParams(object obj)
     {
         var props = from p in obj.GetType().GetProperties()
             where p.GetValue(obj, null) != null
-            select p.Name.ToLowerInvariant() + "=" + HttpUtility.UrlEncode(p.GetValue(obj, null).ToString());
+            select p.Name.ToLowerInvariant() + "=" + HttpUtility.UrlEncode(p.GetValue(obj, null)!.ToString());
 
         return string.Join('&', props.ToArray());
     }
