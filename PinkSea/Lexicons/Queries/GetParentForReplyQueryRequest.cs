@@ -10,7 +10,7 @@ public class GetParentForReplyQueryRequest
     /// <summary>
     /// The DID of the author.
     /// </summary>
-    [JsonPropertyName("authorDid")]
+    [JsonPropertyName("did")]
     public required string AuthorDid { get; init; }
     
     /// <summary>

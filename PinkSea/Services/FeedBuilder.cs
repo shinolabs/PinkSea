@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.Database;
 using PinkSea.Database.Models;
-using PinkSea.Models.Dto;
+using PinkSea.Lexicons.Objects;
 
 namespace PinkSea.Services;
 
@@ -96,7 +96,7 @@ public class FeedBuilder(
     /// Gets the feed.
     /// </summary>
     /// <returns>The list of oekaki DTOs.</returns>
-    public async Task<List<OekakiDto>> GetFeed()
+    public async Task<List<HydratedOekaki>> GetFeed()
     {
         var list = await _query.ToListAsync();
         
@@ -112,7 +112,7 @@ public class FeedBuilder(
         });
 
         var oekakiDtos = list
-            .Select(o => OekakiDto.FromOekakiModel(o, map[o.AuthorDid]))
+            .Select(o => HydratedOekaki.FromOekakiModel(o, map[o.AuthorDid]))
             .ToList();
 
         return oekakiDtos;

@@ -53,12 +53,15 @@ import PostViewOekakiChildCard from '@/components/oekaki/PostViewOekakiChildCard
 
 <template>
   <Loader v-if="oekaki == null" />
-  <div class="timeline-container" v-else>
-    <span v-for="oekakiPost of oekaki" v-bind:key="oekakiPost.atProtoLink" v-bind="oekakiPost">
+  <div class="timeline-container" v-else-if="oekaki.length > 0">
+    <span v-for="oekakiPost of oekaki" v-bind:key="oekakiPost.at" v-bind="oekakiPost">
       <TimeLineOekakiCard v-if="!props.showAsReplies" :oekaki="oekakiPost"/>
       <PostViewOekakiChildCard v-else :oekaki="oekakiPost" :hide-line-bar="true" />
     </span>
     <Intersector @intersected="loadMore" />
+  </div>
+  <div class="timeline-container timeline-centered" v-else>
+    nothing here so far... (╥﹏╥)
   </div>
 </template>
 
@@ -68,5 +71,8 @@ import PostViewOekakiChildCard from '@/components/oekaki/PostViewOekakiChildCard
   }
   .timeline-container div {
     margin: 10px;
+  }
+  .timeline-centered {
+    text-align: center;
   }
 </style>

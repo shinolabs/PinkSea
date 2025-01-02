@@ -4,6 +4,7 @@ import type { Oekaki } from '@/models/oekaki'
 import { useRouter } from 'vue-router'
 import TagContainer from '@/components/TagContainer.vue'
 import { usePersistedStore } from '@/state/store'
+import { buildOekakiUrlFromOekakiObject, formatDate } from '@/api/atproto/helpers'
 
 const router = useRouter();
 const persistedStore = usePersistedStore();
@@ -12,25 +13,21 @@ const props = defineProps<{
   oekaki: Oekaki
 }>()
 
-const options: Intl.DateTimeFormatOptions = {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric'
-}
-
-const imageLink = computed(() => `url(${props.oekaki.imageLink})`)
-const authorProfileLink = computed(() => `/${props.oekaki.authorDid}`);
+const imageLink = computed(() => `url(${props.oekaki.image})`)
+const authorProfileLink = computed(() => `/${props.oekaki.did}`);
 const creationTime = computed(() => {
-  return new Date(props.oekaki.creationTime).toLocaleTimeString(persistedStore.lang, options)
+  return formatDate(props.oekaki.creationTime)
 })
 const altText = computed(() => props.oekaki.alt ?? "");
 
 const navigateToPost = () => {
-  router.push(`/${props.oekaki.authorDid}/oekaki/${props.oekaki.oekakiRecordKey}`);
+  const url = buildOekakiUrlFromOekakiObject(props.oekaki);
+  router.push(url);
 };
 
 const openInNewTab = () => {
-  window.open(`/${props.oekaki.authorDid}/oekaki/${props.oekaki.oekakiRecordKey}`, "_blank");
+  const url = buildOekakiUrlFromOekakiObject(props.oekaki);
+  window.open(url, "_blank");
 };
 </script>
 
@@ -40,7 +37,7 @@ const openInNewTab = () => {
       <div class="oekaki-nsfw-blur" v-if="props.oekaki.nsfw && persistedStore.blurNsfw">NSFW</div>
     </div>
     <div class="oekaki-meta">
-      <span>{{ $t("timeline.by_before_handle") }}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b>{{ $t("timeline.by_after_handle") }}</span><br>
+      <span>{{ $t("timeline.by_before_handle") }}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.handle }}</RouterLink></b>{{ $t("timeline.by_after_handle") }}</span><br>
       <span>{{ creationTime }}</span><br>
       <TagContainer v-if="props.oekaki.tags !== undefined && props.oekaki.tags.length > 0" :tags="props.oekaki.tags" />
       <div class="oekaki-tag-container-substitute" v-else>.</div>

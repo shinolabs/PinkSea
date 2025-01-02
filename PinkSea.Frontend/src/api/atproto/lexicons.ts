@@ -89,7 +89,7 @@ declare module '@atcute/client/lexicons' {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace ComShinolabsPinkseaGetParentForReply {
     interface Params {
-      authorDid: string,
+      did: string,
       rkey: string
     }
   }

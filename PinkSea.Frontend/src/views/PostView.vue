@@ -38,7 +38,7 @@ onBeforeMount(async () => {
     <div v-else>
       <PostViewOekakiParentCard :oekaki="parent" />
       <br />
-      <PostViewOekakiChildCard v-for="child of children" v-bind:key="child.atProtoLink" :oekaki="child" />
+      <PostViewOekakiChildCard v-for="child of children" v-bind:key="child.at" :oekaki="child" />
 
       <RespondBox :parent="parent" />
     </div>
