@@ -40,7 +40,7 @@
 						"type": "array",
 						"items": {
 							"type": "ref",
-							"ref": "com.shionlabs.pinksea.appViewDefs#hydratedOekaki"
+							"ref": "com.shinolabs.pinksea.appViewDefs#hydratedOekaki"
 						}
 					}
 				}
