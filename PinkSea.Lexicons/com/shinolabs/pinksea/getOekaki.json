@@ -30,13 +30,13 @@
 				"properties": {
 					"parent": {
 						"type": "ref",
-						"ref": "com.shionlabs.pinksea.appViewDefs#hydratedOekaki"
+						"ref": "com.shinolabs.pinksea.appViewDefs#hydratedOekaki"
 					},
 					"children": {
 						"type": "array",
 						"items": {
 							"type": "ref",
-							"ref": "com.shionlabs.pinksea.appViewDefs#hydratedOekaki"
+							"ref": "com.shinolabs.pinksea.appViewDefs#hydratedOekaki"
 						}
 					}
 				}
