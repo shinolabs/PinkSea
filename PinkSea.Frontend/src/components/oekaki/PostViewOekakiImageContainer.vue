@@ -9,7 +9,7 @@ const props = defineProps<{
 
 const persistedStore = usePersistedStore();
 const nsfwRef = useTemplateRef<HTMLDivElement>("nsfw-cover");
-const imageLink = computed(() => `url(${props.oekaki.imageLink})`)
+const imageLink = computed(() => `url(${props.oekaki.image})`)
 const altText = computed(() => props.oekaki.alt ?? "");
 
 const hideNSFWBlur = () => {
@@ -20,7 +20,7 @@ const hideNSFWBlur = () => {
 <template>
   <div class="oekaki-image-container">
     <div class="oekaki-image">
-      <img :src="props.oekaki.imageLink" :alt="altText" :title="altText" />
+      <img :src="props.oekaki.image" :alt="altText" :title="altText" />
       <div class="oekaki-nsfw-cover" ref="nsfw-cover" :title="altText" v-if="props.oekaki.nsfw && persistedStore.blurNsfw">
         <div class="oekaki-nsfw-blur" v-on:click.prevent="hideNSFWBlur">
           NSFW

@@ -8,7 +8,7 @@ import { watch } from 'vue'
 
 const persistedStore = usePersistedStore();
 watch(persistedStore, () => {
-  i18next.changeLanguage(persistedStore.lang);
+  i18next.changeLanguage(persistedStore.lang!);
 });
 </script>
 

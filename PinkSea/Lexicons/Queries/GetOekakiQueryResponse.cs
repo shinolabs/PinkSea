@@ -1,4 +1,4 @@
-using PinkSea.Models.Dto;
+using PinkSea.Lexicons.Objects;
 
 namespace PinkSea.Lexicons.Queries;
 
@@ -10,10 +10,10 @@ public class GetOekakiQueryResponse
     /// <summary>
     /// The parent post.
     /// </summary>
-    public required OekakiDto Parent { get; set; }
+    public required HydratedOekaki Parent { get; set; }
     
     /// <summary>
     /// The children of the post, sorted by time.
     /// </summary>
-    public required OekakiDto[] Children { get; set; }
+    public required HydratedOekaki[] Children { get; set; }
 }

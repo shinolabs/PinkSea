@@ -4,6 +4,7 @@ import type { Oekaki } from '@/models/oekaki'
 import TagContainer from '@/components/TagContainer.vue'
 import PostViewOekakiImageContainer from '@/components/oekaki/PostViewOekakiImageContainer.vue'
 import { usePersistedStore } from '@/state/store'
+import { formatDate } from '@/api/atproto/helpers'
 
 const props = defineProps<{
   oekaki: Oekaki
@@ -11,15 +12,9 @@ const props = defineProps<{
 
 const persistedStore = usePersistedStore();
 
-const options: Intl.DateTimeFormatOptions = {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric'
-}
-
-const authorProfileLink = computed(() => `/${props.oekaki.authorDid}`);
+const authorProfileLink = computed(() => `/${props.oekaki.did}`);
 const creationTime = computed(() => {
-  return new Date(props.oekaki.creationTime).toLocaleTimeString(persistedStore.lang, options)
+  return formatDate(props.oekaki.creationTime)
 })
 
 </script>
@@ -28,7 +23,7 @@ const creationTime = computed(() => {
   <div class="oekaki-card" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
     <PostViewOekakiImageContainer :oekaki="props.oekaki" />
     <div class="oekaki-meta">
-      <span>{{ $t("timeline.by_before_handle" )}}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.authorHandle }}</RouterLink></b>{{ $t("timeline.by_after_handle" )}}</span><br>
+      <span>{{ $t("timeline.by_before_handle" )}}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.handle }}</RouterLink></b>{{ $t("timeline.by_after_handle" )}}</span><br>
       <span>{{ creationTime }}</span><br>
       <TagContainer v-if="props.oekaki.tags !== undefined" :tags="props.oekaki.tags" />
     </div>

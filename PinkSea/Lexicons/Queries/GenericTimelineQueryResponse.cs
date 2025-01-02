@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using PinkSea.Models.Dto;
+using PinkSea.Lexicons.Objects;
 
 namespace PinkSea.Lexicons.Queries;
 
@@ -12,5 +12,5 @@ public class GenericTimelineQueryResponse
     /// The oekaki that were a result of the query.
     /// </summary>
     [JsonPropertyName("oekaki")]
-    public required IEnumerable<OekakiDto> Oekaki { get; set; }
+    public required IEnumerable<HydratedOekaki> Oekaki { get; set; }
 }

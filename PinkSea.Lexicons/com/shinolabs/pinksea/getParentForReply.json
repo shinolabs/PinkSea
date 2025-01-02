@@ -8,9 +8,9 @@
 			"description": "Gets the parent for a reply.",
 			"parameters": {
 				"type": "params",
-				"required": ["authorDid", "rkey"],
+				"required": ["did", "rkey"],
 				"properties": {
-					"authorDid": {
+					"did": {
 						"type": "string",
 						"format": "at-identifier",
 						"description": "The DID of the author."
@@ -26,9 +26,9 @@
 			"encoding": "application/json",
 			"schema": {
 				"type": "object",
-				"required": ["authorDid", "rkey"],
+				"required": ["did", "rkey"],
 				"properties": {
-					"authorDid": {
+					"did": {
 						"type": "string",
 						"format": "at-identifier",
 						"description": "The DID of the author."

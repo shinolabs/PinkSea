@@ -65,7 +65,7 @@ const uploadImage = async () => {
         tags: [],
         alt: alt.value,
         nsfw: nsfw.value,
-        parent: props.parent.atProtoLink,
+        parent: props.parent.at,
         bskyCrosspost: false
       },
       headers: {
@@ -83,14 +83,14 @@ const uploadImage = async () => {
 
     imageStore.lastDoneReply = image.value;
     imageStore.lastReplyErrored = true;
-    imageStore.lastReplyId = props.parent.oekakiRecordKey;
+    imageStore.lastReplyId = props.parent.at;
 
     alert(i18next.t("painter.could_not_send_post"));
   }
 };
 
 onBeforeMount(() => {
-  if (imageStore.lastReplyId == props.parent.oekakiRecordKey
+  if (imageStore.lastReplyId == props.parent.at
     && imageStore.lastDoneReply !== null && imageStore.lastReplyErrored)
   {
     image.value = imageStore.lastDoneReply;

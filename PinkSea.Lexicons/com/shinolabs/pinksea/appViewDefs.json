@@ -6,33 +6,29 @@
     "hydratedOekaki": {
       "type": "object",
       "description": "A hydrated oekaki post returned from the PinkSea app view.",
-      "required": ["oekakiRecordKey", "authorDid", "authorHandle", "imageLink", "atProtoLink", "oekakiCid", "creationTime", "nsfw"],
+      "required": ["did", "handle", "image", "at", "cid", "creationTime", "nsfw"],
       "properties": {
-        "oekakiRecordKey": {
-          "type": "string",
-          "description": "The oekaki record key."
-        },
-        "authorDid": {
+        "did": {
           "type": "string",
           "format": "at-identifier",
           "description": "The DID of the author."
         },
-        "authorHandle": {
+        "handle": {
           "type": "string",
           "format": "handle",
           "description": "The handle of the author."
         },
-        "imageLink": {
+        "image": {
           "type": "string",
           "format": "uri",
           "description": "The image link."
         },
-        "atProtoLink": {
+        "at": {
           "type": "string",
           "format": "uri",
           "description": "The AT protocol link."
         },
-        "oekakiCid": {
+        "cid": {
           "type": "string",
           "format": "cid",
           "description": "The oekaki CID."

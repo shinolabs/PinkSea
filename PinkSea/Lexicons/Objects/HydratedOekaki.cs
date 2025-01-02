@@ -1,52 +1,59 @@
+using System.Text.Json.Serialization;
 using PinkSea.Database.Models;
 
-namespace PinkSea.Models.Dto;
+namespace PinkSea.Lexicons.Objects;
 
-public class OekakiDto
+/// <summary>
+/// The "com.shinolabs.pinksea.appViewDefs#hydratedOekaki" type.
+/// </summary>
+public class HydratedOekaki
 {
-    /// <summary>
-    /// The oekaki record key.
-    /// </summary>
-    public required string OekakiRecordKey { get; set; }
-    
     /// <summary>
     /// The DID of the author.
     /// </summary>
-    public required string AuthorDid { get; set; }
+    [JsonPropertyName("did")]
+    public required string Did { get; set; }
     
     /// <summary>
     /// The handle of the author.
     /// </summary>
-    public required string AuthorHandle { get; set; }
+    [JsonPropertyName("handle")]
+    public required string Handle { get; set; }
     
     /// <summary>
     /// The image link.
     /// </summary>
+    [JsonPropertyName("image")]
     public required string ImageLink { get; set; }
     
     /// <summary>
     /// The AT protocol link.
     /// </summary>
+    [JsonPropertyName("at")]
     public required string AtProtoLink { get; set; }
     
     /// <summary>
     /// The oekaki CID.
     /// </summary>
-    public required string OekakiCid { get; set; }
+    [JsonPropertyName("cid")]
+    public required string Cid { get; set; }
     
     /// <summary>
     /// The creation time.
     /// </summary>
+    [JsonPropertyName("creationTime")]
     public required DateTimeOffset CreationTime { get; set; }
     
     /// <summary>
     /// Is this oekaki NSFW?
     /// </summary>
+    [JsonPropertyName("nsfw")]
     public required bool Nsfw { get; set; }
     
     /// <summary>
     /// The tags for this oekaki post.
     /// </summary>
+    [JsonPropertyName("tags")]
     public string[]? Tags { get; set; }
     
     /// <summary>
@@ -60,15 +67,14 @@ public class OekakiDto
     /// <param name="oekakiModel">The oekaki model.</param>
     /// <param name="authorHandle">The author's handle.</param>
     /// <returns>The oekaki DTO.</returns>
-    public static OekakiDto FromOekakiModel(
+    public static HydratedOekaki FromOekakiModel(
         OekakiModel oekakiModel,
         string authorHandle)
     {
-        return new OekakiDto
+        return new HydratedOekaki
         {
-            OekakiRecordKey = oekakiModel.OekakiTid,
-            AuthorDid = oekakiModel.AuthorDid,
-            AuthorHandle = authorHandle,
+            Did = oekakiModel.AuthorDid,
+            Handle = authorHandle,
             CreationTime = oekakiModel.IndexedAt,
             ImageLink =
                 $"https://cdn.bsky.app/img/feed_fullsize/plain/{oekakiModel.AuthorDid}/{oekakiModel.BlobCid}",
@@ -79,8 +85,8 @@ public class OekakiDto
             Nsfw = oekakiModel.IsNsfw ?? false,
             Alt = oekakiModel.AltText,
             
-            AtProtoLink = $"at://{authorHandle}/com.shinolabs.pinksea.oekaki/{oekakiModel.OekakiTid}",
-            OekakiCid = oekakiModel.RecordCid
+            AtProtoLink = $"at://{oekakiModel.AuthorDid}/com.shinolabs.pinksea.oekaki/{oekakiModel.OekakiTid}",
+            Cid = oekakiModel.RecordCid
         };
     }
 }
