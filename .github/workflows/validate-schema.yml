@@ -1,0 +1,27 @@
+name: Validate PinkSea Lexicons
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate-pinksea-lexicons-workflow:
+    name: Validate PinkSea lexicons
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for any changed lexicons
+        id: check-for-changed-lexicons
+        uses: tj-actions/changed-files@v41
+        with:
+          files: |
+            PinkSea.Lexicons/**/*.json
+      - name: Validate lexicon schema
+        if: steps.check-for-changed-lexicons.outputs.any_changed == 'true'
+        uses: dsanders11/json-schema-validate-action
+        with:
+          schema: https://internect.info/lexicon-schema.json
+          files: PinkSea.Lexicons/**/*.json
