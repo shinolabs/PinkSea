@@ -28,19 +28,19 @@
 						"description": "The limit on posts to fetch."
 					}
 				}
-			}
-		},
-		"output": {
-			"encoding": "application/json",
-			"schema": {
-				"type": "object",
-				"required": ["oekaki"],
-				"properties": {
-					"oekaki": {
-						"type": "array",
-						"items": {
-							"type": "ref",
-							"ref": "com.shinolabs.pinksea.appViewDefs#hydratedOekaki"
+			},
+			"output": {
+				"encoding": "application/json",
+				"schema": {
+					"type": "object",
+					"required": ["oekaki"],
+					"properties": {
+						"oekaki": {
+							"type": "array",
+							"items": {
+								"type": "ref",
+								"ref": "com.shinolabs.pinksea.appViewDefs#hydratedOekaki"
+							}
 						}
 					}
 				}

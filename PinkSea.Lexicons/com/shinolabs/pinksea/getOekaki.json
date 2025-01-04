@@ -20,23 +20,23 @@
 						"description": "The record key."
 					}
 				}
-			}
-		},
-		"output": {
-			"encoding": "application/json",
-			"schema": {
-				"type": "object",
-				"required": ["parent", "children"],
-				"properties": {
-					"parent": {
-						"type": "ref",
-						"ref": "com.shinolabs.pinksea.appViewDefs#hydratedOekaki"
-					},
-					"children": {
-						"type": "array",
-						"items": {
-							"type": "ref",
-							"ref": "com.shinolabs.pinksea.appViewDefs#hydratedOekaki"
+			},
+			"output": {
+				"encoding": "application/json",
+				"schema": {
+					"type": "object",
+					"required": ["parent", "children"],
+					"properties": {
+						"parent": {
+							"type": "union",
+							"refs": ["com.shinolabs.pinksea.appViewDefs#hydratedOekaki", "com.shinolabs.pinksea.appViewDefs#oekakiTombstone"]
+						},
+						"children": {
+							"type": "array",
+							"items": {
+								"type": "ref",
+								"ref": "com.shinolabs.pinksea.appViewDefs#hydratedOekaki"
+							}
 						}
 					}
 				}

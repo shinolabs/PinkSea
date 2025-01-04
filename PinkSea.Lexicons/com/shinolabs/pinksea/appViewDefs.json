@@ -6,17 +6,11 @@
     "hydratedOekaki": {
       "type": "object",
       "description": "A hydrated oekaki post returned from the PinkSea app view.",
-      "required": ["did", "handle", "image", "at", "cid", "creationTime", "nsfw"],
+      "required": ["author", "image", "at", "cid", "creationTime", "nsfw"],
       "properties": {
-        "did": {
-          "type": "string",
-          "format": "at-identifier",
-          "description": "The DID of the author."
-        },
-        "handle": {
-          "type": "string",
-          "format": "handle",
-          "description": "The handle of the author."
+        "author": {
+          "type": "ref",
+          "ref": "#author"
         },
         "image": {
           "type": "string",
@@ -54,6 +48,35 @@
         "alt": {
           "type": "string",
           "description": "Alt text description of the image, for accessibility."
+        }
+      }
+    },
+    "author": {
+      "type": "object",
+      "description": "An author for an oekaki post",
+      "required": ["did", "handle"],
+      "properties": {
+        "did": {
+          "type": "string",
+          "format": "did",
+          "description": "The DID of the author"
+        },
+        "handle": {
+          "type": "string",
+          "format": "handle",
+          "description": "The handle of the author."
+        }
+      }
+    },
+    "oekakiTombstone": {
+      "type": "object",
+      "description": "A tombstone for a missing oekaki.",
+      "required": ["at"],
+      "properties": {
+        "at": {
+          "type": "string",
+          "format": "at-uri",
+          "description": "The AT uri of the former oekaki."
         }
       }
     }

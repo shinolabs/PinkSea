@@ -20,22 +20,22 @@
 						"description": "The record key."
 					}
 				}
-			}
-		},
-		"output": {
-			"encoding": "application/json",
-			"schema": {
-				"type": "object",
-				"required": ["did", "rkey"],
-				"properties": {
-					"did": {
-						"type": "string",
-						"format": "at-identifier",
-						"description": "The DID of the author."
-					},
-					"rkey": {
-						"type": "string",
-						"description": "The record key."
+			},
+			"output": {
+				"encoding": "application/json",
+				"schema": {
+					"type": "object",
+					"required": ["did", "rkey"],
+					"properties": {
+						"did": {
+							"type": "string",
+							"format": "at-identifier",
+							"description": "The DID of the author."
+						},
+						"rkey": {
+							"type": "string",
+							"description": "The record key."
+						}
 					}
 				}
 			}
