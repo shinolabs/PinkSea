@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using PinkSea.Gateway.Lexicons;
 using PinkSea.Gateway.Models;
 
 namespace PinkSea.Gateway.Services;
@@ -27,7 +28,7 @@ public class MetaGeneratorService(
             async cacheEntry =>
             {
                 using var client = httpClientFactory.CreateClient("pinksea-xrpc");
-                var resp = await client.GetFromJsonAsync<OekakiResponse>(string.Format(endpointTemplate, did, rkey));
+                var resp = await client.GetFromJsonAsync<GetOekakiResponse>(string.Format(endpointTemplate, did, rkey));
                 
                 cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cacheExpiry);
                 
@@ -60,16 +61,21 @@ public class MetaGeneratorService(
     /// </summary>
     /// <param name="resp">The response.</param>
     /// <returns>The formatted oekaki response.</returns>
-    private string FormatOekakiResponse(OekakiResponse resp)
+    private string FormatOekakiResponse(GetOekakiResponse resp)
     {
+        var rkey = resp.Parent
+            .AtProtoLink
+            .Split('/')
+            .Last();
+        
         return $"""
-                <link rel="alternate" href="at://{resp.Parent.AuthorDid}/com.shinolabs.pinksea.oekaki/{resp.Parent.OekakiRecordKey}" />
+                <link rel="alternate" href="{resp.Parent.AtProtoLink}" />
                 <meta name="application-name" content="PinkSea">
                 <meta name="generator" content="PinkSea.Gateway">
                 <meta property="og:site_name" content="PinkSea" />
-                <meta property="og:title" content="{resp!.Parent.AuthorHandle}'s oekaki" />
+                <meta property="og:title" content="{resp!.Parent.Author.Handle}'s oekaki" />
                 <meta property="og:type" content="website" />
-                <meta property="og:url" content="{options.Value.FrontEndEndpoint}/{resp.Parent.AuthorDid}/oekaki/{resp.Parent.OekakiRecordKey}" />
+                <meta property="og:url" content="{options.Value.FrontEndEndpoint}/{resp.Parent.Author.Did}/oekaki/{rkey}" />
                 <meta property="og:image" content="{resp!.Parent.ImageLink}" />
                 <meta property="og:description" content="{resp!.Parent.Alt}" />
                 <meta name="theme-color" content="#FFB6C1">
