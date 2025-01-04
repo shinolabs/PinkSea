@@ -14,7 +14,7 @@ const props = defineProps<{
 }>()
 
 const imageLink = computed(() => `url(${props.oekaki.image})`)
-const authorProfileLink = computed(() => `/${props.oekaki.did}`);
+const authorProfileLink = computed(() => `/${props.oekaki.author.did}`);
 const creationTime = computed(() => {
   return formatDate(props.oekaki.creationTime)
 })
@@ -37,7 +37,7 @@ const openInNewTab = () => {
       <div class="oekaki-nsfw-blur" v-if="props.oekaki.nsfw && persistedStore.blurNsfw">NSFW</div>
     </div>
     <div class="oekaki-meta">
-      <span>{{ $t("timeline.by_before_handle") }}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.handle }}</RouterLink></b>{{ $t("timeline.by_after_handle") }}</span><br>
+      <span>{{ $t("timeline.by_before_handle") }}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.author.handle }}</RouterLink></b>{{ $t("timeline.by_after_handle") }}</span><br>
       <span>{{ creationTime }}</span><br>
       <TagContainer v-if="props.oekaki.tags !== undefined && props.oekaki.tags.length > 0" :tags="props.oekaki.tags" />
       <div class="oekaki-tag-container-substitute" v-else>.</div>

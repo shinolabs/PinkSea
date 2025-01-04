@@ -9,16 +9,10 @@ namespace PinkSea.Lexicons.Objects;
 public class HydratedOekaki
 {
     /// <summary>
-    /// The DID of the author.
+    /// The author of the oekaki.
     /// </summary>
-    [JsonPropertyName("did")]
-    public required string Did { get; set; }
-    
-    /// <summary>
-    /// The handle of the author.
-    /// </summary>
-    [JsonPropertyName("handle")]
-    public required string Handle { get; set; }
+    [JsonPropertyName("author")]
+    public required Author Author { get; set; }
     
     /// <summary>
     /// The image link.
@@ -73,8 +67,11 @@ public class HydratedOekaki
     {
         return new HydratedOekaki
         {
-            Did = oekakiModel.AuthorDid,
-            Handle = authorHandle,
+            Author = new Author
+            {
+                Did = oekakiModel.AuthorDid,
+                Handle = authorHandle
+            },
             CreationTime = oekakiModel.IndexedAt,
             ImageLink =
                 $"https://cdn.bsky.app/img/feed_fullsize/plain/{oekakiModel.AuthorDid}/{oekakiModel.BlobCid}",

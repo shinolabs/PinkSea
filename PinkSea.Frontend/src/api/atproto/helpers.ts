@@ -14,7 +14,7 @@ export const getRecordKeyFromAtUri = (uri: string) => {
 
 export const buildOekakiUrlFromOekakiObject = (oekaki: Oekaki) => {
   const rkey = getRecordKeyFromAtUri(oekaki.at)
-  return `/${oekaki.did}/oekaki/${rkey}`
+  return `/${oekaki.author.did}/oekaki/${rkey}`
 }
 
 export const formatDate = (date: Date) => {

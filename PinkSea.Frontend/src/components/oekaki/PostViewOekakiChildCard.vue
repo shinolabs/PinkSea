@@ -15,7 +15,7 @@ const props = defineProps<{
 const router = useRouter();
 const persistedStore = usePersistedStore();
 
-const authorProfileLink = computed(() => `/${props.oekaki.did}`);
+const authorProfileLink = computed(() => `/${props.oekaki.author.did}`);
 const creationTime = computed(() => {
   return formatDate(props.oekaki.creationTime)
 })
@@ -30,18 +30,18 @@ const redirectToParent = async () => {
   const rkey = getRecordKeyFromAtUri(props.oekaki.at);
   const { data } = await xrpc.get("com.shinolabs.pinksea.getParentForReply", {
     params: {
-      did: props.oekaki.did,
+      did: props.oekaki.author.did,
       rkey: rkey!
     }
   });
 
-  await router.push(`/${data.did}/oekaki/${data.rkey}#${props.oekaki.did}-${rkey}`);
+  await router.push(`/${data.did}/oekaki/${data.rkey}#${props.oekaki.author.did}-${rkey}`);
 };
 </script>
 
 <template>
   <div :class="classList" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
-    <div class="oekaki-child-info">{{ $t("post.response_from_before_handle") }}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.handle }}</RouterLink></b>{{ $t("post.response_from_after_handle") }}{{ $t("post.response_from_at_date") }}{{ creationTime }}</div>
+    <div class="oekaki-child-info">{{ $t("post.response_from_before_handle") }}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.author.handle }}</RouterLink></b>{{ $t("post.response_from_after_handle") }}{{ $t("post.response_from_at_date") }}{{ creationTime }}</div>
     <PostViewOekakiImageContainer :oekaki="props.oekaki" v-on:click="redirectToParent" style="max-height: 400px; cursor: pointer;"/>
   </div>
 </template>
