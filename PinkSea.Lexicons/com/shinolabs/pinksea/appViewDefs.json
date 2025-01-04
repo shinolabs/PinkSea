@@ -71,9 +71,9 @@
     "oekakiTombstone": {
       "type": "object",
       "description": "A tombstone for a missing oekaki.",
-      "required": ["at"],
+      "required": ["formerAt"],
       "properties": {
-        "at": {
+        "formerAt": {
           "type": "string",
           "format": "at-uri",
           "description": "The AT uri of the former oekaki."
