@@ -16,18 +16,18 @@
 						"description": "The DID."
 					}
 				}
-			}
-		},
-		"output": {
-			"encoding": "application/json",
-			"schema": {
-				"type": "object",
-				"required": ["handle"],
-				"properties": {
-					"handle": {
-						"type": "string",
-						"format": "handle",
-						"description": "The handle."
+			},
+			"output": {
+				"encoding": "application/json",
+				"schema": {
+					"type": "object",
+					"required": ["handle"],
+					"properties": {
+						"handle": {
+							"type": "string",
+							"format": "handle",
+							"description": "The handle."
+						}
 					}
 				}
 			}

@@ -10,23 +10,23 @@
 				"type": "params",
 				"required": [],
 				"properties": {}
-			}
-		},
-		"output": {
-			"encoding": "application/json",
-			"schema": {
-				"type": "object",
-				"required": ["did", "handle"],
-				"properties": {
-					"did": {
-						"type": "string",
-						"format": "at-identifier",
-						"description": "The DID of the user."
-					},
-					"handle": {
-						"type": "string",
-						"format": "handle",
-						"description": "The handle of the author."
+			},
+			"output": {
+				"encoding": "application/json",
+				"schema": {
+					"type": "object",
+					"required": ["did", "handle"],
+					"properties": {
+						"did": {
+							"type": "string",
+							"format": "at-identifier",
+							"description": "The DID of the user."
+						},
+						"handle": {
+							"type": "string",
+							"format": "handle",
+							"description": "The handle of the author."
+						}
 					}
 				}
 			}
