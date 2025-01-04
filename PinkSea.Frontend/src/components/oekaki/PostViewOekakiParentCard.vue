@@ -12,7 +12,7 @@ const props = defineProps<{
 
 const persistedStore = usePersistedStore();
 
-const authorProfileLink = computed(() => `/${props.oekaki.did}`);
+const authorProfileLink = computed(() => `/${props.oekaki.author.did}`);
 const creationTime = computed(() => {
   return formatDate(props.oekaki.creationTime)
 })
@@ -23,7 +23,7 @@ const creationTime = computed(() => {
   <div class="oekaki-card" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
     <PostViewOekakiImageContainer :oekaki="props.oekaki" />
     <div class="oekaki-meta">
-      <span>{{ $t("timeline.by_before_handle" )}}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.handle }}</RouterLink></b>{{ $t("timeline.by_after_handle" )}}</span><br>
+      <span>{{ $t("timeline.by_before_handle" )}}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.author.handle }}</RouterLink></b>{{ $t("timeline.by_after_handle" )}}</span><br>
       <span>{{ creationTime }}</span><br>
       <TagContainer v-if="props.oekaki.tags !== undefined" :tags="props.oekaki.tags" />
     </div>

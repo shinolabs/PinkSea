@@ -1,6 +1,7 @@
+import type { Author } from '@/models/author'
+
 export interface Oekaki {
-  did: string,
-  handle: string,
+  author: Author,
   image: string,
   at: string,
   cid: string,
