@@ -21,7 +21,7 @@ jobs:
             PinkSea.Lexicons/**/*.json
       - name: Validate lexicon schema
         if: steps.check-for-changed-lexicons.outputs.any_changed == 'true'
-        uses: dsanders11/json-schema-validate-action
+        uses: dsanders11/json-schema-validate-action@v1.2.0
         with:
           schema: https://internect.info/lexicon-schema.json
           files: PinkSea.Lexicons/**/*.json
