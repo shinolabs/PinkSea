@@ -1,11 +1,40 @@
 version: "3"
 services:
+  appview:
+    image: pinksea/appview
+    container_name: pinksea_appview
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - pinksea
+    ports:
+      - "5678:8080"
+  frontend:
+    image: pinksea/gateway
+    container_name: pinksea_frontend
+    build:
+      context: .
+      dockerfile: Dockerfile.Gateway
+    networks:
+      - pinksea
+    ports:
+      - "6789:8080"
   postgresql:
     image: postgres
     container_name: pinksea_postgresql
     restart: always
-    ports:
-      - 5432:5432
+    networks:
+      - pinksea
     environment:
       POSTGRES_USER: pinksea
       POSTGRES_PASSWORD: pinksea
+    volumes:
+      - pinksea_db:/var/lib/postgresql/data
+
+networks:
+  pinksea:
+
+volumes:
+  pinksea_db:
+    driver: "local"
