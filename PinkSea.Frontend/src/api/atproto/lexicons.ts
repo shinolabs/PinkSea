@@ -35,6 +35,13 @@ declare module '@atcute/client/lexicons' {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace ComShinolabsPinkseaDeleteOekaki {
+    interface Input {
+      rkey: string
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace ComShinolabsPinkseaGetAuthorFeed {
     interface Params extends GenericTimelineQueryRequest {
       did: string
@@ -133,6 +140,10 @@ declare module '@atcute/client/lexicons' {
     'com.shinolabs.pinksea.putOekaki': {
       input: ComShinolabsPinkseaPutOekaki.Input,
       output: ComShinolabsPinkseaPutOekaki.Output
+    },
+    'com.shinolabs.pinksea.deleteOekaki': {
+      input: ComShinolabsPinkseaDeleteOekaki.Input,
+      output: EmptyParams
     },
     'com.shinolabs.pinksea.refreshSession': {
       input: EmptyParams,
