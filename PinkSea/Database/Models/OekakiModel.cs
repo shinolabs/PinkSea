@@ -8,6 +8,7 @@ namespace PinkSea.Database.Models;
 /// A database oekaki model.
 /// </summary>
 [Index(nameof(AuthorDid), nameof(OekakiTid))]
+[Index(nameof(Tombstone))]
 public class OekakiModel
 {
     /// <summary>
@@ -67,6 +68,11 @@ public class OekakiModel
     /// The ID of the parent.
     /// </summary>
     public OekakiModel? Parent { get; set; }
+    
+    /// <summary>
+    /// Is the oekaki object a tombstone placeholder?
+    /// </summary>
+    public bool Tombstone { get; set; }
     
     /// <summary>
     /// The tag-oekaki relations.

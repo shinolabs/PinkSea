@@ -25,12 +25,39 @@ public class OekakiJetStreamEventHandler(
             return;
 
         var commit = @event.Commit!;
-        if (commit.Operation != "create")
-            return;
+        if (commit.Operation == "create")
+        {
+            await ProcessCreatedOekaki(
+                commit,
+                @event.Did);
+        }
+        else if (commit.Operation == "delete")
+        {
+            await ProcessDeletedOekaki(
+                commit,
+                @event.Did);
+        }
+    }
 
-        await ProcessCreatedOekaki(
-            commit,
-            @event.Did);
+    /// <summary>
+    /// Processes deleted oekaki.
+    /// </summary>
+    /// <param name="commit">The commit.</param>
+    /// <param name="authorDid">The author's DID.</param>
+    private async Task ProcessDeletedOekaki(
+        AtProtoCommit commit,
+        string authorDid)
+    {
+        if (!await oekakiService.OekakiRecordExists(authorDid, commit.RecordKey))
+        {
+            logger.LogInformation($"Received a removal commit for at://{authorDid}/com.shinolabs.pinksea.oekaki/{commit.RecordKey} but we don't have it in the database.");
+            return;
+        }
+
+        logger.LogInformation($"Received a removal commit for at://{authorDid}/com.shinolabs.pinksea.oekaki/{commit.RecordKey}.");
+        await oekakiService.MarkOekakiAsDeleted(
+            authorDid,
+            commit.RecordKey);
     }
 
     /// <summary>

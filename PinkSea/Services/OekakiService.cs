@@ -245,7 +245,8 @@ public partial class OekakiService(
             Parent = parent,
             ParentId = parent?.OekakiTid,
             
-            IsNsfw = record.Nsfw ?? false
+            IsNsfw = record.Nsfw ?? false,
+            Tombstone = false
         };
 
         await dbContext.Oekaki.AddAsync(model);
@@ -298,6 +299,52 @@ public partial class OekakiService(
         return await dbContext
             .Oekaki
             .AnyAsync(o => o.AuthorDid == authorDid && o.OekakiTid == oekakiTid);
+    }
+
+    /// <summary>
+    /// Marks an oekaki as deleted.
+    /// </summary>
+    /// <param name="authorDid">The author's did.</param>
+    /// <param name="oekakiRid">The ID of the oekaki.</param>
+    public async Task MarkOekakiAsDeleted(
+        string authorDid,
+        string oekakiRid)
+    {
+        var oekakiObject = await dbContext
+            .Oekaki
+            .FirstOrDefaultAsync(o => o.AuthorDid == authorDid && o.OekakiTid == oekakiRid);
+
+        if (oekakiObject is null)
+            return;
+        
+        // First, check if we can remove it outright. This will be for objects that either are a reply
+        // or have no children of their own.
+        var canBeHardRemoved = !string.IsNullOrEmpty(oekakiObject.ParentId);
+        if (!canBeHardRemoved)
+        {
+            var hasChildren = await dbContext
+                .Oekaki
+                .AnyAsync(o => o.ParentId == oekakiObject.Key);
+
+            canBeHardRemoved = !hasChildren;
+        }
+
+        if (canBeHardRemoved)
+        {
+            // If we can hard remove it, just remove it.
+            dbContext.Oekaki.Remove(oekakiObject);
+        }
+        else
+        {
+            // Otherwise, scrap all the data and mark it as a tombstone.
+            oekakiObject.AltText = "";
+            oekakiObject.BlobCid = "";
+            oekakiObject.RecordCid = "";
+            oekakiObject.Tombstone = true;
+            dbContext.Oekaki.Update(oekakiObject);
+        }
+
+        await dbContext.SaveChangesAsync();
     }
     
     /// <summary>
