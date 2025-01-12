@@ -33,9 +33,12 @@ public class GetOekakiQueryHandler(PinkSeaDbContext dbContext, FeedBuilder feedB
         return new GetOekakiQueryResponse()
         {
             Parent =
-                HydratedOekaki.FromOekakiModel(
-                    parent, 
-                    await didResolver.GetHandleFromDid(parent.AuthorDid) ?? "Invalid handle"),
+                !parent.Tombstone
+            ? HydratedOekaki.FromOekakiModel(
+                parent, 
+                await didResolver.GetHandleFromDid(parent.AuthorDid) ?? "Invalid handle")
+            : TombstoneOekaki.FromOekakiModel(
+                parent),
             
             Children = childrenFeed.ToArray()
         };

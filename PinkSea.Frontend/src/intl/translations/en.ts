@@ -28,11 +28,13 @@ export default {
   timeline: {
     by_before_handle: "By ",
     by_after_handle: "",
+    nothing_here: "Nothing here so far... (╥﹏╥)"
   },
   post: {
     response_from_before_handle: "Response from ",
     response_from_after_handle: "",
     response_from_at_date: " at ",
+    this_post_no_longer_exists: "This post no longer exists."
   },
   response_box: {
     login_to_respond: "Login to respond!",

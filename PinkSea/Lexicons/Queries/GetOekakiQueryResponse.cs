@@ -10,7 +10,7 @@ public class GetOekakiQueryResponse
     /// <summary>
     /// The parent post.
     /// </summary>
-    public required HydratedOekaki Parent { get; set; }
+    public required object Parent { get; set; }
     
     /// <summary>
     /// The children of the post, sorted by time.

@@ -61,7 +61,7 @@ import PostViewOekakiChildCard from '@/components/oekaki/PostViewOekakiChildCard
     <Intersector @intersected="loadMore" />
   </div>
   <div class="timeline-container timeline-centered" v-else>
-    nothing here so far... (╥﹏╥)
+    {{ $t("timeline.nothing_here") }}
   </div>
 </template>
 

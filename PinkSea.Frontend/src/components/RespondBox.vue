@@ -2,11 +2,10 @@
 
 import { useIdentityStore, useImageStore, usePersistedStore } from '@/state/store'
 import { xrpc } from '@/api/atproto/client'
-import { onBeforeMount, onMounted, ref, useTemplateRef } from 'vue'
+import { onBeforeMount, ref, useTemplateRef } from 'vue'
 import { Tegaki } from '@/api/tegaki/tegaki';
 import type { Oekaki } from '@/models/oekaki'
 import i18next from 'i18next'
-import i18n from '@/intl/i18n'
 
 const identityStore = useIdentityStore();
 const persistedStore = usePersistedStore();

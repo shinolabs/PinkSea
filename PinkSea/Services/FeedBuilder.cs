@@ -22,6 +22,7 @@ public class FeedBuilder(
     private IQueryable<OekakiModel> _query = dbContext
         .Oekaki
         .Include(o => o.TagOekakiRelations)
+        .Where(o => !o.Tombstone)
         .OrderByDescending(o => o.IndexedAt);
 
     /// <summary>
@@ -36,7 +37,8 @@ public class FeedBuilder(
         bool descend = false)
     {
         _query = dbContext.Oekaki
-            .Include(o => o.TagOekakiRelations);
+            .Include(o => o.TagOekakiRelations)
+            .Where(o => !o.Tombstone);
         _query = descend
             ? _query.OrderByDescending(expression)
             : _query.OrderBy(expression);

@@ -245,7 +245,8 @@ public partial class OekakiService(
             Parent = parent,
             ParentId = parent?.OekakiTid,
             
-            IsNsfw = record.Nsfw ?? false
+            IsNsfw = record.Nsfw ?? false,
+            Tombstone = false
         };
 
         await dbContext.Oekaki.AddAsync(model);
@@ -290,6 +291,8 @@ public partial class OekakiService(
     /// <summary>
     /// Checks if an oekaki record already exists in the DB.
     /// </summary>
+    /// <param name="authorDid">The DID of the author.</param>
+    /// <param name="oekakiTid">The record id of the oekaki.</param>
     /// <returns>Whether it exists.</returns>
     public async Task<bool> OekakiRecordExists(
         string authorDid,
@@ -298,6 +301,99 @@ public partial class OekakiService(
         return await dbContext
             .Oekaki
             .AnyAsync(o => o.AuthorDid == authorDid && o.OekakiTid == oekakiTid);
+    }
+    
+    /// <summary>
+    /// Gets an oekaki by its DID/RID pair.
+    /// </summary>
+    /// <param name="authorDid">The DID of the author.</param>
+    /// <param name="oekakiTid">The record id of the oekaki.</param>
+    /// <returns>The oekaki.</returns>
+    public async Task<OekakiModel?> GetOekakiByDidRidPair(
+        string authorDid,
+        string oekakiTid)
+    {
+        return await dbContext
+            .Oekaki
+            .FirstOrDefaultAsync(o => o.AuthorDid == authorDid && o.OekakiTid == oekakiTid);
+    }
+
+    /// <summary>
+    /// Processes a deleted oekaki via the XRPC call.
+    /// </summary>
+    /// <param name="recordKey">The record key.</param>
+    /// <param name="stateToken">The state token.</param>
+    public async Task ProcessDeletedOekaki(
+        string recordKey,
+        string stateToken)
+    {
+        var oauthState = await oauthStateStorageProvider.GetForStateId(stateToken);
+        if (oauthState is null)
+            return;
+
+        var oekaki = await GetOekakiByDidRidPair(oauthState.Did, recordKey);
+        if (oekaki is null)
+            return;
+
+        await MarkOekakiAsDeleted(
+            oauthState.Did,
+            recordKey);
+        
+        using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(stateToken);
+        await xrpcClient!.Procedure<DeleteRecordResponse>(
+            "com.atproto.repo.deleteRecord",
+            new DeleteRecordRequest
+            {
+                Repo = oauthState.Did,
+                Collection = "com.shinolabs.pinksea.oekaki",
+                RecordKey = recordKey,
+            });
+    }
+    
+    /// <summary>
+    /// Marks an oekaki as deleted.
+    /// </summary>
+    /// <param name="authorDid">The author's did.</param>
+    /// <param name="oekakiRid">The ID of the oekaki.</param>
+    public async Task MarkOekakiAsDeleted(
+        string authorDid,
+        string oekakiRid)
+    {
+        var oekakiObject = await dbContext
+            .Oekaki
+            .FirstOrDefaultAsync(o => o.AuthorDid == authorDid && o.OekakiTid == oekakiRid);
+
+        if (oekakiObject is null)
+            return;
+        
+        // First, check if we can remove it outright. This will be for objects that either are a reply
+        // or have no children of their own.
+        var canBeHardRemoved = !string.IsNullOrEmpty(oekakiObject.ParentId);
+        if (!canBeHardRemoved)
+        {
+            var hasChildren = await dbContext
+                .Oekaki
+                .AnyAsync(o => o.ParentId == oekakiObject.Key);
+
+            canBeHardRemoved = !hasChildren;
+        }
+
+        if (canBeHardRemoved)
+        {
+            // If we can hard remove it, just remove it.
+            dbContext.Oekaki.Remove(oekakiObject);
+        }
+        else
+        {
+            // Otherwise, scrap all the data and mark it as a tombstone.
+            oekakiObject.AltText = "";
+            oekakiObject.BlobCid = "";
+            oekakiObject.RecordCid = "";
+            oekakiObject.Tombstone = true;
+            dbContext.Oekaki.Update(oekakiObject);
+        }
+
+        await dbContext.SaveChangesAsync();
     }
     
     /// <summary>
