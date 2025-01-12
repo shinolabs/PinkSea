@@ -291,6 +291,8 @@ public partial class OekakiService(
     /// <summary>
     /// Checks if an oekaki record already exists in the DB.
     /// </summary>
+    /// <param name="authorDid">The DID of the author.</param>
+    /// <param name="oekakiTid">The record id of the oekaki.</param>
     /// <returns>Whether it exists.</returns>
     public async Task<bool> OekakiRecordExists(
         string authorDid,
@@ -300,7 +302,54 @@ public partial class OekakiService(
             .Oekaki
             .AnyAsync(o => o.AuthorDid == authorDid && o.OekakiTid == oekakiTid);
     }
+    
+    /// <summary>
+    /// Gets an oekaki by its DID/RID pair.
+    /// </summary>
+    /// <param name="authorDid">The DID of the author.</param>
+    /// <param name="oekakiTid">The record id of the oekaki.</param>
+    /// <returns>The oekaki.</returns>
+    public async Task<OekakiModel?> GetOekakiByDidRidPair(
+        string authorDid,
+        string oekakiTid)
+    {
+        return await dbContext
+            .Oekaki
+            .FirstOrDefaultAsync(o => o.AuthorDid == authorDid && o.OekakiTid == oekakiTid);
+    }
 
+    /// <summary>
+    /// Processes a deleted oekaki via the XRPC call.
+    /// </summary>
+    /// <param name="recordKey">The record key.</param>
+    /// <param name="stateToken">The state token.</param>
+    public async Task ProcessDeletedOekaki(
+        string recordKey,
+        string stateToken)
+    {
+        var oauthState = await oauthStateStorageProvider.GetForStateId(stateToken);
+        if (oauthState is null)
+            return;
+
+        var oekaki = await GetOekakiByDidRidPair(oauthState.Did, recordKey);
+        if (oekaki is null)
+            return;
+
+        await MarkOekakiAsDeleted(
+            oauthState.Did,
+            recordKey);
+        
+        using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(stateToken);
+        await xrpcClient!.Procedure<DeleteRecordResponse>(
+            "com.atproto.repo.deleteRecord",
+            new DeleteRecordRequest
+            {
+                Repo = oauthState.Did,
+                Collection = "com.shinolabs.pinksea.oekaki",
+                RecordKey = recordKey,
+            });
+    }
+    
     /// <summary>
     /// Marks an oekaki as deleted.
     /// </summary>
