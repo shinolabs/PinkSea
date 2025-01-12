@@ -5,6 +5,7 @@ import TagContainer from '@/components/TagContainer.vue'
 import PostViewOekakiImageContainer from '@/components/oekaki/PostViewOekakiImageContainer.vue'
 import { usePersistedStore } from '@/state/store'
 import { formatDate } from '@/api/atproto/helpers'
+import PostActions from '@/components/PostActions.vue'
 
 const props = defineProps<{
   oekaki: Oekaki
@@ -25,6 +26,7 @@ const creationTime = computed(() => {
     <div class="oekaki-meta">
       <span>{{ $t("timeline.by_before_handle" )}}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.author.handle }}</RouterLink></b>{{ $t("timeline.by_after_handle" )}}</span><br>
       <span>{{ creationTime }}</span><br>
+      <PostActions :oekaki="props.oekaki" />
       <TagContainer v-if="props.oekaki.tags !== undefined" :tags="props.oekaki.tags" />
     </div>
   </div>

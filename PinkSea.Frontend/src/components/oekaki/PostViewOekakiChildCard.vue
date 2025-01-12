@@ -6,6 +6,7 @@ import { usePersistedStore } from '@/state/store'
 import { useRouter } from 'vue-router'
 import { xrpc } from '@/api/atproto/client'
 import { formatDate, getRecordKeyFromAtUri } from '@/api/atproto/helpers'
+import PostActions from '@/components/PostActions.vue'
 
 const props = defineProps<{
   oekaki: Oekaki,
@@ -41,7 +42,10 @@ const redirectToParent = async () => {
 
 <template>
   <div :class="classList" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
-    <div class="oekaki-child-info">{{ $t("post.response_from_before_handle") }}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.author.handle }}</RouterLink></b>{{ $t("post.response_from_after_handle") }}{{ $t("post.response_from_at_date") }}{{ creationTime }}</div>
+    <div class="oekaki-child-info">
+      {{ $t("post.response_from_before_handle") }}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.author.handle }}</RouterLink></b>{{ $t("post.response_from_after_handle") }}{{ $t("post.response_from_at_date") }}{{ creationTime }}
+      <PostActions :oekaki="props.oekaki" />
+    </div>
     <PostViewOekakiImageContainer :oekaki="props.oekaki" v-on:click="redirectToParent" style="max-height: 400px; cursor: pointer;"/>
   </div>
 </template>
