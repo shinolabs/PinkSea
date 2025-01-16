@@ -10,10 +10,11 @@ import PostViewOekakiChildCard from '@/components/oekaki/PostViewOekakiChildCard
 import RespondBox from '@/components/RespondBox.vue'
 import Loader from '@/components/Loader.vue'
 import PostViewOekakiTombstoneCard from '@/components/oekaki/PostViewOekakiTombstoneCard.vue'
+import type { OekakiTombstone } from '@/models/oekaki-tombstone'
 
 const route = useRoute();
 
-const parent = ref<Oekaki | null>(null);
+const parent = ref<Oekaki | OekakiTombstone | null>(null);
 const children = ref<Oekaki[] | null>(null);
 
 const parentIsTombstone = computed(() => {
@@ -21,15 +22,23 @@ const parentIsTombstone = computed(() => {
 });
 
 onBeforeMount(async () => {
-  const { data } = await xrpc.get("com.shinolabs.pinksea.getOekaki", {
-    params: {
-      did: route.params.did as string,
-      rkey: route.params.rkey as string
-    }
-  });
+  try {
+    const { data } = await xrpc.get("com.shinolabs.pinksea.getOekaki", {
+      params: {
+        did: route.params.did as string,
+        rkey: route.params.rkey as string
+      }
+    });
 
-  parent.value = data.parent;
-  children.value = data.children;
+    parent.value = data.parent;
+    children.value = data.children;
+  } catch {
+    parent.value = {
+      formerAt: 'at://did:web:example.com/com.shinolabs.pinksea.oekaki/fakefake'
+    } as OekakiTombstone;
+
+    children.value = [];
+  }
 });
 
 </script>
@@ -39,11 +48,11 @@ onBeforeMount(async () => {
     <Loader v-if="parent === null" />
     <div v-else>
       <PostViewOekakiTombstoneCard v-if="parentIsTombstone" />
-      <PostViewOekakiParentCard v-else :oekaki="parent" />
+      <PostViewOekakiParentCard v-else :oekaki="parent as Oekaki" />
       <br />
       <PostViewOekakiChildCard v-for="child of children" v-bind:key="child.at" :oekaki="child" />
 
-      <RespondBox v-if="!parentIsTombstone" :parent="parent" />
+      <RespondBox v-if="!parentIsTombstone" :parent="parent as Oekaki" />
     </div>
   </PanelLayout>
 </template>
