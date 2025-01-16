@@ -3,7 +3,7 @@
 
 <template>
   <div class="oekaki-card">
-    <img src="/mystery.gif" />
+    <img src="/assets/img/missing.png" />
     <div class="oekaki-meta">
       {{ $t("post.this_post_no_longer_exists") }}
     </div>

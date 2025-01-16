@@ -63,6 +63,12 @@ In order to run the client app locally, you need a fairly modern [Node.js](https
 
 The built app will be inside of the `dist` folder.
 
+# Acknowledgments
+
+This is a list of people I'd love to extend my most sincere gratitude to!!
+
+* [GlitchyPSI](https://bsky.app/profile/glitchypsi.xyz) for drawing the "post is missing" image visible whenever we see a post that does not exist! Thank you so much!!!
+
 # License
 
 The PinkSea code (with the exception of PinkSea.AtProto and PinkSea.AtProto.Server) is licensed under the European Union Public License-1.2. PinkSea.AtProto is released into the public domain as specified by the Unlicense. The appropriate licenses are in each folder's LICENSE files.
