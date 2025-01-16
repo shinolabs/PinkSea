@@ -310,6 +310,11 @@ public partial class OekakiService(
             .AnyAsync(o => o.AuthorDid == authorDid && o.OekakiTid == oekakiTid);
     }
 
+    /// <summary>
+    /// Sets the Bluesky crosspost TID for an oekaki model.
+    /// </summary>
+    /// <param name="oekakiModel">The oekaki model.</param>
+    /// <param name="tid">The TID.</param>
     public async Task SetBlueskyCrosspostTidForOekaki(
         OekakiModel oekakiModel,
         string tid)
