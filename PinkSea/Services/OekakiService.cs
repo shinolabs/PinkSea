@@ -100,12 +100,19 @@ public partial class OekakiService(
         {
             var (width, height) = PngHeaderHelper.GetPngDimensions(bytes);
             
-            await blueskyIntegrationService.CrosspostToBluesky(
+            var bskyTid = await blueskyIntegrationService.CrosspostToBluesky(
                 oekakiRecord.Value.Item1,
                 stateId, 
                 tid,
                 width,
                 height);
+
+            if (bskyTid != null)
+            {
+                await SetBlueskyCrosspostTidForOekaki(
+                    model,
+                    bskyTid);    
+            }
         }
         
         return new OekakiUploadResult(OekakiUploadState.Ok, model);
@@ -302,6 +309,15 @@ public partial class OekakiService(
             .Oekaki
             .AnyAsync(o => o.AuthorDid == authorDid && o.OekakiTid == oekakiTid);
     }
+
+    public async Task SetBlueskyCrosspostTidForOekaki(
+        OekakiModel oekakiModel,
+        string tid)
+    {
+        oekakiModel.BlueskyCrosspostRecordTid = tid;
+        dbContext.Oekaki.Update(oekakiModel);
+        await dbContext.SaveChangesAsync();
+    }
     
     /// <summary>
     /// Gets an oekaki by its DID/RID pair.
@@ -334,12 +350,25 @@ public partial class OekakiService(
         var oekaki = await GetOekakiByDidRidPair(oauthState.Did, recordKey);
         if (oekaki is null)
             return;
+        
+        using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(stateToken);
+
+        if (oekaki.BlueskyCrosspostRecordTid is not null)
+        {
+            await xrpcClient!.Procedure<DeleteRecordResponse>(
+                "com.atproto.repo.deleteRecord",
+                new DeleteRecordRequest
+                {
+                    Repo = oauthState.Did,
+                    Collection = "app.bsky.feed.post",
+                    RecordKey = oekaki.BlueskyCrosspostRecordTid,
+                });
+        }
 
         await MarkOekakiAsDeleted(
             oauthState.Did,
             recordKey);
         
-        using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(stateToken);
         await xrpcClient!.Procedure<DeleteRecordResponse>(
             "com.atproto.repo.deleteRecord",
             new DeleteRecordRequest
@@ -390,6 +419,7 @@ public partial class OekakiService(
             oekakiObject.BlobCid = "";
             oekakiObject.RecordCid = "";
             oekakiObject.Tombstone = true;
+            oekakiObject.BlueskyCrosspostRecordTid = "";
             dbContext.Oekaki.Update(oekakiObject);
         }
 

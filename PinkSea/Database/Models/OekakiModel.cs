@@ -73,7 +73,12 @@ public class OekakiModel
     /// Is the oekaki object a tombstone placeholder?
     /// </summary>
     public bool Tombstone { get; set; }
-    
+
+    /// <summary>
+    /// The Bluesky crosspost record TID.
+    /// </summary>
+    public string? BlueskyCrosspostRecordTid { get; set; }
+
     /// <summary>
     /// The tag-oekaki relations.
     /// </summary>

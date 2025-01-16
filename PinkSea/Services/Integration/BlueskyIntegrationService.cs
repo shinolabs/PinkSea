@@ -29,7 +29,8 @@ public partial class BlueskyIntegrationService(
     /// <param name="oekakiRecordId">The oekaki record id.</param>
     /// <param name="width">The width of the image.</param>
     /// <param name="height">The height of the image.</param>
-    public async Task CrosspostToBluesky(
+    /// <returns>The TID of the created record.</returns>
+    public async Task<string?> CrosspostToBluesky(
         Oekaki oekaki,
         string stateId,
         string oekakiRecordId,
@@ -38,7 +39,7 @@ public partial class BlueskyIntegrationService(
     {
         var config = frontendOptions.Value;
         if (config.FrontendUrl is null)
-            return;
+            return null;
         
         using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(stateId);
         var oauthState = await oAuthStateStorageProvider.GetForStateId(stateId);
@@ -99,16 +100,23 @@ public partial class BlueskyIntegrationService(
             SelfLabel = labels,
             Facets = ExtractFacets(text)
         };
+
+        var rkey = Tid.NewTid()
+            .ToString();
         
-        await xrpcClient!.Procedure<PutRecordResponse>(
+        var resp = await xrpcClient!.Procedure<PutRecordResponse>(
             "com.atproto.repo.putRecord",
             new PutRecordRequest
             {
                 Repo = oauthState!.Did,
                 Collection = "app.bsky.feed.post",
-                RecordKey = Tid.NewTid().ToString(),
+                RecordKey = rkey,
                 Record = record
             });
+
+        return resp is not null
+            ? rkey
+            : null;
     }
 
     /// <summary>
