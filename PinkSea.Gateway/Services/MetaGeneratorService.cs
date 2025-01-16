@@ -22,19 +22,28 @@ public class MetaGeneratorService(
     public Task<string> GetOekakiMetaFor(string did, string rkey)
     {
         const int cacheExpiry = 30;
+        const int cacheExpiryWhenFailed = 1;
         const string endpointTemplate = "/xrpc/com.shinolabs.pinksea.getOekaki?did={0}&rkey={1}";
         
         return memoryCache.GetOrCreateAsync<string>($"{did}:{rkey}",
             async cacheEntry =>
             {
                 using var client = httpClientFactory.CreateClient("pinksea-xrpc");
-                var resp = await client.GetFromJsonAsync<GetOekakiResponse>(string.Format(endpointTemplate, did, rkey));
+                try
+                {
+                    var resp = await client.GetFromJsonAsync<GetOekakiResponse>(string.Format(endpointTemplate, did, rkey));
                 
-                cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cacheExpiry);
+                    cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cacheExpiry);
                 
-                return resp is not null
-                    ? FormatOekakiResponse(resp)
-                    : "";
+                    return resp is not null
+                        ? FormatOekakiResponse(resp)
+                        : "";
+                }
+                catch (HttpRequestException)
+                {
+                    cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cacheExpiryWhenFailed);
+                    return GetRegularMeta();
+                }
             })!;
     }
 
