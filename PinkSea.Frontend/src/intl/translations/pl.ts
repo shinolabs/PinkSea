@@ -66,7 +66,7 @@ export default {
     upload_social: "Społeczne",
     upload_confirm: "Potwierdź",
     hint_description: "Dodaj krótki opis, aby pomóc innym zrozumieć kontekst tego rysunka. Opcjonalne.",
-    hint_tags: "Dodaj tagi, aby pomóc innym odnaleźć ten rysunek! Na przykład: charakterzy (koiwai_yotsuba), źródło (yotsubato!) lub po prostu podstawowe informacje (portrait). Opcjonalne.",
+    hint_tags: "Dodaj tagi, aby pomóc innym odnaleźć ten rysunek! Na przykład: charakterzy (koiwai_yotsuba), źródło (yotsubato! / oc) lub po prostu podstawowe informacje (portrait). Opcjonalne.",
     hint_nsfw: "Prosimy zaznaczyć, jeśli ten rysunek zawiera treść dla dorosłych (na przykład nagość lub sugestywne motywy).",
     hint_xpost: "Jeśli zaznaczone, utworzymy dla Ciebie wpis na Bluesky zawierający ten rysunek i link do Pinksea.",
     hint_confirm: "Wszystko gotowe? Wciśnij przycisk powyżej, aby opublikować rysunek!"

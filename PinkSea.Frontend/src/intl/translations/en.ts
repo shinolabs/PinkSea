@@ -66,7 +66,7 @@ export default {
     upload_social: "Social",
     upload_confirm: "Confirm",
     hint_description: "Attaching a short description helps give context about your drawing. Optional.",
-    hint_tags: "Give your post up to five tags to help others discover it! For example: characters (koiwai_yotsuba), copyrights (yotsubato!) or general information (portrait). Optional.",
+    hint_tags: "Give your post up to five tags to help others discover it! For example: characters (koiwai_yotsuba), copyrights (yotsubato! / oc) or general information (portrait). Optional.",
     hint_nsfw: "Please check if your post contains adult content such as nudity or highly suggestive themes.",
     hint_xpost: "If checked, we'll automatically create a post for you on Bluesky with the image and a link to PinkSea attached.",
     hint_confirm: "Once you're ready, click the button above to publish your image!"
