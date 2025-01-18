@@ -15,7 +15,10 @@ export default {
     logout: "Wyloguj",
     create_something: "Stwórz nowe",
     password: "Hasło (opcjonalne)",
-    oauth2_info: "Jeżeli zostawisz to pole puste, PinkSea użyje OAuth2 aby zalogować się do twojego PDSa. Jest to bezpieczniejsze."
+    oauth2_info: "Jeżeli zostawisz to pole puste, PinkSea użyje OAuth2 aby zalogować się do twojego PDSa. Jest to bezpieczniejsze.",
+    search: "Szukaj",
+    search_placeholder: "Wyszukaj taga",
+    search_go: "Idź"
   },
   breadcrumb: {
     recent: "ostatnie",
@@ -27,12 +30,14 @@ export default {
   },
   timeline: {
     by_before_handle: "Post ",
-    by_after_handle: ""
+    by_after_handle: "",
+    nothing_here: "Na razie nic... (╥﹏╥)"
   },
   post: {
     response_from_before_handle: "Odpowiedź ",
     response_from_after_handle: "",
-    response_from_at_date: " dnia "
+    response_from_at_date: " dnia ",
+    this_post_no_longer_exists: "Ten rysunek już nie istnieje."
   },
   response_box: {
     login_to_respond: "Zaloguj się aby odpowiedzieć!",
@@ -55,11 +60,22 @@ export default {
     add_a_description: "Dodaj opis!",
     tag: "Tag",
     crosspost_to_bluesky: "Wyślij dodatkowo na BlueSky",
-    upload: "Wyślij!"
+    upload: "Wyślij!",
+    upload_description: "Opis",
+    upload_tags: "Tagi",
+    upload_social: "Społeczne",
+    upload_confirm: "Potwierdź",
+    hint_description: "Dodaj krótki opis, aby pomóc innym zrozumieć kontekst tego rysunka. Opcjonalne.",
+    hint_tags: "Dodaj tagi, aby pomóc innym odnaleźć ten rysunek! Na przykład: charakterzy (koiwai_yotsuba), źródło (yotsubato!) lub po prostu podstawowe informacje (portrait). Opcjonalne.",
+    hint_nsfw: "Prosimy zaznaczyć, jeśli ten rysunek zawiera treść dla dorosłych (na przykład nagość lub sugestywne motywy).",
+    hint_xpost: "Jeśli zaznaczone, utworzymy dla Ciebie wpis na Bluesky zawierający ten rysunek i link do Pinksea.",
+    hint_confirm: "Wszystko gotowe? Wciśnij przycisk powyżej, aby opublikować rysunek!"
   },
   profile: {
     bluesky_profile: "Profil Bluesky",
-    domain: "Strona internetowa"
+    domain: "Strona internetowa",
+    posts_tab: "Wpisy",
+    replies_tab: "Odpowiedzi"
   },
   tegakijs: {
     // Messages
