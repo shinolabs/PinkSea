@@ -15,11 +15,15 @@ const navigateToTag = async (tag: string) => {
   await router.push(`/tag/${tag}`);
 };
 
+const tagToFriendly = (tag: string) => {
+  return tag.replace(/[_-]/g, " ");
+}
+
 </script>
 
 <template>
   <div class="oekaki-tag-container">
-    <span class="oekaki-tag" v-for="tag of props.tags" v-bind:key="tag" v-on:click.prevent="navigateToTag(tag)">#{{ tag }}</span>
+    <span class="oekaki-tag" v-for="tag of props.tags" v-bind:key="tag" v-on:click.prevent="navigateToTag(tag)">#{{ tagToFriendly(tag) }}</span>
   </div>
 </template>
 
