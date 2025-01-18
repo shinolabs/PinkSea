@@ -14,6 +14,7 @@ const persistedStore = usePersistedStore()
 const imageStore = useImageStore()
 const router = useRouter()
 const menuRef = useTemplateRef<HTMLElement>("menu-ref");
+const searchbox = useTemplateRef<HTMLElement>("search-box");
 
 const selfProfileUrl = computed(() => {
   return `/${identityStore.did}`;
@@ -58,6 +59,10 @@ const navigateTo = async (url: string) => {
   await router.push(url);
 };
 
+const queryToTag = (q: string) => {
+  return q.replace(/\s/g, "_");
+}
+
 const logout = async () => {
   try {
     await xrpc.call("com.shinolabs.pinksea.invalidateSession", {
@@ -89,6 +94,13 @@ const switchMenu = () => {
         <h1>{{ $t("sidebar.title") }}</h1>
         <h2>{{ $t("sidebar.tag") }}</h2>
       </div>
+      <div class="aside-box">
+        <b>{{ $t("menu.search") }}</b>
+        <br />
+        <input type="text" :placeholder="i18next.t('menu.search_placeholder')" v-on:keyup.enter.prevent="navigateTo(`/tag/${queryToTag(searchbox.value)}`)" ref="search-box">
+        <span><button v-on:click.prevent="navigateTo(`/tag/${queryToTag(searchbox.value)}`)">{{ $t("menu.search_go") }}</button></span>
+      </div>
+      <br />
       <div class="aside-box">
         <div v-if="persistedStore.token === null">
           <div class="prompt">{{ $t("menu.invitation") }}</div>

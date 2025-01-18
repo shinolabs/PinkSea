@@ -15,7 +15,10 @@ export default {
     settings: "Settings",
     logout: "Logout",
     create_something: "Create something",
-    oauth2_info: "If you leave the password field blank, PinkSea will use OAuth2 to log into your PDS. It is generally more secure than password login."
+    oauth2_info: "If you leave the password field blank, PinkSea will use OAuth2 to log into your PDS. It is generally more secure than password login.",
+    search: "Search",
+    search_placeholder: "Search for a tag",
+    search_go: "Go"
   },
   breadcrumb: {
     recent: "recent",
