@@ -59,8 +59,17 @@ export default {
     could_not_send_post: "There was an issue uploading the post. Please try again later. Your post has been saved in your browser.",
     add_a_description: "Add a description!",
     tag: "Tag",
-    crosspost_to_bluesky: "Cross-post to BlueSky",
-    upload: "Upload!"
+    crosspost_to_bluesky: "Cross-post to Bluesky",
+    upload: "Upload!",
+    upload_description: "Description",
+    upload_tags: "Tags",
+    upload_social: "Social",
+    upload_confirm: "Confirm",
+    hint_description: "Attaching a short description helps give context about your drawing. Optional.",
+    hint_tags: "Give your post up to five tags to help others discover it! For example: characters (koiwai_yotsuba), copyrights (yotsubato!) or general information (portrait). Optional.",
+    hint_nsfw: "Please check if your post contains adult content such as nudity or highly suggestive themes.",
+    hint_xpost: "If checked, we'll automatically create a post for you on Bluesky with the image and a link to PinkSea attached.",
+    hint_confirm: "Once you're ready, click the button above to publish your image!"
   },
   profile: {
     bluesky_profile: "Bluesky profile",

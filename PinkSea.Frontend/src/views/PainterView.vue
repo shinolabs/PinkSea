@@ -139,22 +139,51 @@ import { onMounted, ref, useTemplateRef, watch } from 'vue'
       <img v-bind:src="image" />
     </div>
     <br />
-    <div class="response-tools">
-      <div class="response-extra">
-        <input type="text" v-model="alt" :placeholder="i18next.t('painter.add_a_description')" />
-        <span><input type="checkbox" value="nsfw" v-model="nsfw"><span>NSFW</span></span>
-      </div>
-
-      <div class="tag-input">
-        <TagContainer :tags="tags" :disableNavigation="true" />
-        <input type="text" :placeholder="i18next.t('painter.tag')" v-model="currentTag" v-on:keyup.delete="removeTag" v-on:keyup.space="addTag" v-on:keyup.enter="addTag"/>
-      </div>
-
-      <div class="response-extra">
-        <button v-on:click="uploadImage" ref="upload-button">{{ $t("painter.upload")}}</button>
-        <span><input type="checkbox" value="bsky" v-model="bsky"><span>{{ $t("painter.crosspost_to_bluesky")}} </span></span>
-      </div>
-    </div>
+    <table class="response-extra">
+      <tbody>
+        <tr>
+          <td><b>{{ $t("painter.upload_description") }}</b></td>
+          <td>
+            <div class="response-items">
+              <input type="text" v-model="alt" :placeholder="i18next.t('painter.add_a_description')" />
+              <p class="response-hint">{{ $t("painter.hint_description") }}</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><b>{{ $t("painter.upload_tags") }}</b></td>
+          <td>
+            <div class="response-items">
+              <div class="tag-input">
+                <TagContainer :tags="tags" :disableNavigation="true" />
+                <input type="text" :placeholder="i18next.t('painter.tag')" v-model="currentTag" v-on:keyup.delete="removeTag" v-on:keyup.space="addTag" v-on:keyup.enter="addTag"/>
+              </div>
+              <p class="response-hint">{{ $t("painter.hint_tags") }}</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><b>{{ $t("painter.upload_social") }}</b></td>
+          <td>
+            <div class="response-items">
+              <input type="checkbox" value="nsfw" v-model="nsfw"><span>NSFW</span><br />
+              <p class="response-hint">{{ $t("painter.hint_nsfw") }}</p>
+              <input type="checkbox" value="bsky" v-model="bsky"><span>{{ $t("painter.crosspost_to_bluesky") }}</span>
+              <p class="response-hint">{{ $t("painter.hint_xpost") }}</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><b>{{ $t("painter.upload_confirm") }}</b></td>
+          <td>
+            <div class="response-items">
+              <button v-on:click="uploadImage" ref="upload-button">{{ $t("painter.upload") }}</button>
+              <p class="response-hint">{{ $t("painter.hint_confirm") }}</p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </PanelLayout>
 </template>
 
@@ -173,16 +202,31 @@ import { onMounted, ref, useTemplateRef, watch } from 'vue'
 }
 
 .response-extra {
-  width: 100%;
-  display: flex;
-}
-
-.response-extra button {
-  flex: 1;
+  width: 90%;
 }
 
 .response-extra input[type=text] {
-  flex: 1;
+  width: 100%;
+}
+
+/* left-hand side of form - label */
+.response-extra td:has(b) {
+  padding-left: 0.75em;
+  display: block;
+}
+
+/* right-hand side of form - options */
+.response-extra td:has(div) {
+  padding-left: 0.25em;
+}
+
+.response-items {
+  padding-bottom: 0.6em;
+}
+
+.response-hint {
+  margin: 0.15em 0;
+  font-size: 10pt;
 }
 
 .response-tools {
