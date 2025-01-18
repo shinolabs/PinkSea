@@ -118,7 +118,7 @@ import { onMounted, ref, useTemplateRef, watch } from 'vue'
     if (tags.value.length > 5)
       return;
 
-    tags.value.push(currentTag.value);
+    tags.value.push(currentTag.value.toLowerCase());
     currentTag.value = "";
   };
 
