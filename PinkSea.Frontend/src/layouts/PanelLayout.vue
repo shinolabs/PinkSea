@@ -56,6 +56,8 @@ const openPainter = async () => {
 };
 
 const navigateTo = async (url: string) => {
+  if(url == "/tag/") return; // prevent using the search box with no query
+
   await router.push(url);
 };
 
@@ -98,7 +100,7 @@ const switchMenu = () => {
         <b>{{ $t("menu.search") }}</b>
         <br />
         <input type="text" :placeholder="i18next.t('menu.search_placeholder')" v-on:keyup.enter.prevent="navigateTo(`/tag/${queryToTag(searchbox.value)}`)" ref="search-box">
-        <span><button v-on:click.prevent="navigateTo(`/tag/${queryToTag(searchbox.value)}`)">{{ $t("menu.search_go") }}</button></span>
+        <button v-on:click.prevent="navigateTo(`/tag/${queryToTag(searchbox.value)}`)">{{ $t("menu.search_go") }}</button>
       </div>
       <br />
       <div class="aside-box">
