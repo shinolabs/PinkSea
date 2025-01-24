@@ -15,7 +15,7 @@ public static class StringExtensions
         // First normalize the tag.
         var normalized = tag.Trim();
         normalized = normalized.TrimStart('#')
-            .Replace(' ', '-');
+            .Replace(' ', '_');
 
         return normalized;
     }
