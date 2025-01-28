@@ -2,7 +2,7 @@ export default {
   sidebar: {
     title: "PinkSea",
     tag: "oekaki BBS",
-    shinolabs: "a shinonome laboratories project"
+    shinolabs: "bir shinonome laboratuvarları projesi"
   },
   menu: {
     greeting: "Hi @{{name}}!",
@@ -111,40 +111,40 @@ export default {
     toggleVisibility: 'Toggle visibility',
 
     // Menu bar
-    newCanvas: 'New',
-    open: 'Open',
-    save: 'Save',
-    saveAs: 'Save As',
-    export: 'Export',
-    undo: 'Undo',
-    redo: 'Redo',
-    close: 'Close',
-    finish: 'Finish',
+    newCanvas: 'Yeni',
+    open: 'Aç',
+    save: 'Kaydet',
+    saveAs: 'Farklı Kaydet',
+    export: 'Export', // todo
+    undo: 'Geri al',
+    redo: 'İleri al',
+    close: 'Kapat',
+    finish: 'Tamamla',
 
     // Tool modes
-    tip: 'Tip',
-    pressure: 'Pressure',
-    preserveAlpha: 'Preserve Alpha',
+    tip: 'Tip', // i forgor
+    pressure: 'Basınç',
+    preserveAlpha: 'Alpha kanalını koru',
 
     // Tools
-    pen: 'Pen',
-    pencil: 'Pencil',
-    airbrush: 'Airbrush',
-    pipette: 'Pipette',
-    blur: 'Blur',
-    eraser: 'Eraser',
-    bucket: 'Bucket',
-    tone: 'Tone',
+    pen: 'Kalem',
+    pencil: 'Kurşun kalem',
+    airbrush: 'Airbrush', // ?
+    pipette: 'Pipet',
+    blur: 'Buğula',
+    eraser: 'Silgi',
+    bucket: 'Kova',
+    tone: 'Ton',
 
     // Replay
-    gapless: 'Gapless',
-    play: 'Play',
-    pause: 'Pause',
-    rewind: 'Rewind',
-    slower: 'Slower',
-    faster: 'Faster',
-    recordingEnabled: 'Recording replay',
-    errorLoadReplay: 'Could not load the replay: ',
-    loadingReplay: 'Loading replay…',
+    gapless: 'Aralıksız',
+    play: 'Oynat',
+    pause: 'Duraklat',
+    rewind: 'Geri oynat',
+    slower: 'Daha yavaş',
+    faster: 'Daha hızlı',
+    recordingEnabled: 'Replay kaydediliyor', // replay?
+    errorLoadReplay: 'Replay açılamadı: ',
+    loadingReplay: 'Replay yükleniyor…',
   }
 };
