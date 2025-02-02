@@ -36,7 +36,7 @@ public class GetOekakiQueryHandler(PinkSeaDbContext dbContext, FeedBuilder feedB
                 !parent.Tombstone
             ? HydratedOekaki.FromOekakiModel(
                 parent, 
-                await didResolver.GetHandleFromDid(parent.AuthorDid) ?? "Invalid handle")
+                await didResolver.GetHandleFromDid(parent.AuthorDid) ?? "invalid.handle")
             : TombstoneOekaki.FromOekakiModel(
                 parent),
             

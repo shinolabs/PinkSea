@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using PinkSea.AtProto.Models.Did;
 
 namespace PinkSea.AtProto.Resolvers.Did;
@@ -9,7 +10,8 @@ namespace PinkSea.AtProto.Resolvers.Did;
 /// </summary>
 public class DidResolver(
     IHttpClientFactory clientFactory,
-    IMemoryCache memoryCache) : IDidResolver
+    IMemoryCache memoryCache,
+    ILogger<DidResolver> logger) : IDidResolver
 {
     /// <inheritdoc />
     public async Task<DidDocument?> GetDocumentForDid(string did)
@@ -75,9 +77,17 @@ public class DidResolver(
     private async Task<DidDocument?> ResolveDidViaWeb(string domain)
     {
         const string wellKnownUri = $"/.well-known/did.json";
-        
-        using var client = clientFactory.CreateClient();
-        return await client.GetFromJsonAsync<DidDocument>($"https://{domain}{wellKnownUri}");
+
+        try
+        {
+            using var client = clientFactory.CreateClient();
+            return await client.GetFromJsonAsync<DidDocument>($"https://{domain}{wellKnownUri}");
+        }
+        catch (HttpRequestException e)
+        {
+            logger.LogError(e, $"Encountered an error while resolving did:web:{domain}.");
+            return null;
+        }
     }
 
     /// <summary>
@@ -87,7 +97,15 @@ public class DidResolver(
     /// <returns>The did response.</returns>
     private async Task<DidDocument?> ResolveDidViaPlcDirectory(string did)
     {
-        using var client = clientFactory.CreateClient("did-resolver");
-        return await client.GetFromJsonAsync<DidDocument>($"/{did}");
+        try
+        {
+            using var client = clientFactory.CreateClient("did-resolver");
+            return await client.GetFromJsonAsync<DidDocument>($"/{did}");
+        }
+        catch (HttpRequestException e)
+        {
+            logger.LogError(e, $"Encountered an error while resolving {did}.");
+            return null;
+        }
     }
 }

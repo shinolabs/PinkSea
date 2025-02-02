@@ -110,7 +110,7 @@ public class FeedBuilder(
             MaxDegreeOfParallelism = 5
         }, async (did, _) =>
         {
-            map[did] = await didResolver.GetHandleFromDid(did) ?? "Invalid handle";
+            map[did] = await didResolver.GetHandleFromDid(did) ?? "invalid.handle";
         });
 
         var oekakiDtos = list
