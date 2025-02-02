@@ -40,7 +40,7 @@
     "click_to_respond": "点击打开绘画面板",
     "open_painter": "打开画板",
     "reply": "回复！",
-    "cancel": "取消",
+    "cancel": "取消"
   },
   "settings": {
     "category_general": "通用",
@@ -48,7 +48,7 @@
 
     "category_sensitive": "敏感媒体投稿",
     "sensitive_blur_nsfw": "模糊 NSFW 帖文",
-    "sensitive_hide_nsfw": "不显示 NSFW 帖文",
+    "sensitive_hide_nsfw": "不显示 NSFW 帖文"
   },
   "painter": {
     "do_you_want_to_restore": "之前的作品上传时发生了一个错误。要恢复已保存的作品吗？",
@@ -57,11 +57,11 @@
     "add_a_description": "这里记录画像的说明",
     "tag": "标签",
     "crosspost_to_bluesky": "交叉发布到 Bluesky",
-    "upload": "上传！",
+    "upload": "上传！"
   },
   "profile": {
     "bluesky_profile": "Bluesky 个人资料",
-    "domain": "网站",
+    "domain": "网站"
   },
   "tegakijs": {
     "badDimensions": "非法尺寸",
