@@ -1,0 +1,125 @@
+{
+  "sidebar": {
+    "title": "PinkSea",
+    "tag": "oekaki BBS",
+    "shinolabs": "プロジェクト shinonome laboratories"
+  },
+  "menu": {
+    "greeting": "@{{name}} さん、こんにちは！",
+    "invitation": "ログインしてお絵かきしよう！",
+    "input_placeholder": "@あなたのID.bsky.social",
+    "atp_login": "ログイン",
+    "my_oekaki": "投稿記録",
+    "recent": "最近の投稿",
+    "settings": "設定",
+    "logout": "ログアウト",
+    "create_something": "お絵かきする",
+    "password": "パスワード（オプション）"
+  },
+  "breadcrumb": {
+    "recent": "最近の投稿",
+    "painter": "作者",
+    "settings": "PinkSeaの設定",
+    "user_profile": "{{handle}} のプロフィール",
+    "user_post": "{{handle}} の投稿",
+    "tagged": "#{{tag}} タグの投稿一覧"
+  },
+  "timeline": {
+    "by_before_handle": "作者 ",
+    "by_after_handle": ""
+  },
+  "post": {
+    "response_from_before_handle": "次の投稿への返信 ",
+    "response_from_after_handle": "",
+    "response_from_at_date": " の "
+  },
+  "response_box": {
+    "login_to_respond": "ログインして返信！",
+    "click_to_respond": "クリックしてお絵かき画面を表示",
+    "open_painter": "お絵かき画面を表示",
+    "reply": "返信！",
+    "cancel": "キャンセル"
+  },
+  "settings": {
+    "category_general": "総合",
+    "general_language": "言語",
+
+    "category_sensitive": "センシティブな投稿",
+    "sensitive_blur_nsfw": "NSFWな投稿を「ぼかして」表示",
+    "sensitive_hide_nsfw": "NSFWな投稿を表示しない"
+  },
+  "painter": {
+    "do_you_want_to_restore": "直前の作品をアップロードする時にエラーが発生しました。保存された作品を復元しますか？",
+    "could_not_send_post": "直前の作品をアップロードする際にエラーが発生しました。作品はブラウザ内に保存されているため、後でもう一度投稿をお試しください。",
+    "add_a_description": "画像の説明文をここに記入",
+    "tag": "タグ",
+    "upload": "投稿！",
+    "crosspost_to_bluesky": "BlueSkyにも投稿する"
+  },
+  "profile": {
+    "bluesky_profile": "Bluesky上のプロフィール"
+  },
+  "tegakijs": {
+    "badDimensions": "無効なキャンバスサイズです。",
+    "promptWidth": "キャンバスの横幅（px）",
+    "promptHeight": "キャンバスの高さ（px）",
+    "confirmDelLayers": "選択したレイヤーを削除しますか？",
+    "confirmMergeLayers": "選択したレイヤーを結合しますか？",
+    "tooManyLayers": "使用可能なレイヤーの上限に達しました。",
+    "errorLoadImage": "画像を読み込むことができませんでした。",
+    "noActiveLayer": "アクティブなレイヤーがありません。",
+    "hiddenActiveLayer": "アクティブなレイヤーは表示されていません。",
+    "confirmCancel": "作業内容が失われます。よろしいですか？",
+    "confirmChangeCanvas": "このままキャンバスを変更すると、すべてのレイヤーと履歴が消え、リプレイの記録が無効になります。よろしいですか？",
+
+    "color": "色",
+    "size": "サイズ",
+    "alpha": "透明度",
+    "flow": "フロー",
+    "zoom": "ズーム",
+    "layers": "レイヤー",
+    "switchPalette": "カラーパレットを切り替える",
+    "paletteSlotReplace": "右クリックで現在の色に置き換える",
+
+    "layer": "レイヤー",
+    "addLayer": "レイヤーを追加",
+    "delLayers": "レイヤーを削除",
+    "mergeLayers": "レイヤーを結合",
+    "moveLayerUp": "上に移動",
+    "moveLayerDown": "下に移動",
+    "toggleVisibility": "表示を切り替える",
+
+    "newCanvas": "新規",
+    "open": "開く",
+    "save": "保存",
+    "saveAs": "別名で保存",
+    "export": "書き出し",
+    "undo": "元に戻す",
+    "redo": "やり直し",
+    "close": "閉じる",
+    "finish": "終了",
+
+    "tip": "先端",
+    "pressure": "筆圧感知",
+    "preserveAlpha": "アルファ値の保持",
+
+    "pen": "ペン",
+    "pencil": "鉛筆",
+    "airbrush": "エアブラシ",
+    "pipette": "スポイト",
+    "blur": "ぼかし",
+    "eraser": "消しゴム",
+    "bucket": "バケツ",
+    "tone": "トーン",
+
+    "gapless": "ギャップレス",
+    "play": "再生",
+    "pause": "一時停止",
+    "rewind": "巻き戻し",
+    "slower": "遅く",
+    "faster": "速く",
+    "recordingEnabled": "リプレイを記録中",
+    "errorLoadReplay": "リプレイを読み込めませんでした: ",
+    "loadingReplay": "リプレイを読み込み中…"
+  }
+}
