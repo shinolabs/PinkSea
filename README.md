@@ -2,7 +2,8 @@
 <p align="center">
 	<img width="200" src="Meta/logo.svg"><br>
 	<b>PinkSea</b><br>
-	<span>poniko's house</span>
+	<span>poniko's house</span><br>
+	<a href="https://weblate.shinolabs.com/projects/pinksea/frontend/"><img src="https://weblate.shinolabs.com/widget/pinksea/frontend/svg-badge.svg" /></a>
 </p>
 
 <hr>
