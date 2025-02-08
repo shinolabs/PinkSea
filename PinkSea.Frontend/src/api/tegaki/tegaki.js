@@ -2701,6 +2701,8 @@ export var Tegaki = {
 
   startTimeStamp: 0,
 
+  visible: false,
+
   bg: null,
   canvas: null,
   ctx: null,
@@ -2846,6 +2848,8 @@ export var Tegaki = {
         self.loadReplayFromURL(opts.replayURL);
       }
     }
+
+    self.visible = true;
   },
 
   init: function() {
@@ -3137,6 +3141,8 @@ export var Tegaki = {
     Tegaki.bg.classList.add('tegaki-hidden');
     document.body.classList.remove('tegaki-backdrop');
     Tegaki.unBindGlobalEvents();
+
+    Tegaki.visible = false;
   },
 
   destroy: function() {
@@ -3171,6 +3177,8 @@ export var Tegaki = {
     Tegaki.replayViewer = null;
 
     Tegaki.destroyBuffers();
+
+    Tegaki.visible = false;
   },
 
   flatten: function(ctx) {

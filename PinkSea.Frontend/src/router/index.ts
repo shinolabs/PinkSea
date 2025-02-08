@@ -9,6 +9,7 @@ import { xrpc } from '@/api/atproto/client'
 import TagView from '@/views/TagView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import i18next from 'i18next'
+import { withTegakiViewBackProtection } from '@/api/tegaki/tegaki-view-helper'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -84,5 +85,6 @@ const router = createRouter({
 });
 
 withBreadcrumb(router);
+withTegakiViewBackProtection(router);
 
 export default router
