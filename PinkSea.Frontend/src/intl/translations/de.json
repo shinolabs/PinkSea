@@ -1,49 +1,127 @@
 {
-  "sidebar": {
-    "title": "PinkSea",
-    "tag": "oekaki BBS",
-    "shinolabs": "ein Shinonome Laboratories Projekt"
-  },
-  "menu": {
-    "greeting": "Hi @{{name}}!",
-    "invitation": "Einloggen zum Zeichnen!",
-    "input_placeholder": "@deine.coole.tld",
-    "atp_login": "@ Login",
-    "my_oekaki": "Meine Oekaki",
-    "recent": "Neuste",
-    "settings": "Einstellungen",
-    "logout": "Ausloggen",
-    "create_something": "Zeichne etwas"
-  },
-  "breadcrumb": {
-    "recent": "Neuste",
-    "painter": "Zeichner",
-    "settings": "Deine Einstellungen",
-    "user_profile": "{{handle}}'s Profil",
-    "user_post": "{{handle}}'s Post",
-    "tagged": "Posts getagged mit #{{tag}}"
-  },
-  "timeline": {
-    "by_before_handle": "Von ",
-    "by_after_handle": ""
-  },
-  "post": {
-    "response_from_before_handle": "Antwort von ",
-    "response_from_after_handle": "",
-    "response_from_at_date": " am "
-  },
-  "response_box": {
-    "login_to_respond": "Einloggen zum Antworten!",
-    "click_to_respond": "Klicke, um das Zeichenpanel zu öffnen",
-    "open_painter": "Zeichner öffnen",
-    "reply": "Antworten!"
-  },
-  "settings": {
-    "category_general": "Allgemein",
-    "general_language": "Sprache",
-
-    "category_sensitive": "sensible Medien",
-    "sensitive_blur_nsfw": "NSFW Posts unscharf machen",
-    "sensitive_hide_nsfw": "NSFW Posts ausblenden"
-  }
+    "sidebar": {
+        "title": "PinkSea",
+        "tag": "oekaki BBS",
+        "shinolabs": "ein Shinonome Laboratories Projekt"
+    },
+    "menu": {
+        "greeting": "Hi @{{name}}!",
+        "invitation": "Einloggen zum Zeichnen!",
+        "input_placeholder": "@deine.coole.tld",
+        "atp_login": "@ Login",
+        "my_oekaki": "Meine Oekaki",
+        "recent": "Neueste",
+        "settings": "Einstellungen",
+        "logout": "Ausloggen",
+        "create_something": "Zeichne etwas",
+        "search": "Suche",
+        "search_placeholder": "Suche nach einem Tag",
+        "search_go": "Start",
+        "password": "Passwort (Optional)",
+        "oauth2_info": "Wenn du dein Passwortfeld leer lässt, wird Pinksea dich mit OAuth2 in deine PDS einloggen. Dies ist generell sicherer als ein Anmelden mit Passwort."
+    },
+    "breadcrumb": {
+        "recent": "Neuste",
+        "painter": "Zeichner",
+        "settings": "Deine Einstellungen",
+        "user_profile": "{{handle}}'s Profil",
+        "user_post": "{{handle}}'s Post",
+        "tagged": "Posts getagged mit #{{tag}}"
+    },
+    "timeline": {
+        "by_before_handle": "Von ",
+        "by_after_handle": "",
+        "nothing_here": "Noch nichts hier …(╥﹏╥)"
+    },
+    "post": {
+        "response_from_before_handle": "Antwort von ",
+        "response_from_after_handle": "",
+        "response_from_at_date": " am ",
+        "this_post_no_longer_exists": "Dieser Post existiert nicht mehr."
+    },
+    "response_box": {
+        "login_to_respond": "Einloggen zum Antworten!",
+        "click_to_respond": "Klicke, um das Zeichenpanel zu öffnen",
+        "open_painter": "Zeichner öffnen",
+        "reply": "Antworten!",
+        "cancel": "Abbrechen"
+    },
+    "settings": {
+        "category_general": "Allgemein",
+        "general_language": "Sprache",
+        "category_sensitive": "sensible Medien",
+        "sensitive_blur_nsfw": "NSFW Posts unscharf machen",
+        "sensitive_hide_nsfw": "NSFW Posts ausblenden"
+    },
+    "painter": {
+        "do_you_want_to_restore": "Der letzte Upload ist fehlgeschlagen und dein Bild wurde gespeichert. Möchtest du es wiederherstellen?",
+        "add_a_description": "Füge eine Beschreibung hinzu!",
+        "tag": "Tag",
+        "crosspost_to_bluesky": "Cross-post zu Bluesky",
+        "upload": "Hochladen!",
+        "upload_description": "Beschreibung",
+        "upload_tags": "Tags",
+        "hint_nsfw": "Bitte überprüfe, ob dein Post Inhalte für Erwachsene enthält, wie Nacktheit oder suggestive Themen.",
+        "hint_xpost": "Falls ausgewählt, werden wir für dich auf Bluesky einen Post mit dem Bild und einem Link nach Pinksea hochladen.",
+        "hint_confirm": "Sobald du bereit bist, klicke den Knopf, um deine Zeichnung zu veröffentlichen!",
+        "could_not_send_post": "Der letzte Upload ist fehlgeschlagen. Bitte versuche es später erneut. Dein Post wurde in deinem Browser gespeichert.",
+        "upload_confirm": "Bestätigen",
+        "hint_description": "Eine kurze Beschreibung hinzuzufügen, gibt deiner Zeichnung etwas Kontext. Optional.",
+        "hint_tags": "Gib deinem Post bis zu fünf Tags, damit andere ihn finden können! Zum Beispiel: Charaktere (koiwai_yotsuba), Urheberrecht (yotsubato! / oc) oder generelle Informationen (portrait). Optional."
+    },
+    "profile": {
+        "bluesky_profile": "Bluesky Profil",
+        "domain": "Webseite",
+        "posts_tab": "Posts",
+        "replies_tab": "Antworten"
+    },
+    "tegakijs": {
+        "badDimensions": "Unzulässige Dimensionen.",
+        "confirmDelLayers": "Löschen der ausgewählten Layer?",
+        "confirmMergeLayers": "Ausgewählte Layer zusammenfügen?",
+        "tooManyLayers": "Layerlimit erreicht.",
+        "errorLoadImage": "Die Zeichnung konnte nicht geladen werden.",
+        "noActiveLayer": "Kein aktiver Layer.",
+        "hiddenActiveLayer": "Der aktive Layer ist nicht sichtbar.",
+        "color": "Farbe",
+        "size": "Größe",
+        "alpha": "Deckkraft",
+        "switchPalette": "Farbpalette ändern",
+        "toggleVisibility": "Sichtbarkeit umschalten",
+        "newCanvas": "Neu",
+        "open": "Öffnen",
+        "save": "Sichern",
+        "saveAs": "Sichern als",
+        "export": "Exportieren",
+        "undo": "Rückgängig machen",
+        "redo": "Neu machen",
+        "close": "Schließen",
+        "finish": "Fertig",
+        "tip": "Tip",
+        "pen": "Stift",
+        "bucket": "Fülleimer",
+        "tone": "Ton",
+        "gapless": "Lückenlos",
+        "pause": "Pause",
+        "slower": "Langsamer",
+        "faster": "Schneller",
+        "loadingReplay": "Wiedergabe wird geladen …",
+        "paletteSlotReplace": "Drücke die rechte Maustaste, um deine aktuell ausgewählte Farbe zu tauschen",
+        "pencil": "Bleistift",
+        "pipette": "Pipette",
+        "errorLoadReplay": "Wiedergabe konnte nicht geladen werden. ",
+        "promptWidth": "Leinwandbreite in Pixel",
+        "promptHeight": "Leinwandhöhe in Pixel",
+        "confirmCancel": "Bist du dir sicher? Deine Arbeit wird nicht gespeichert.",
+        "confirmChangeCanvas": "Bist du dir sicher? Änderungen an der Leinwand werden alle deiner Layer und vergangenen Tätigkeiten nicht speichern sowohl als auch deine Bildschirmaufnahme deaktivieren.",
+        "layers": "Layer",
+        "eraser": "Radierer",
+        "addLayer": "Layer hinzufügen",
+        "delLayers": "Layer löschen",
+        "mergeLayers": "Layer zusammenführen",
+        "moveLayerUp": "Hochziehen",
+        "moveLayerDown": "Runterziehen",
+        "pressure": "Druck",
+        "preserveAlpha": "Alpha behalten"
+    }
 }
