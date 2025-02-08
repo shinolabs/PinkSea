@@ -20,9 +20,11 @@ export const withBreadcrumb = (router: Router) : void => {
     if (bar.pop) {
       bar.crumbs.pop();
       bar.pop = false;
-      document.title = `${resolveCrumb(bar.crumbs[bar.crumbs.length - 1])} / PinkSea`;
-      next();
-      return;
+      if (bar.crumbs.length > 0) {
+        document.title = `${resolveCrumb(bar.crumbs[bar.crumbs.length - 1])} / PinkSea`;
+        next();
+        return;
+      }
     }
 
     const maybeIndexOfExisting = bar.crumbs.findIndex((c: Crumb) => c.path === to.path);
