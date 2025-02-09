@@ -115,7 +115,9 @@ const switchMenu = () => {
           <li v-on:click.prevent="navigateTo('/settings')">{{ $t("menu.settings") }}</li>
           <li v-on:click.prevent="logout" v-if="persistedStore.token !== null">{{ $t("menu.logout") }}</li>
         </ul>
-        <button v-on:click.prevent="openPainter" v-if="persistedStore.token !== null">{{ $t("menu.create_something") }}</button>
+        <div>
+          <button v-on:click.prevent="openPainter" v-if="persistedStore.token !== null">{{ $t("menu.create_something") }}</button>
+        </div>
       </div>
       <div class="aside-box bottom">
         {{ $t("sidebar.shinolabs") }}
