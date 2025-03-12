@@ -15,6 +15,7 @@
     "settings": "Settings",
     "logout": "Logout",
     "create_something": "Create something",
+    "restore_drawing": "Restore drawing",
     "oauth2_info": "If you leave the password field blank, PinkSea will use OAuth2 to log into your PDS. It is generally more secure than password login.",
     "search": "Search",
     "search_placeholder": "Search for a tag",
@@ -56,7 +57,8 @@
   },
   "painter": {
     "do_you_want_to_restore": "The last upload has errored out and your image has been saved. Do you want to restore it?",
-    "could_not_send_post": "There was an issue uploading the post. Please try again later. Your post has been saved in your browser.",
+    "could_not_send_post": "There was an issue uploading the post. Please try again later. Your post has been saved in your browser, it will be restored the next time you'll enter the painter menu.",
+    "your_session_has_expired": "Your session has expired. Please log in again. Your post has been saved in your browser, it will be restored the next time you'll enter the painter menu.",
     "add_a_description": "Add a description!",
     "tag": "Tag",
     "crosspost_to_bluesky": "Cross-post to Bluesky",

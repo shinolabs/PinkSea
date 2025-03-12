@@ -74,9 +74,9 @@ import { onMounted, ref, useTemplateRef, watch } from 'vue'
   };
 
   const uploadImage = async () => {
-    try {
-      button.value!.disabled = true;
+    button.value!.disabled = true;
 
+    try {
       // Force refresh the session, just to be sure.
       await xrpc.call("com.shinolabs.pinksea.refreshSession", {
         data: {},
@@ -84,7 +84,19 @@ import { onMounted, ref, useTemplateRef, watch } from 'vue'
           "Authorization": `Bearer ${persistedStore.token}`
         }
       });
+    } catch {
+      button.value!.disabled = false;
+      imageStore.lastUploadErrored = true;
+      persistedStore.token = null;
 
+      alert(i18next.t("painter.your_session_has_expired"));
+
+      await router.push('/');
+
+      return;
+    }
+
+    try {
       const { data } = await xrpc.call("com.shinolabs.pinksea.putOekaki", {
         data: {
           data: image.value,

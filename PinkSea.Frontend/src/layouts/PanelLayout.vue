@@ -8,6 +8,7 @@ import { computed, onBeforeMount, useTemplateRef } from 'vue'
 import { xrpc } from '@/api/atproto/client'
 import i18next from 'i18next'
 import I18n from '@/intl/i18n'
+import { useTranslation } from 'i18next-vue'
 
 const identityStore = useIdentityStore()
 const persistedStore = usePersistedStore()
@@ -15,6 +16,7 @@ const imageStore = useImageStore()
 const router = useRouter()
 const menuRef = useTemplateRef<HTMLElement>("menu-ref");
 const searchbox = useTemplateRef<HTMLElement>("search-box");
+const t = useTranslation();
 
 const selfProfileUrl = computed(() => {
   return `/${identityStore.did}`;
@@ -80,6 +82,14 @@ const logout = async () => {
 const switchMenu = () => {
   menuRef.value!.classList.toggle("in-view");
 };
+
+const getCreateSomethingButtonName = computed(() => {
+  const label = imageStore.lastUploadErrored
+    ? "menu.restore_drawing"
+    : "menu.create_something";
+
+  return t.t(label);
+});
 </script>
 
 <template>
@@ -116,7 +126,7 @@ const switchMenu = () => {
           <li v-on:click.prevent="logout" v-if="persistedStore.token !== null">{{ $t("menu.logout") }}</li>
         </ul>
         <div>
-          <button v-on:click.prevent="openPainter" v-if="persistedStore.token !== null">{{ $t("menu.create_something") }}</button>
+          <button v-on:click.prevent="openPainter" v-if="persistedStore.token !== null">{{ getCreateSomethingButtonName }}</button>
         </div>
       </div>
       <div class="aside-box bottom">
