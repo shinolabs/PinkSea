@@ -4,6 +4,11 @@
     user-select: none !important;
   }
   
+  /* Hack to disable zooming in on input fields on iOS */
+  #tegaki input {
+    font-size: 16px;
+  }
+  
   :root {
     --color-transparentBg: #0002;
     --color-transparentHeader: #fff3;
