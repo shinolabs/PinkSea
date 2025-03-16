@@ -2905,46 +2905,57 @@ export var Tegaki = {
   },
 
   initGestures: function() {
-    var self = Tegaki;
-    var obj = $T.id("tegaki-canvas-cnt");
+    const self = Tegaki;
+    const obj = $T.id("tegaki-canvas-cnt");
     self.nuclearRemoveTouchHandlersBecauseSafariSucks(obj);
 
     self.hammerManager = new Hammer(obj);
+    let pan = new Hammer.Pan({ enable: true, pointers: 2, threshold: 0 });
+    let pinch = new Hammer.Pinch({ enable: true, threshold: 0.2 });
+    pinch.recognizeWith(pan);
+    self.hammerManager.add([pan, pinch]);
 
-    self.hammerManager.get('pinch').set({ enable: true, threshold: 0 });
-    self.hammerManager.get('pan').set({ enable: true, pointers: 3, threshold: 0 });
+    let pinchZoomStart = 0;
+    let pinchScrollLeft = 0;
+    let pinchScrollTop = 0;
+    let pinchCenterX = 0;
+    let pinchCenterY = 0;
 
-    console.log("hammer init ", obj);
+    self.hammerManager.on('pinchstart', (ev) => {
+      pinchZoomStart = self.zoomFactor;
+
+      pinchScrollLeft = obj.scrollLeft;
+      pinchScrollTop  = obj.scrollTop;
+
+      const rect = obj.getBoundingClientRect();
+      pinchCenterX = ev.center.x - rect.left + obj.scrollLeft;
+      pinchCenterY = ev.center.y - rect.top  + obj.scrollTop;
+    });
+
+    self.hammerManager.on('pinchmove', (ev) => {
+      let newZoom = pinchZoomStart * ev.scale;
+      newZoom = Math.max(0.5, Math.min(10, newZoom));
+      let scaleRatio = newZoom / pinchZoomStart;
+
+      obj.scrollLeft = pinchScrollLeft + pinchCenterX * (scaleRatio - 1);
+      obj.scrollTop  = pinchScrollTop  + pinchCenterY * (scaleRatio - 1);
+
+      self.setZoomFactorRaw(newZoom);
+    });
 
     let scrollXStart = 0;
     let scrollYStart = 0;
 
-    let pinchZoomStart = 0;
-
-    self.hammerManager.on('panstart', (event) => {
+    self.hammerManager.on('panstart', () => {
       Tegaki.isPainting = false;
       scrollXStart = obj.scrollLeft;
       scrollYStart = obj.scrollTop;
     });
 
-    self.hammerManager.on('panmove', (event) => {
+    self.hammerManager.on('panmove', (ev) => {
       Tegaki.isPainting = false;
-      obj.scrollLeft = scrollXStart - event.deltaX;
-      obj.scrollTop = scrollYStart - event.deltaY;
-    });
-
-    self.hammerManager.on('pinchstart', (event) => {
-      pinchZoomStart = self.zoomFactor;
-    });
-
-    self.hammerManager.on('pinchmove', (event) => {
-      let newZoom = pinchZoomStart * event.scale;
-      if (newZoom < 0.5) {
-        newZoom = 0.5;
-      } else if (newZoom > 10) {
-        newZoom = 10;
-      }
-      self.setZoomFactorRaw(newZoom);
+      obj.scrollLeft = scrollXStart - ev.deltaX;
+      obj.scrollTop  = scrollYStart - ev.deltaY;
     });
   },
 
