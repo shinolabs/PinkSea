@@ -2894,9 +2894,21 @@ export var Tegaki = {
     }
   },
 
+  nuclearRemoveTouchHandlersBecauseSafariSucks: function(obj) {
+    const touchHandler = (ev) => {
+      ev.preventDefault();
+    }
+    obj.addEventListener('touchstart', touchHandler, {passive:false})
+    obj.addEventListener('touchmove', touchHandler, {passive:false})
+    obj.addEventListener('touchend', touchHandler, {passive:false})
+    obj.addEventListener('touchcancel', touchHandler, {passive:false})
+  },
+
   initGestures: function() {
     var self = Tegaki;
     var obj = $T.id("tegaki-canvas-cnt");
+    self.nuclearRemoveTouchHandlersBecauseSafariSucks(obj);
+
     self.hammerManager = new Hammer(obj);
 
     self.hammerManager.get('pinch').set({ enable: true, threshold: 0 });
