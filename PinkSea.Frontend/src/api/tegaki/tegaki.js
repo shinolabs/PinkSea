@@ -2939,8 +2939,8 @@ export var Tegaki = {
 
     self.hammerManager.on('pinchmove', (event) => {
       let newZoom = pinchZoomStart * event.scale;
-      if (newZoom < 1) {
-        newZoom = 1;
+      if (newZoom < 0.5) {
+        newZoom = 0.5;
       } else if (newZoom > 10) {
         newZoom = 10;
       }
