@@ -2880,7 +2880,7 @@ export var Tegaki = {
 
   initTabsForMobile: function() {
     const self = Tegaki;
-    const headers = $T.cls("tegaki-ctrlgrp-title");
+    const headers = $T.cls("tegaki-ctrlgrp-clickable");
 
     for (const header of headers) {
       header.addEventListener("click", (ev) => {
@@ -2929,6 +2929,11 @@ export var Tegaki = {
 
     self.hammerManager.on('pinchmove', (event) => {
       let newZoom = pinchZoomStart * event.scale;
+      if (newZoom < 1) {
+        newZoom = 1;
+      } else if (newZoom > 10) {
+        newZoom = 10;
+      }
       self.setZoomFactorRaw(newZoom);
     });
   },
@@ -5836,7 +5841,7 @@ var TegakiUI = {
     return [canvasCnt, layersCnt];
   },
 
-  buildCtrlGroup: function(id, title) {
+  buildCtrlGroup: function(id, title, clickable) {
     var cnt, el;
 
     cnt = $T.el('div');
@@ -5849,6 +5854,9 @@ var TegakiUI = {
     if (title !== undefined) {
       el = $T.el('div');
       el.className = 'tegaki-ctrlgrp-title';
+      if (clickable) {
+        el.classList.add('tegaki-ctrlgrp-clickable');
+      }
       el.textContent = title;
       cnt.appendChild(el);
     }
@@ -5859,7 +5867,7 @@ var TegakiUI = {
   buildLayersCtrlGroup: function() {
     var el, ctrl, row, cnt;
 
-    ctrl = this.buildCtrlGroup('layers', TegakiStrings().layers);
+    ctrl = this.buildCtrlGroup('layers', TegakiStrings().layers, true);
 
     // Layer options row
     row = $T.el('div');
@@ -5935,7 +5943,7 @@ var TegakiUI = {
   buildSizeCtrlGroup: function() {
     var el, ctrl, row;
 
-    ctrl = this.buildCtrlGroup('size', TegakiStrings().size);
+    ctrl = this.buildCtrlGroup('size', TegakiStrings().size, false);
 
     row = $T.el('div');
     row.className = 'tegaki-ctrlrow';
@@ -5965,7 +5973,7 @@ var TegakiUI = {
   buildAlphaCtrlGroup: function() {
     var el, ctrl, row;
 
-    ctrl = this.buildCtrlGroup('alpha', TegakiStrings().alpha);
+    ctrl = this.buildCtrlGroup('alpha', TegakiStrings().alpha, false);
 
     row = $T.el('div');
     row.className = 'tegaki-ctrlrow';
@@ -5995,7 +6003,7 @@ var TegakiUI = {
   buildFlowCtrlGroup: function() {
     var el, ctrl, row;
 
-    ctrl = this.buildCtrlGroup('flow', TegakiStrings().flow);
+    ctrl = this.buildCtrlGroup('flow', TegakiStrings().flow, false);
 
     row = $T.el('div');
     row.className = 'tegaki-ctrlrow';
@@ -6025,7 +6033,7 @@ var TegakiUI = {
   buildZoomCtrlGroup: function() {
     var el, btn, ctrl;
 
-    ctrl = this.buildCtrlGroup('zoom', TegakiStrings().zoom);
+    ctrl = this.buildCtrlGroup('zoom', TegakiStrings().zoom, false);
 
     btn = $T.el('div');
     btn.className = 'tegaki-ui-btn tegaki-icon tegaki-plus';
@@ -6053,7 +6061,7 @@ var TegakiUI = {
 
     edge = / Edge\//i.test(window.navigator.userAgent);
 
-    ctrl = this.buildCtrlGroup('color', TegakiStrings().color);
+    ctrl = this.buildCtrlGroup('color', TegakiStrings().color, true);
 
     cnt = $T.el('div');
     cnt.id = 'tegaki-color-ctrl';
