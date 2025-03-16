@@ -1,6 +1,7 @@
 @media (max-width: 1024px) {
   #tegaki * {
     touch-action: none !important;  
+    user-select: none !important;
   }
   
   :root {
