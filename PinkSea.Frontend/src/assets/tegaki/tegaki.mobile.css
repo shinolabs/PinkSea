@@ -1,4 +1,8 @@
 @media (max-width: 1024px) {
+  #tegaki * {
+    touch-action: none !important;  
+  }
+  
   :root {
     --color-transparentBg: #0002;
     --color-transparentHeader: #fff3;
@@ -136,8 +140,8 @@
     border: var(--border-bright);
     transition: bottom 0.2s ease-in-out;
   }
-  #tegaki-ctrlgrp-color:focus-within, #tegaki-ctrlgrp-layers:focus-within {
-    bottom: 0;
+  .tegaki-group-visible {
+    bottom: 0 !important;
   }
   #tegaki-ctrlgrp-color .tegaki-ctrlgrp-title::before, #tegaki-ctrlgrp-layers .tegaki-ctrlgrp-title::before {
     content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAZlJREFUeNqkUztLA0EQnr3bvEhhI9FC09gJInJiZbAQREHUWhTtbK8ULEWwFVLZaJE/YKWFgn2SQgxBgjYSIoYkEsxxuec6c/FxCXmAGZjbmdmZ7+a1TAgBw5AEQxL3K7OnjxAMhyEQCkEgGARJllfJ7jrOjWWaYBkGmM0mPBzOdAdoIyF2MFD9lkfxmxqYgT/Ysix1fzOukHp59apCq1epgT0QFGya6u56XMnnG0C8vTahkI3u+gJ4wYah7m1NKcWiBrregFqtArlcCTaWxhW66wRpKwEdEjTW5EUmS/riXEzhXMB9upSFdMnzYYwl/KXwjgwOsHEgXBds285oQgYHAQ1dB875PJMkmkz/Jjq2DbqmeXJFDoHDwAMwUI9Eo/0BtHod9EbjVy/zKDgugIkARHSy52uUFroDFM9WgI9NQ2T5qJUBj2AJfwD63QnY73mUznuPkRy022MwcfNsJnlMMtlawYMXadItP8Wst1yhmmz9SVQLBbTRUn0iv1CrfpyZ/zXiiOgYQY72WHDq5QfGuF0B/kNfAgwAlIbWNoRkTzIAAAAASUVORK5CYII=");

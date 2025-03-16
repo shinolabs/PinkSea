@@ -2,6 +2,7 @@
 
 import i18n from '@/intl/i18n.ts'
 import { usePersistedStore } from '@/state/store.ts';
+import Hammer from 'hammerjs';
 
 function TegakiStrings() {
   let currentLanguage = usePersistedStore().lang
@@ -2774,6 +2775,8 @@ export var Tegaki = {
 
   saveReplay: false,
 
+  hammerManager: null,
+
   open: function(opts = {}) {
     var self = Tegaki;
 
@@ -2855,7 +2858,9 @@ export var Tegaki = {
   init: function() {
     var self = Tegaki;
 
+    self.initTabsForMobile();
     self.createCanvas();
+    self.initGestures();
 
     self.updateLayersCntSize();
 
@@ -2871,6 +2876,61 @@ export var Tegaki = {
 
     TegakiUI.updateUndoRedo(0, 0);
     TegakiUI.updateZoomLevel();
+  },
+
+  initTabsForMobile: function() {
+    const self = Tegaki;
+    const headers = $T.cls("tegaki-ctrlgrp-title");
+
+    for (const header of headers) {
+      header.addEventListener("click", (ev) => {
+        const hadVisibility = header.parentElement.classList.contains('tegaki-group-visible');
+        for (const h2 of headers) {
+          h2.parentElement.classList.remove("tegaki-group-visible");
+        }
+
+        if (!hadVisibility) {
+          header.parentElement.classList.add("tegaki-group-visible");
+        }
+      });
+    }
+  },
+
+  initGestures: function() {
+    var self = Tegaki;
+    var obj = $T.id("tegaki-canvas-cnt");
+    self.hammerManager = new Hammer(obj);
+
+    self.hammerManager.get('pinch').set({ enable: true, threshold: 0 });
+    self.hammerManager.get('pan').set({ enable: true, pointers: 3, threshold: 0 });
+
+    console.log("hammer init ", obj);
+
+    let scrollXStart = 0;
+    let scrollYStart = 0;
+
+    let pinchZoomStart = 0;
+
+    self.hammerManager.on('panstart', (event) => {
+      Tegaki.isPainting = false;
+      scrollXStart = obj.scrollLeft;
+      scrollYStart = obj.scrollTop;
+    });
+
+    self.hammerManager.on('panmove', (event) => {
+      Tegaki.isPainting = false;
+      obj.scrollLeft = scrollXStart - event.deltaX;
+      obj.scrollTop = scrollYStart - event.deltaY;
+    });
+
+    self.hammerManager.on('pinchstart', (event) => {
+      pinchZoomStart = self.zoomFactor;
+    });
+
+    self.hammerManager.on('pinchmove', (event) => {
+      let newZoom = pinchZoomStart * event.scale;
+      self.setZoomFactorRaw(newZoom);
+    });
   },
 
   initFromReplay: function() {
@@ -3011,6 +3071,7 @@ export var Tegaki = {
     }
     else {
       $T.off(document, 'visibilitychange', Tegaki.onVisibilityChange);
+      self.destroyGestures();
     }
 
     $T.off(self.bg, 'contextmenu', self.onDummy);
@@ -3179,6 +3240,16 @@ export var Tegaki = {
     Tegaki.destroyBuffers();
 
     Tegaki.visible = false;
+  },
+
+  destroyGestures: function() {
+    var self = Tegaki;
+    self.hammerManager.off('panstart');
+    self.hammerManager.off('panmove');
+    self.hammerManager.off('pinchstart');
+    self.hammerManager.off('pinchmove');
+    self.hammerManager.destroy();
+    self.hammerManager = null;
   },
 
   flatten: function(ctx) {
@@ -3379,7 +3450,11 @@ export var Tegaki = {
     }
 
     Tegaki.zoomLevel = level;
-    Tegaki.zoomFactor = Tegaki.zoomFactorList[idx];
+    Tegaki.setZoomFactorRaw(Tegaki.zoomFactorList[idx]);
+  },
+
+  setZoomFactorRaw: function(factor) {
+    Tegaki.zoomFactor = factor;
 
     TegakiUI.updateZoomLevel();
 
@@ -3950,6 +4025,11 @@ export var Tegaki = {
   },
 
   onPointerMove: function(e) {
+    if (Tegaki.fingers.size > 1) {
+      e.preventDefault();
+      return;
+    }
+
     var events, x, y, tool, ts, p;
 
     if (Tegaki.cursor) {
@@ -4011,7 +4091,28 @@ export var Tegaki = {
     }
   },
 
+  // The set containing the currently tracked pointers.
+  fingers: new Set(),
+
   onPointerDown: function(e) {
+    Tegaki.fingers.add(e.pointerId);
+    if (Tegaki.fingers.size > 1) {
+      // Undo the last blob that's been drawn.
+      if (Tegaki.isPainting) {
+        Tegaki.recordEvent(TegakiEventDrawCommit, e.timeStamp);
+        Tegaki.tool.commit();
+        TegakiUI.updateLayerPreview(Tegaki.activeLayer);
+        TegakiHistory.pendingAction.addCanvasState(Tegaki.activeLayer.imageData, 1);
+        TegakiHistory.push(TegakiHistory.pendingAction);
+        Tegaki.isPainting = false;
+
+        TegakiHistory.undo();
+      }
+
+      e.preventDefault();
+      return;
+    }
+
     var x, y, tool, p;
 
     if (Tegaki.cursor) {
@@ -4079,6 +4180,8 @@ export var Tegaki = {
   },
 
   onPointerUp: function(e) {
+    Tegaki.fingers.delete(e.pointerId);
+
     Tegaki.activePointerId = e.pointerId;
 
     Tegaki.activePointerIsPen = false;
