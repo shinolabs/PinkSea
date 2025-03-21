@@ -12,7 +12,7 @@ builder.Services.AddHttpClient(
     "pinksea-xrpc",
     client =>
     {
-        client.BaseAddress = new Uri(builder.Configuration["GatewaySettings:PinkSeaEndpoint"]!);
+        client.BaseAddress = new Uri(builder.Configuration["GatewaySettings:AppViewEndpoint"]!);
     });
 
 var app = builder.Build();
