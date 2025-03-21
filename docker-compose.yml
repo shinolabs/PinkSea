@@ -6,6 +6,8 @@ services:
       - PostgresConfig__Hostname=postgresql
       - PostgresConfig__Username=${POSTGRES_USERNAME}
       - PostgresConfig__Password=${POSTGRES_PASSWORD}
+      - PostgresConfig__Port=${POSTGRES_PORT}
+      - PostgresConfig__Database=${POSTGRES_DATABASE}
       - AppViewConfig__AppViewUrl=${APPVIEW_URL}
       - FrontendConfig__FrontendUrl=${FRONTEND_URL}
       - AppViewConfig__BackfillRelay=${BACKFILL_RELAY}
@@ -36,7 +38,7 @@ services:
     environment:
       - POSTGRES_USER=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=PinkSea
+      - POSTGRES_DB=${POSTGRES_DATABASE}
     volumes:
       - pinksea_db:/var/lib/postgresql/data
 
