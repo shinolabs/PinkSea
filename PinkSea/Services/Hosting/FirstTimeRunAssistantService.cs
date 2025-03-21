@@ -26,11 +26,12 @@ public class FirstTimeRunAssistantService(
     /// <inheritdoc />
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        await Migrate();
+        
         if (await HasPerformedFirstTimeRun())
             return;
         
         logger.LogInformation("Hiya! Detected PinkSea running on a fresh installation, hang on while we set things up for you :)");
-        await Migrate();
         BuildConfiguration();
         await Backfill();
     }
