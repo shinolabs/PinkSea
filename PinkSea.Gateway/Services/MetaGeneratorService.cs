@@ -54,6 +54,7 @@ public class MetaGeneratorService(
     public string GetRegularMeta()
     {
         return $"""
+                {GenerateConfig()}
                 <meta name="application-name" content="PinkSea">
                 <meta name="generator" content="PinkSea.Gateway">
                 <meta property="og:site_name" content="PinkSea" />
@@ -78,6 +79,7 @@ public class MetaGeneratorService(
             .Last();
         
         return $"""
+                {GenerateConfig()}
                 <link rel="alternate" href="{resp.Parent.AtProtoLink}" />
                 <meta name="application-name" content="PinkSea">
                 <meta name="generator" content="PinkSea.Gateway">
@@ -90,5 +92,20 @@ public class MetaGeneratorService(
                 <meta name="theme-color" content="#FFB6C1">
                 <meta name="twitter:card" content="summary_large_image">
                 """;
+    }
+
+    /// <summary>
+    /// Generates the config for the appview endpoint.
+    /// </summary>
+    /// <returns>The config for the appview endpoint.</returns>
+    private string GenerateConfig()
+    {
+        return $@"
+<script>
+    window.pinkSeaConfig = {{
+        apiUrl: ""{options.Value.AppViewEndpoint}""
+    }}
+</script>
+";
     }
 }
