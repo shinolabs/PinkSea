@@ -11,4 +11,11 @@ public interface IXrpcClientFactory
     /// <param name="stateId">The state id.</param>
     /// <returns>The XRPC client.</returns>
     Task<IXrpcClient?> GetForOAuthStateId(string stateId);
+
+    /// <summary>
+    /// Gets an XRPC client without any kind of authentication.
+    /// </summary>
+    /// <param name="host">The host.</param>
+    /// <returns>The XRPC client.</returns>
+    Task<IXrpcClient> GetWithoutAuthentication(string host);
 }

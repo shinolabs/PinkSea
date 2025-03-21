@@ -9,4 +9,9 @@ public class AppViewConfig
     /// Specifies the app url.
     /// </summary>
     public required string AppUrl { get; set; }
+    
+    /// <summary>
+    /// The relay to backfill from.
+    /// </summary>
+    public string? BackfillRelay { get; set; }
 }

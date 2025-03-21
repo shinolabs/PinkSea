@@ -213,12 +213,14 @@ public partial class OekakiService(
     /// <param name="oekakiCid">The oekaki CID..</param>
     /// <param name="authorDid">The author's did.</param>
     /// <param name="recordTid">The tid of the record.</param>
+    /// <param name="useRecordIndexedAt">Should we use the record's upload date as indexed at?</param>
     public async Task<OekakiModel> InsertOekakiIntoDatabase(
         Oekaki record,
         OekakiModel? parent,
         string oekakiCid,
         string authorDid,
-        string recordTid)
+        string recordTid,
+        bool useRecordIndexedAt = false)
     {
         // First, see if the author exists.
         var author = await dbContext.Users
@@ -236,6 +238,15 @@ public partial class OekakiService(
             await dbContext.SaveChangesAsync();
         }
 
+        var indexed = DateTimeOffset.UtcNow;
+        if (useRecordIndexedAt)
+        {
+            if (DateTimeOffset.TryParse(record.CreatedAt, out var recordCreatedAtDto))
+                indexed = recordCreatedAtDto;
+            else if (long.TryParse(record.CreatedAt, out var msec))
+                indexed = DateTimeOffset.FromUnixTimeMilliseconds(msec);
+        }
+
         var model = new OekakiModel
         {
             // We want the key to be separate from the oekaki TID, as we might collide between PDSes.
@@ -244,7 +255,7 @@ public partial class OekakiService(
             OekakiTid = recordTid,
             Author = author,
             AuthorDid = author.Did,
-            IndexedAt = DateTimeOffset.UtcNow,
+            IndexedAt = indexed,
             RecordCid = oekakiCid,
             BlobCid = record.Image.Blob.Reference.Link,
             AltText = record.Image.ImageLink.Alt,

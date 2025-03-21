@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PinkSea.AtProto;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.Storage;
@@ -8,6 +9,7 @@ using PinkSea.Database;
 using PinkSea.Middleware;
 using PinkSea.Models;
 using PinkSea.Services;
+using PinkSea.Services.Hosting;
 using PinkSea.Services.Integration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,6 +54,8 @@ builder.Services.AddCors(options =>
                 .AllowAnyHeader();
         });
 });
+
+builder.Services.AddHostedService<FirstTimeRunAssistantService>();
 
 var app = builder.Build();
 
