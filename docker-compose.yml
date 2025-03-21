@@ -2,7 +2,10 @@ version: "3"
 services:
   appview:
     image: pinksea/appview
-    container_name: pinksea_appview
+    environment:
+      PostgresConfig__Hostname: postgresql
+      PostgresConfig__Username: pinksea
+      PostgresConfig__Password: pinksea 
     build:
       context: .
       dockerfile: Dockerfile
@@ -12,7 +15,6 @@ services:
       - "5678:8080"
   frontend:
     image: pinksea/gateway
-    container_name: pinksea_frontend
     build:
       context: .
       dockerfile: Dockerfile.Gateway
@@ -22,7 +24,6 @@ services:
       - "6789:8080"
   postgresql:
     image: postgres
-    container_name: pinksea_postgresql
     restart: always
     networks:
       - pinksea
