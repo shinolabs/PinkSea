@@ -33,4 +33,11 @@ public class DefaultXrpcClientFactory(
         
         return new SessionXrpcClient(httpClient, oauthState);
     }
+
+    /// <inheritdoc />
+    public Task<IXrpcClient> GetWithoutAuthentication(string host)
+    {
+        var httpClient = httpClientFactory.CreateClient("xrpc-client");
+        return Task.FromResult<IXrpcClient>(new BasicXrpcClient(httpClient, host));
+    }
 }
