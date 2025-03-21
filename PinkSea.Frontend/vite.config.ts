@@ -15,5 +15,8 @@ export default defineConfig({
   },
   build: {
     target: 'esnext'
+  },
+  define: {
+    'import.meta.env.PINKSEA_API_URL': JSON.stringify(process.env.PINKSEA_API_URL),
   }
 })

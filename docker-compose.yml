@@ -4,8 +4,10 @@ services:
     image: pinksea/appview
     environment:
       PostgresConfig__Hostname: postgresql
-      PostgresConfig__Username: pinksea
-      PostgresConfig__Password: pinksea 
+      PostgresConfig__Username: "{POSTGRES_USERNAME}"
+      PostgresConfig__Password: "{POSTGRES_PASSWORD}"
+      AppViewConfig__AppViewUrl: "{APPVIEW_URL}"
+      FrontendConfig__FrontendUrl: "{FRONTEND_URL}"
       AppViewConfig__BackfillRelay: "https://relay1.us-west.bsky.network"
     build:
       context: .
@@ -19,6 +21,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.Gateway
+    environment:
+      GatewaySettings__AppViewEndpoint: "{APPVIEW_URL}"
+      GatewaySettings__FrontEndEndpoint: "{FRONTEND_URL}"
     networks:
       - pinksea
     ports:
@@ -29,8 +34,8 @@ services:
     networks:
       - pinksea
     environment:
-      POSTGRES_USER: pinksea
-      POSTGRES_PASSWORD: pinksea
+      POSTGRES_USER: "{POSTGRES_USERNAME}"
+      POSTGRES_PASSWORD: "{POSTGRES_PASSWORD}"
       POSTGRES_DB: PinkSea
     volumes:
       - pinksea_db:/var/lib/postgresql/data
