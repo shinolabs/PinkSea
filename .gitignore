@@ -168,3 +168,6 @@ coverage
 *.tsbuildinfo
 
 PinkSea.Gateway/wwwroot/
+
+.env
+.env.local
