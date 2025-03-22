@@ -14,6 +14,11 @@ public class JetStreamOptions
     /// The wanted collections
     /// </summary>
     public string[]? WantedCollections { get; set; }
+    
+    /// <summary>
+    /// The cursor.
+    /// </summary>
+    public string? Cursor { get; set; }
 
     /// <summary>
     /// Defines how many events can be processed in parallel.
