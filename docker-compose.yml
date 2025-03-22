@@ -11,6 +11,8 @@ services:
       - AppViewConfig__AppUrl=${APPVIEW_URL}
       - FrontendConfig__FrontendUrl=${FRONTEND_URL}
       - AppViewConfig__BackfillRelay=${BACKFILL_RELAY}
+      - AppViewConfig__PlcDirectory=${PLC_DIRECTORY}
+      - AppViewConfig__JetStreamEndpoint=${JETSTREAM_ENDPOINT}
     build:
       context: .
       dockerfile: Dockerfile
