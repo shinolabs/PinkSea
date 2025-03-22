@@ -11,8 +11,13 @@ namespace PinkSea.AtProto;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddAtProtoClientServices(this IServiceCollection collection)
+    public static IServiceCollection AddAtProtoClientServices(
+        this IServiceCollection collection,
+        Action<AtProtoClientServicesConfig>? config = null)
     {
+        var options = new AtProtoClientServicesConfig();
+        config?.Invoke(options);
+        
         collection.AddMemoryCache();
         collection.AddSingleton<IDnsQuery, LookupClient>();
         collection.AddTransient<IDomainDidResolver, DomainDidResolver>();
@@ -24,7 +29,7 @@ public static class ServiceCollectionExtensions
 
         collection.AddHttpClient("did-resolver", client =>
         {
-            client.BaseAddress = new Uri("https://plc.directory");
+            client.BaseAddress = options.PlcDirectory;
         });
 
         return collection;

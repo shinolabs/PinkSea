@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using PinkSea.AtProto;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.Storage;
@@ -36,11 +35,18 @@ builder.Services.AddScoped<TagsService>();
 builder.Services.AddScoped<BlueskyIntegrationService>();
 builder.Services.AddTransient<FeedBuilder>();
 builder.Services.AddDbContext<PinkSeaDbContext>();
-builder.Services.AddAtProtoClientServices();
+
+builder.Services.AddAtProtoClientServices(o =>
+{
+    o.PlcDirectory = new Uri(builder.Configuration["AppViewConfig:PlcDirectory"]!);
+});
+
 builder.Services.AddJetStream(o =>
 {
+    o.Endpoint = builder.Configuration["AppViewConfig:JetStreamEndpoint"];
     o.WantedCollections = ["com.shinolabs.pinksea.oekaki"];
 });
+
 builder.Services.AddScoped<IJetStreamEventHandler, OekakiJetStreamEventHandler>();
 builder.Services.AddXrpcHandlers();
 
