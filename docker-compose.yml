@@ -18,6 +18,8 @@ services:
       dockerfile: Dockerfile
     networks:
       - pinksea
+    depends_on:
+      - postgresql
     ports:
       - "5678:8080"
   frontend:
@@ -30,6 +32,8 @@ services:
       - GatewaySettings__FrontEndEndpoint=${FRONTEND_URL}
     networks:
       - pinksea
+    depends_on:
+      - appview
     ports:
       - "6789:8080"
   postgresql:
