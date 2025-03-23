@@ -13,6 +13,7 @@ services:
       - AppViewConfig__BackfillSource=${BACKFILL_SOURCE}
       - AppViewConfig__PlcDirectory=${PLC_DIRECTORY}
       - AppViewConfig__JetStreamEndpoint=${JETSTREAM_ENDPOINT}
+      - AppViewConfig__ImageProxyTemplate=${IMAGE_PROXY_TEMPLATE}
       - AppViewConfig__CursorFilePath=/App/docker_data/cursorfile
     build:
       context: .

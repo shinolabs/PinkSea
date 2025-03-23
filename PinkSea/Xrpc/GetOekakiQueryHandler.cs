@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Server.Xrpc;
 using PinkSea.Database;
 using PinkSea.Lexicons.Objects;
 using PinkSea.Lexicons.Queries;
+using PinkSea.Models;
 using PinkSea.Services;
 
 namespace PinkSea.Xrpc;
@@ -12,7 +14,11 @@ namespace PinkSea.Xrpc;
 /// Handler for the "com.shinolabs.pinksea.getOekaki" xrpc call. Retrieves an oekaki post and its children.
 /// </summary>
 [Xrpc("com.shinolabs.pinksea.getOekaki")]
-public class GetOekakiQueryHandler(PinkSeaDbContext dbContext, FeedBuilder feedBuilder, IDidResolver didResolver)
+public class GetOekakiQueryHandler(
+    PinkSeaDbContext dbContext,
+    FeedBuilder feedBuilder,
+    IDidResolver didResolver,
+    IOptions<AppViewConfig> opts)
     : IXrpcQuery<GetOekakiQueryRequest, GetOekakiQueryResponse>
 {
     /// <inheritdoc />
@@ -36,7 +42,8 @@ public class GetOekakiQueryHandler(PinkSeaDbContext dbContext, FeedBuilder feedB
                 !parent.Tombstone
             ? HydratedOekaki.FromOekakiModel(
                 parent, 
-                await didResolver.GetHandleFromDid(parent.AuthorDid) ?? "invalid.handle")
+                await didResolver.GetHandleFromDid(parent.AuthorDid) ?? "invalid.handle",
+                opts.Value.ImageProxyTemplate)
             : TombstoneOekaki.FromOekakiModel(
                 parent),
             
