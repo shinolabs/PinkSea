@@ -44,6 +44,7 @@ builder.Services.AddAtProtoClientServices(o =>
 builder.Services.AddJetStream(o =>
 {
     o.Endpoint = builder.Configuration["AppViewConfig:JetStreamEndpoint"];
+    o.CursorFilePath = builder.Configuration["AppViewConfig:CursorFilePath"];
     o.WantedCollections = ["com.shinolabs.pinksea.oekaki"];
 });
 

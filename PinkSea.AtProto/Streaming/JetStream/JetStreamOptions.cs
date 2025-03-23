@@ -19,6 +19,11 @@ public class JetStreamOptions
     /// The cursor.
     /// </summary>
     public string? Cursor { get; set; }
+    
+    /// <summary>
+    /// The path to the cursorfile.
+    /// </summary>
+    public string? CursorFilePath { get; set; }
 
     /// <summary>
     /// Defines how many events can be processed in parallel.

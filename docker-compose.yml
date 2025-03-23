@@ -13,6 +13,7 @@ services:
       - AppViewConfig__BackfillRelay=${BACKFILL_RELAY}
       - AppViewConfig__PlcDirectory=${PLC_DIRECTORY}
       - AppViewConfig__JetStreamEndpoint=${JETSTREAM_ENDPOINT}
+      - AppViewConfig__CursorFilePath=/App/docker_data/cursorfile
     build:
       context: .
       dockerfile: Dockerfile
@@ -22,6 +23,8 @@ services:
       - postgresql
     ports:
       - "5678:8080"
+    volumes:
+      - ${PWD}/docker_data:/App/docker_data
   frontend:
     image: pinksea/gateway
     build:

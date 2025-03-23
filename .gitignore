@@ -171,3 +171,5 @@ PinkSea.Gateway/wwwroot/
 
 .env
 .env.local
+
+docker_data/
