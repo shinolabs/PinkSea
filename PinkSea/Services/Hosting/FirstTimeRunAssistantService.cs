@@ -47,7 +47,7 @@ public class FirstTimeRunAssistantService(
             var config = await dbContext.Configuration.FirstOrDefaultAsync();
             return config != null;
         }
-        catch (NpgsqlException exception)
+        catch (NpgsqlException)
         {
             return false;
         }
