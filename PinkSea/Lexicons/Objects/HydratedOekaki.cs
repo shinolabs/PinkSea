@@ -60,11 +60,18 @@ public class HydratedOekaki
     /// </summary>
     /// <param name="oekakiModel">The oekaki model.</param>
     /// <param name="authorHandle">The author's handle.</param>
+    /// <param name="imageProxyEndpoint">The endpoint of the image proxy.</param>
     /// <returns>The oekaki DTO.</returns>
     public static HydratedOekaki FromOekakiModel(
         OekakiModel oekakiModel,
-        string authorHandle)
+        string authorHandle,
+        string imageProxyEndpoint)
     {
+        var imageLink = string.Format(
+            imageProxyEndpoint,
+            oekakiModel.AuthorDid,
+            oekakiModel.BlobCid);
+        
         return new HydratedOekaki
         {
             Author = new Author
@@ -73,8 +80,7 @@ public class HydratedOekaki
                 Handle = authorHandle
             },
             CreationTime = oekakiModel.IndexedAt,
-            ImageLink =
-                $"https://cdn.bsky.app/img/feed_fullsize/plain/{oekakiModel.AuthorDid}/{oekakiModel.BlobCid}",
+            ImageLink = imageLink,
             Tags = oekakiModel.TagOekakiRelations is not null 
                 ? oekakiModel.TagOekakiRelations.Select(to => to.TagId).ToArray()
                 : [],

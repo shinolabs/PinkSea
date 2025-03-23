@@ -11,6 +11,11 @@ public class AppViewConfig
     public required string AppUrl { get; set; }
     
     /// <summary>
+    /// The template for the image proxy.
+    /// </summary>
+    public required string ImageProxyTemplate { get; set; }
+    
+    /// <summary>
     /// The source to backfill from.
     /// </summary>
     public string? BackfillSource { get; set; }

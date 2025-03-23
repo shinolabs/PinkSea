@@ -1,10 +1,12 @@
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.Database;
 using PinkSea.Database.Models;
 using PinkSea.Lexicons.Objects;
+using PinkSea.Models;
 
 namespace PinkSea.Services;
 
@@ -14,7 +16,8 @@ namespace PinkSea.Services;
 /// <param name="dbContext">The database context.</param>
 public class FeedBuilder(
     PinkSeaDbContext dbContext,
-    IDidResolver didResolver)
+    IDidResolver didResolver,
+    IOptions<AppViewConfig> opts)
 {
     /// <summary>
     /// The oekaki query.
@@ -114,7 +117,7 @@ public class FeedBuilder(
         });
 
         var oekakiDtos = list
-            .Select(o => HydratedOekaki.FromOekakiModel(o, map[o.AuthorDid]))
+            .Select(o => HydratedOekaki.FromOekakiModel(o, map[o.AuthorDid], opts.Value.ImageProxyTemplate))
             .ToList();
 
         return oekakiDtos;
