@@ -19,4 +19,9 @@ public class AppViewConfig
     /// The source to backfill from.
     /// </summary>
     public string? BackfillSource { get; set; }
+    
+    /// <summary>
+    /// Skip the dimensions verification when backfilling records.
+    /// </summary>
+    public bool? BackfillSkipDimensionsVerification { get; set; }
 }

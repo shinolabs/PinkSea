@@ -11,6 +11,7 @@ services:
       - AppViewConfig__AppUrl=${APPVIEW_URL}
       - FrontendConfig__FrontendUrl=${FRONTEND_URL}
       - AppViewConfig__BackfillSource=${BACKFILL_SOURCE}
+      - AppViewConfig__BackfillSkipDimensionsVerification=${BACKFILL_SKIP_DIMENSIONS_VERIFICATION}
       - AppViewConfig__PlcDirectory=${PLC_DIRECTORY}
       - AppViewConfig__JetStreamEndpoint=${JETSTREAM_ENDPOINT}
       - AppViewConfig__ImageProxyTemplate=${IMAGE_PROXY_TEMPLATE}
@@ -41,7 +42,7 @@ services:
     ports:
       - "6789:8080"
   postgresql:
-    image: postgres
+    image: postgres:17-alpine
     restart: always
     networks:
       - pinksea

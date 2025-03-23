@@ -158,8 +158,11 @@ public class FirstTimeRunAssistantService(
 
             foreach (var oekaki in response.Records)
             {
-                if (!await ValidateRemoteOekakiDimensions(xrpcClient, oekaki.Value, did))
+                if (appViewConfig.Value.BackfillSkipDimensionsVerification != true &&
+                    !await ValidateRemoteOekakiDimensions(xrpcClient, oekaki.Value, did))
+                {
                     continue;
+                }
                 
                 if (oekaki.Value.InResponseTo != null)
                 {
