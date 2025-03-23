@@ -27,11 +27,13 @@ public class JetStreamListener(
     /// <summary>
     /// Last time in microseconds.
     /// </summary>
-    private long LastTimeInMicroseconds { get; set; }
+    private long LastTimeInMicroseconds { get; set; } = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() * 1000;
     
     /// <inheritdoc />
     public async Task StartAsync(CancellationToken cancellationToken)
     {
+        opts.Value.Cursor ??= await ReadCursorFile();
+        
         var uri = BuildJetStreamEndpoint();
 
         _client = new WebsocketClient(uri);
@@ -55,7 +57,8 @@ public class JetStreamListener(
             .Subscribe();
         
         logger.LogInformation("Connecting to JetStream @ {JetStreamEndpoint}...", uri);
-        
+
+        StartCursorSaverCoroutine(cancellationToken);
         await _client.Start();
     }
     
@@ -99,6 +102,7 @@ public class JetStreamListener(
             var @event = JsonSerializer.Deserialize<JetStreamEvent>(message.Text!)!;
 
             LastTimeInMicroseconds = @event.TimeInMicroseconds;
+            await SaveCursorFile();
         
             foreach (var listener in listeners)
                 await listener.HandleEvent(@event);
@@ -113,6 +117,13 @@ public class JetStreamListener(
     public async Task StopAsync(CancellationToken cancellationToken)
     {
         await _client!.Stop(WebSocketCloseStatus.NormalClosure, "");
+
+        // Save the last timestamp.
+        LastTimeInMicroseconds = DateTimeOffset
+            .UtcNow
+            .ToUnixTimeMilliseconds() * 1000;
+
+        await SaveCursorFile();
     }
 
     /// <summary>
@@ -145,5 +156,50 @@ public class JetStreamListener(
 
         url += $"?{queryString}";
         return new Uri(url);
+    }
+
+    /// <summary>
+    /// Starts the cursor saver coroutine.
+    /// </summary>
+    private void StartCursorSaverCoroutine(CancellationToken token)
+    {
+        _ = Task.Factory.StartNew(async () =>
+        {
+            while (!token.IsCancellationRequested)
+            {
+                const int saveEverySeconds = 30;
+                await Task.Delay(TimeSpan.FromSeconds(saveEverySeconds), token);
+
+                await SaveCursorFile();
+            }
+        }, token);
+    }
+
+    /// <summary>
+    /// Reads the cursor file.
+    /// </summary>
+    /// <returns>The cursor file.</returns>
+    private async Task<string?> ReadCursorFile()
+    {
+        if (string.IsNullOrEmpty(opts.Value.CursorFilePath))
+            return null;
+
+        if (!File.Exists(opts.Value.CursorFilePath))
+            return null;
+
+        return await File.ReadAllTextAsync(opts.Value.CursorFilePath);
+    }
+
+    /// <summary>
+    /// Saves the cursor file.
+    /// </summary>
+    private async Task SaveCursorFile()
+    {
+        if (string.IsNullOrEmpty(opts.Value.CursorFilePath))
+            return;
+
+        await File.WriteAllTextAsync(
+            opts.Value.CursorFilePath,
+            LastTimeInMicroseconds.ToString());
     }
 }
