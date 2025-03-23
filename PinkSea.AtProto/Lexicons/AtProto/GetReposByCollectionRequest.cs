@@ -14,4 +14,9 @@ public class GetReposByCollectionRequest
     /// The limit on DIDs.
     /// </summary>
     public required int Limit { get; set; }
+    
+    /// <summary>
+    /// The cursor.
+    /// </summary>
+    public string? Cursor { get; set; }
 }
