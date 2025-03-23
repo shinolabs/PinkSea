@@ -77,12 +77,12 @@ public class FirstTimeRunAssistantService(
     /// </summary>
     private async Task Backfill()
     {
-        if (string.IsNullOrEmpty(appViewConfig.Value.BackfillRelay))
+        if (string.IsNullOrEmpty(appViewConfig.Value.BackfillSource))
             return;
         
         logger.LogInformation(" - Backfilling posts...");
         using var xrpcClient = await xrpcClientFactory.GetWithoutAuthentication(
-            appViewConfig.Value.BackfillRelay);
+            appViewConfig.Value.BackfillSource);
 
         // TODO: Use the cursor.
         var repos = await xrpcClient.Query<GetReposByCollectionResponse>(

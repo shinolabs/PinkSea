@@ -11,7 +11,7 @@ public class AppViewConfig
     public required string AppUrl { get; set; }
     
     /// <summary>
-    /// The relay to backfill from.
+    /// The source to backfill from.
     /// </summary>
-    public string? BackfillRelay { get; set; }
+    public string? BackfillSource { get; set; }
 }

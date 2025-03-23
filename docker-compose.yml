@@ -10,7 +10,7 @@ services:
       - PostgresConfig__Database=${POSTGRES_DATABASE}
       - AppViewConfig__AppUrl=${APPVIEW_URL}
       - FrontendConfig__FrontendUrl=${FRONTEND_URL}
-      - AppViewConfig__BackfillRelay=${BACKFILL_RELAY}
+      - AppViewConfig__BackfillSource=${BACKFILL_SOURCE}
       - AppViewConfig__PlcDirectory=${PLC_DIRECTORY}
       - AppViewConfig__JetStreamEndpoint=${JETSTREAM_ENDPOINT}
       - AppViewConfig__CursorFilePath=/App/docker_data/cursorfile
