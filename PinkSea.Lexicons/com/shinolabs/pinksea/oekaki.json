@@ -59,13 +59,8 @@
     "imageLink": {
       "type": "object",
       "description": "A link to the image, it can be either directly to the PDS or to a CDN.",
-      "required": ["fullsize"],
+      "required": [],
       "properties": {
-        "fullsize": {
-          "type": "string",
-          "format": "uri",
-          "description": "Fully-qualified URL where a large version of the image can be fetched."
-        },
         "alt": {
           "type": "string",
           "description": "Alt text description of the image, for accessibility."
