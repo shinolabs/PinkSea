@@ -24,4 +24,10 @@ public class GetReposByCollectionResponse
     /// </summary>
     [JsonPropertyName("repos")]
     public required IReadOnlyList<Repo> Repos { get; set; }
+    
+    /// <summary>
+    /// The cursor.
+    /// </summary>
+    [JsonPropertyName("cursor")]
+    public string? Cursor { get; set; }
 }
