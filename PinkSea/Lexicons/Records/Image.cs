@@ -14,12 +14,6 @@ public class Image
     public class ImageLinkObject
     {
         /// <summary>
-        /// Fully-qualified URL where a large version of the image can be fetched.
-        /// </summary>
-        [JsonPropertyName("fullsize")]
-        public required string FullSize { get; set; }
-        
-        /// <summary>
         /// Alt text description of the image, for accessibility.
         /// </summary>
         [JsonPropertyName("alt"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

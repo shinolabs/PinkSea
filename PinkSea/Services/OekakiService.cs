@@ -174,8 +174,6 @@ public partial class OekakiService(
                 Blob = blob,
                 ImageLink = new Image.ImageLinkObject
                 {
-                    // TODO: Each PinkSea "instance" should probably proxy the images.
-                    FullSize = $"https://cdn.bsky.app/img/feed_fullsize/plain/{oauthState.Did}/{blob.Reference.Link}",
                     Alt = request.AltText
                 }
             },
