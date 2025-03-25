@@ -14,16 +14,16 @@ public class AtProtoIdentity
     public required string Did { get; set; }
     
     /// <summary>
-    /// The new handle of the DID.
-    /// </summary>
-    [JsonPropertyName("handle")]
-    public required string Handle { get; set; }
-    
-    /// <summary>
     /// The sequence number.
     /// </summary>
     [JsonPropertyName("seq")]
     public required ulong SequenceNumber { get; set; }
+    
+    /// <summary>
+    /// The new handle of the DID.
+    /// </summary>
+    [JsonPropertyName("handle")]
+    public string? Handle { get; set; }
     
     /// <summary>
     /// The timestamp.
