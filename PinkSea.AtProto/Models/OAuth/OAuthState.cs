@@ -61,4 +61,13 @@ public class OAuthState
     /// The custom client-defined redirect url.
     /// </summary>
     public string? ClientRedirectUrl { get; set; }
+
+    /// <summary>
+    /// Check if this token has expired.
+    /// </summary>
+    /// <returns>Whether this token has expired.</returns>
+    public bool HasExpired()
+    {
+        return ExpiresAt <= DateTimeOffset.UtcNow;
+    }
 }

@@ -12,10 +12,4 @@ public class BeginLoginFlowProcedureResponse
     /// </summary>
     [JsonPropertyName("redirect")]
     public string? Redirect { get; set; }
-    
-    /// <summary>
-    /// The failure reason.
-    /// </summary>
-    [JsonPropertyName("failureReason")]
-    public string? FailureReason { get; set; }
 }

@@ -12,13 +12,13 @@ public class GetHandleFromDidQueryHandler(IDidResolver didResolver)
     : IXrpcQuery<GetHandleFromDidQueryRequest, GetHandleFromDidQueryResponse>
 {
     /// <inheritdoc />
-    public async Task<GetHandleFromDidQueryResponse?> Handle(GetHandleFromDidQueryRequest request)
+    public async Task<XrpcErrorOr<GetHandleFromDidQueryResponse>> Handle(GetHandleFromDidQueryRequest request)
     {
         var handle = await didResolver.GetHandleFromDid(request.Did);
         
-        return new GetHandleFromDidQueryResponse()
+        return XrpcErrorOr<GetHandleFromDidQueryResponse>.Ok(new GetHandleFromDidQueryResponse()
         {
             Handle = handle ?? request.Did
-        };
+        });
     }
 }

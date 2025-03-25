@@ -15,14 +15,14 @@ public class ListReposByCollectionQueryHandler(PinkSeaDbContext dbContext)
     : IXrpcQuery<GetReposByCollectionRequest, GetReposByCollectionResponse>
 {
     /// <inheritdoc />
-    public async Task<GetReposByCollectionResponse?> Handle(GetReposByCollectionRequest request)
+    public async Task<XrpcErrorOr<GetReposByCollectionResponse>> Handle(GetReposByCollectionRequest request)
     {
         if (request.Collection != "com.shinolabs.pinksea.oekaki")
         {
-            return new GetReposByCollectionResponse
+            return XrpcErrorOr<GetReposByCollectionResponse>.Ok(new GetReposByCollectionResponse
             {
                 Repos = []
-            };
+            });
         }
 
         var limit = Math.Clamp(request.Limit, 1, 2000);
@@ -38,7 +38,7 @@ public class ListReposByCollectionQueryHandler(PinkSeaDbContext dbContext)
             .Take(limit)
             .ToListAsync();
 
-        return new GetReposByCollectionResponse
+        return XrpcErrorOr<GetReposByCollectionResponse>.Ok(new GetReposByCollectionResponse
         {
             Repos = users.Select(user => new GetReposByCollectionResponse.Repo
             {
@@ -48,6 +48,6 @@ public class ListReposByCollectionQueryHandler(PinkSeaDbContext dbContext)
             Cursor = users.Count > 0
                 ? HttpUtility.UrlEncode(users[^1].CreatedAt.ToString("o"))
                 : null
-        };
+        });
     }
 }
