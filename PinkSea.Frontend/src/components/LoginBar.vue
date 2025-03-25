@@ -10,21 +10,23 @@ const loginButton = useTemplateRef<HTMLButtonElement>("login-button");
 
 const beginOAuth = async () => {
   loginButton.value!.disabled = true;
-  const { data } = await xrpc.call("com.shinolabs.pinksea.beginLoginFlow", {
-    data: {
-      handle: handle.value,
-      redirectUrl: `${location.origin}/callback`,
+  try {
+    const { data } = await xrpc.call("com.shinolabs.pinksea.beginLoginFlow", {
+      data: {
+        handle: handle.value,
+        redirectUrl: `${location.origin}/callback`,
 
-      password: password.value.length > 0
-        ? password.value
-        : null
+        password: password.value.length > 0
+          ? password.value
+          : null
+      }
+    });
+
+    if (data.redirect !== null && data.redirect !== undefined) {
+      document.location = data.redirect;
     }
-  });
-
-  if (data.redirect !== null && data.redirect !== undefined) {
-    document.location = data.redirect;
-  } else {
-    alert(`Failed to log in: ${data.failureReason}`);
+  } catch (e) {
+    alert(`Failed to log in: ${e}`);
     loginButton.value!.disabled = false;
   }
 }
