@@ -117,12 +117,6 @@ public class JetStreamListener(
     public async Task StopAsync(CancellationToken cancellationToken)
     {
         await _client!.Stop(WebSocketCloseStatus.NormalClosure, "");
-
-        // Save the last timestamp.
-        LastTimeInMicroseconds = DateTimeOffset
-            .UtcNow
-            .ToUnixTimeMilliseconds() * 1000;
-
         await SaveCursorFile();
     }
 
