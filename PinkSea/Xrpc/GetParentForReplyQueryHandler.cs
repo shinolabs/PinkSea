@@ -13,7 +13,7 @@ public class GetParentForReplyQueryHandler(PinkSeaDbContext dbContext)
     : IXrpcQuery<GetParentForReplyQueryRequest, GetParentForReplyQueryResponse>
 {
     /// <inheritdoc />
-    public async Task<GetParentForReplyQueryResponse?> Handle(GetParentForReplyQueryRequest request)
+    public async Task<XrpcErrorOr<GetParentForReplyQueryResponse>> Handle(GetParentForReplyQueryRequest request)
     {
         var parent = await dbContext.Oekaki
             .AsNoTracking()
@@ -23,12 +23,12 @@ public class GetParentForReplyQueryHandler(PinkSeaDbContext dbContext)
             .FirstOrDefaultAsync();
 
         if (parent is null)
-            return null;
+            return XrpcErrorOr<GetParentForReplyQueryResponse>.Fail("NotFound", "Could not find the parent for this record.");
 
-        return new GetParentForReplyQueryResponse()
+        return XrpcErrorOr<GetParentForReplyQueryResponse>.Ok(new GetParentForReplyQueryResponse()
         {
             AuthorDid = parent.AuthorDid,
             RecordKey = parent.OekakiTid
-        };
+        });
     }
 }

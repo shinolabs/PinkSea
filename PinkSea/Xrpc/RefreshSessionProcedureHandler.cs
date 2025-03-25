@@ -20,27 +20,27 @@ public class RefreshSessionProcedureHandler(
     IHttpContextAccessor httpContextAccessor) : IXrpcProcedure<Empty, Empty>
 {
     /// <inheritdoc />
-    public async Task<Empty?> Handle(Empty request)
+    public async Task<XrpcErrorOr<Empty>> Handle(Empty request)
     {
         var stateId = httpContextAccessor.HttpContext?.GetStateToken();
         if (stateId is null)
-            return null!;
+            return XrpcErrorOr<Empty>.Fail("NoAuthToken", "Missing authorization token.");
 
         var state = await oauthStateStorageProvider.GetForStateId(stateId);
         if (state is null)
-            return null!;
+            return XrpcErrorOr<Empty>.Fail("InvalidToken", "Invalid token.");
 
         if (state.AuthorizationType == AuthorizationType.PdsSession)
         {
             if (!await atProtoAuthorizationService.RefreshSession(stateId))
-                return null!;
+                return XrpcErrorOr<Empty>.Fail("SessionExpired", "Your session has expired, log in again.");
         }
         else
         {
             if (!await oauthClient.Refresh(stateId))
-                return null!;
+                return XrpcErrorOr<Empty>.Fail("SessionExpired", "Your session has expired, log in again.");
         }
         
-        return new Empty();
+        return XrpcErrorOr<Empty>.Ok(new Empty());
     }
 }

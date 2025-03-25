@@ -22,21 +22,21 @@ public class GetOekakiQueryHandler(
     : IXrpcQuery<GetOekakiQueryRequest, GetOekakiQueryResponse>
 {
     /// <inheritdoc />
-    public async Task<GetOekakiQueryResponse?> Handle(GetOekakiQueryRequest request)
+    public async Task<XrpcErrorOr<GetOekakiQueryResponse>> Handle(GetOekakiQueryRequest request)
     {
         var parent = await dbContext.Oekaki
             .Include(o => o.TagOekakiRelations)
             .FirstOrDefaultAsync(o => o.AuthorDid == request.Did && o.OekakiTid == request.RecordKey);
 
         if (parent == null)
-            return null;
+            return XrpcErrorOr<GetOekakiQueryResponse>.Fail("NotFound", "Could not find this record.");
 
         var childrenFeed = await feedBuilder
             .StartWithOrdering(c => c.IndexedAt)
             .Where(c => c.ParentId == parent.Key)
             .GetFeed();
 
-        return new GetOekakiQueryResponse()
+        return XrpcErrorOr<GetOekakiQueryResponse>.Ok(new GetOekakiQueryResponse()
         {
             Parent =
                 !parent.Tombstone
@@ -48,6 +48,6 @@ public class GetOekakiQueryHandler(
                 parent),
             
             Children = childrenFeed.ToArray()
-        };
+        });
     }
 }

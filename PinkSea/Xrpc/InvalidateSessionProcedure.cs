@@ -15,15 +15,15 @@ public class InvalidateSessionProcedure(
     ILogger<InvalidateSessionProcedure> logger) : IXrpcProcedure<Empty, Empty>
 {
     /// <inheritdoc />
-    public async Task<Empty?> Handle(Empty request)
+    public async Task<XrpcErrorOr<Empty>> Handle(Empty request)
     {
         var state = contextAccessor.HttpContext?.GetStateToken();
         if (state is null)
-            return new Empty();
+            return XrpcErrorOr<Empty>.Ok(new Empty());
         
         logger.LogInformation($"Invalidating session for ID {state}");
         
         await oAuthStateStorageProvider.DeleteForStateId(state);
-        return new Empty();
+        return XrpcErrorOr<Empty>.Ok(new Empty());
     }
 }

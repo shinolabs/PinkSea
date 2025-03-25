@@ -12,7 +12,7 @@ public class GetAuthorRepliesQueryHandler(FeedBuilder feedBuilder)
     : IXrpcQuery<GetAuthorFeedQueryRequest, GenericTimelineQueryResponse>
 {
     /// <inheritdoc />
-    public async Task<GenericTimelineQueryResponse?> Handle(
+    public async Task<XrpcErrorOr<GenericTimelineQueryResponse>> Handle(
         GetAuthorFeedQueryRequest request)
     {
         var limit = Math.Clamp(request.Limit, 1, 50);
@@ -24,9 +24,9 @@ public class GetAuthorRepliesQueryHandler(FeedBuilder feedBuilder)
             .Limit(limit)
             .GetFeed();
 
-        return new GenericTimelineQueryResponse()
+        return XrpcErrorOr<GenericTimelineQueryResponse>.Ok(new GenericTimelineQueryResponse
         {
             Oekaki = feed
-        };
+        });
     }
 }

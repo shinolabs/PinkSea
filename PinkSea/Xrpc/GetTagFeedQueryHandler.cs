@@ -12,7 +12,7 @@ public class GetTagFeedQueryHandler(FeedBuilder feedBuilder)
     : IXrpcQuery<GetTagFeedQueryRequest, GenericTimelineQueryResponse>
 {
     /// <inheritdoc />
-    public async Task<GenericTimelineQueryResponse?> Handle(GetTagFeedQueryRequest request)
+    public async Task<XrpcErrorOr<GenericTimelineQueryResponse>> Handle(GetTagFeedQueryRequest request)
     {
         var limit = Math.Clamp(request.Limit, 1, 50);
         var since = request.Since ?? DateTimeOffset.Now.AddMinutes(5);
@@ -24,9 +24,9 @@ public class GetTagFeedQueryHandler(FeedBuilder feedBuilder)
             .Limit(limit)
             .GetFeed();
 
-        return new GenericTimelineQueryResponse
+        return XrpcErrorOr<GenericTimelineQueryResponse>.Ok(new GenericTimelineQueryResponse
         {
             Oekaki = feed
-        };
+        });
     }
 }

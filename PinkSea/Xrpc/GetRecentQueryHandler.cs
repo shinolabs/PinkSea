@@ -12,7 +12,7 @@ public class GetRecentQueryHandler(
     FeedBuilder feedBuilder) : IXrpcQuery<GenericTimelineQueryRequest, GenericTimelineQueryResponse>
 {
     /// <inheritdoc />
-    public async Task<GenericTimelineQueryResponse?> Handle(GenericTimelineQueryRequest request)
+    public async Task<XrpcErrorOr<GenericTimelineQueryResponse>> Handle(GenericTimelineQueryRequest request)
     {
         var limit = Math.Clamp(request.Limit, 1, 50);
         var since = request.Since ?? DateTimeOffset.Now.AddMinutes(5);
@@ -23,9 +23,9 @@ public class GetRecentQueryHandler(
             .Limit(limit)
             .GetFeed();
 
-        return new GenericTimelineQueryResponse
+        return XrpcErrorOr<GenericTimelineQueryResponse>.Ok(new GenericTimelineQueryResponse
         {
             Oekaki = feed
-        };
+        });
     }
 }

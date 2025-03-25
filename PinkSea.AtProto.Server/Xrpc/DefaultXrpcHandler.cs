@@ -35,7 +35,9 @@ public class DefaultXrpcHandler(
 
         var resultProperty = task.GetType()
             .GetProperty("Result")!;
-        return resultProperty.GetValue(task);
+
+        var errorOr = resultProperty.GetValue(task) as IXrpcErrorOr;
+        return errorOr!.GetUnderlyingObject();
     }
 
     /// <summary>

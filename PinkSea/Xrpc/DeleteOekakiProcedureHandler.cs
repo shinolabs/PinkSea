@@ -15,16 +15,16 @@ public class DeleteOekakiProcedureHandler(
     OekakiService oekakiService) : IXrpcProcedure<DeleteOekakiProcedureRequest, Empty>
 {
     /// <inheritdoc />
-    public async Task<Empty?> Handle(DeleteOekakiProcedureRequest request)
+    public async Task<XrpcErrorOr<Empty>> Handle(DeleteOekakiProcedureRequest request)
     {
         var state = contextAccessor.HttpContext?.GetStateToken();
         if (state is null)
-            return null!;
+            return XrpcErrorOr<Empty>.Fail("NoAuthToken", "Missing authorization token.");
 
         await oekakiService.ProcessDeletedOekaki(
             request.RecordKey,
             state);
         
-        return new Empty();
+        return XrpcErrorOr<Empty>.Ok(new Empty());
     }
 }

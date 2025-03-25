@@ -53,9 +53,8 @@ public static class ServiceCollectionExtensions
         var xrpcHandler = serviceProvider.GetRequiredService<IXrpcHandler>();
         var result = await xrpcHandler.HandleXrpc(nsid, ctx);
 
-        if (result is null)
-            return Results.BadRequest();
-            
-        return Results.Ok(result);
+        return result is XrpcError
+            ? Results.BadRequest(result)
+            : Results.Ok(result);
     }
 }

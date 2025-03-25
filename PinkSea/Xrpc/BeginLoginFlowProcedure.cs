@@ -16,7 +16,7 @@ public class BeginLoginFlowProcedure(
     : IXrpcProcedure<BeginLoginFlowProcedureRequest, BeginLoginFlowProcedureResponse>
 {
     /// <inheritdoc />
-    public async Task<BeginLoginFlowProcedureResponse?> Handle(BeginLoginFlowProcedureRequest request)
+    public async Task<XrpcErrorOr<BeginLoginFlowProcedureResponse>> Handle(BeginLoginFlowProcedureRequest request)
     {
         try
         {
@@ -34,30 +34,43 @@ public class BeginLoginFlowProcedure(
                 // Log in via a password.
                 var authorized =
                     await atProtoAuthorizationService.LoginWithPassword(normalizedHandle, request.Password);
-                return !authorized.IsError
-                    ? new BeginLoginFlowProcedureResponse
-                        { Redirect = $"{request.RedirectUrl}?code={authorized.Value}" }
-                    : new BeginLoginFlowProcedureResponse
-                        { FailureReason = authorized.Error };
+
+                if (!authorized.IsError)
+                {
+                    return XrpcErrorOr<BeginLoginFlowProcedureResponse>.Ok(new BeginLoginFlowProcedureResponse
+                    {
+                        Redirect = $"{request.RedirectUrl}?code={authorized.Value}"
+                    });
+                }
+
+                return XrpcErrorOr<BeginLoginFlowProcedureResponse>.Fail(
+                    "PasswordFailure",
+                    authorized.Error);
             }
 
             var authorizationServer = await oAuthClient.BeginOAuthFlow(
                 normalizedHandle,
                 request.RedirectUrl);
 
-            return authorizationServer.IsError
-                ? new BeginLoginFlowProcedureResponse
-                    { FailureReason = authorizationServer.Error }
-                : new BeginLoginFlowProcedureResponse { Redirect = authorizationServer.Value };
+            if (authorizationServer.IsError)
+            {
+                return XrpcErrorOr<BeginLoginFlowProcedureResponse>.Fail(
+                    "OAuthFailure",
+                    authorizationServer.Error);
+            }
+
+            return XrpcErrorOr<BeginLoginFlowProcedureResponse>.Ok(new BeginLoginFlowProcedureResponse
+            {
+                Redirect = authorizationServer.Value
+            });
         }
         catch (Exception e)
         {
             logger.LogError($"Failed to log-in for {request.Handle}", e);
 
-            return new BeginLoginFlowProcedureResponse
-            {
-                FailureReason = $"Server encountered an exception while performing your login: {e.Message}. Are you sure your handle is of the format @name.bsky.social?"
-            };
+            return XrpcErrorOr<BeginLoginFlowProcedureResponse>.Fail(
+                "UnknownError",
+                $"Server encountered an exception while performing your login: {e.Message}. Are you sure your handle is of the format @name.bsky.social?");
         }
     }
 }
