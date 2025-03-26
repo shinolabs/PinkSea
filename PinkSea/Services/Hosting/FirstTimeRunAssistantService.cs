@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Npgsql;
-using PinkSea.AtProto.Lexicons.AtProto;
 using PinkSea.AtProto.Resolvers.Did;
+using PinkSea.AtProto.Shared.Lexicons.AtProto;
 using PinkSea.AtProto.Xrpc.Client;
 using PinkSea.Database;
 using PinkSea.Helpers;

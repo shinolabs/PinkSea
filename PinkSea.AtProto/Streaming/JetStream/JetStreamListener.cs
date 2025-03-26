@@ -103,7 +103,7 @@ public class JetStreamListener(
 
             LastTimeInMicroseconds = @event.TimeInMicroseconds;
             await SaveCursorFile();
-        
+            
             foreach (var listener in listeners)
                 await listener.HandleEvent(@event);
         }

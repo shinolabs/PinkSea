@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
+using PinkSea.AtProto.Shared.Xrpc;
 
 namespace PinkSea.AtProto.Server.Xrpc;
 

@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using PinkSea.AtProto.Lexicons.AtProto;
-using PinkSea.AtProto.Lexicons.Types;
+using PinkSea.AtProto.Shared.Lexicons.AtProto;
+using PinkSea.AtProto.Shared.Lexicons.Types;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.Providers.Storage;
 using PinkSea.AtProto.Resolvers.Domain;

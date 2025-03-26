@@ -2,13 +2,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Json;
 using Microsoft.Extensions.Logging;
 using PinkSea.AtProto.Helpers;
-using PinkSea.AtProto.Lexicons.AtProto;
-using PinkSea.AtProto.Models;
 using PinkSea.AtProto.Models.Authorization;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.Providers.Storage;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Resolvers.Domain;
+using PinkSea.AtProto.Shared.Lexicons.AtProto;
+using PinkSea.AtProto.Shared.Models;
 using PinkSea.AtProto.Xrpc.Client;
 
 namespace PinkSea.AtProto.Authorization;

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PinkSea.AtProto.Server.Xrpc;
+using PinkSea.AtProto.Shared.Xrpc;
 using PinkSea.Database;
 using PinkSea.Lexicons.Queries;
 

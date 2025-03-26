@@ -1,3 +1,5 @@
+using PinkSea.AtProto.Shared.Xrpc;
+
 namespace PinkSea.AtProto.Server.Xrpc;
 
 /// <summary>

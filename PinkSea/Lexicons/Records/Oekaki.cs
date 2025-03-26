@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using PinkSea.AtProto.Lexicons.Types;
+using PinkSea.AtProto.Shared.Lexicons.Types;
 
 namespace PinkSea.Lexicons.Records;
 

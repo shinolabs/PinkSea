@@ -1,4 +1,5 @@
 using PinkSea.AtProto.Server.Xrpc;
+using PinkSea.AtProto.Shared.Xrpc;
 using PinkSea.Extensions;
 using PinkSea.Lexicons.Procedures;
 using PinkSea.Models;

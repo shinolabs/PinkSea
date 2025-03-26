@@ -6,13 +6,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using PinkSea.AtProto.Helpers;
 using PinkSea.AtProto.Http;
-using PinkSea.AtProto.Models;
 using PinkSea.AtProto.Models.Authorization;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.Providers.OAuth;
 using PinkSea.AtProto.Providers.Storage;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Resolvers.Domain;
+using PinkSea.AtProto.Shared.Models;
 
 namespace PinkSea.AtProto.OAuth;
 

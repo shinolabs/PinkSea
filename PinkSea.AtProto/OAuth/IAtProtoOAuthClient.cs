@@ -1,5 +1,5 @@
-using PinkSea.AtProto.Models;
 using PinkSea.AtProto.Models.OAuth;
+using PinkSea.AtProto.Shared.Models;
 
 namespace PinkSea.AtProto.OAuth;
 

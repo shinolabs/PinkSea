@@ -1,7 +1,8 @@
 using System.Web;
 using Microsoft.EntityFrameworkCore;
-using PinkSea.AtProto.Lexicons.AtProto;
 using PinkSea.AtProto.Server.Xrpc;
+using PinkSea.AtProto.Shared.Lexicons.AtProto;
+using PinkSea.AtProto.Shared.Xrpc;
 using PinkSea.Database;
 
 namespace PinkSea.Xrpc;
