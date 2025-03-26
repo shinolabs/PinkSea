@@ -46,6 +46,13 @@ public static class ServiceCollectionExtensions
         return routeBuilder;
     }
 
+    /// <summary>
+    /// Handles an XRPC call.
+    /// </summary>
+    /// <param name="ctx">The context.</param>
+    /// <param name="nsid">The namespace ID.</param>
+    /// <param name="serviceProvider">The service provider.</param>
+    /// <returns>The result of the xrpc call.</returns>
     private static async Task<IResult> HandleXrpc(
         HttpContext ctx,
         string nsid,
@@ -53,9 +60,13 @@ public static class ServiceCollectionExtensions
     {
         var xrpcHandler = serviceProvider.GetRequiredService<IXrpcHandler>();
         var result = await xrpcHandler.HandleXrpc(nsid, ctx);
+        if (result is null)
+        {
+            return Results.StatusCode(StatusCodes.Status500InternalServerError);
+        }
 
-        return result is XrpcError
-            ? Results.BadRequest(result)
-            : Results.Ok(result);
+        return !result.IsSuccess
+            ? Results.BadRequest(result.Error)
+            : Results.Ok(result.GetUnderlyingObject());
     }
 }

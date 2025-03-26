@@ -7,12 +7,11 @@ namespace PinkSea.AtProto.Server.Xrpc;
 /// <summary>
 /// The default XRPC handler.
 /// </summary>
-/// <param name="serviceProvider"></param>
 public class DefaultXrpcHandler(
     IServiceProvider serviceProvider) : IXrpcHandler
 {
     /// <inheritdoc />
-    public async Task<object?> HandleXrpc(
+    public async Task<IXrpcErrorOr?> HandleXrpc(
         string nsid,
         HttpContext context)
     {
@@ -38,7 +37,7 @@ public class DefaultXrpcHandler(
             .GetProperty("Result")!;
 
         var errorOr = resultProperty.GetValue(task) as IXrpcErrorOr;
-        return errorOr!.GetUnderlyingObject();
+        return errorOr;
     }
 
     /// <summary>
