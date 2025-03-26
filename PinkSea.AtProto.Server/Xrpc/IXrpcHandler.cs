@@ -1,3 +1,5 @@
+using PinkSea.AtProto.Shared.Xrpc;
+
 namespace PinkSea.AtProto.Server.Xrpc;
 
 /// <summary>
@@ -11,7 +13,7 @@ public interface IXrpcHandler
     /// <param name="nsid">The namespace ID.</param>
     /// <param name="context">The HTTP context.</param>
     /// <returns>The response from the handler.</returns>
-    Task<object?> HandleXrpc(
+    Task<IXrpcErrorOr?> HandleXrpc(
         string nsid,
         HttpContext context);
 }
