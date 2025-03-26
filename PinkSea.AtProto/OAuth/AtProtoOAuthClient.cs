@@ -13,6 +13,7 @@ using PinkSea.AtProto.Providers.Storage;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Resolvers.Domain;
 using PinkSea.AtProto.Shared.Models;
+using PinkSea.AtProto.Shared.Xrpc;
 
 namespace PinkSea.AtProto.OAuth;
 
@@ -104,10 +105,11 @@ public class AtProtoOAuthClient(
         var resp = await _client.Post(authServer!.PushedAuthorizationRequestEndpoint!, body, keyPair);
         if (!resp.IsSuccessStatusCode)
         {
-            var reason = await resp.Content.ReadAsStringAsync();
-            Console.WriteLine($"Failed to send a PAR: {reason}");
+            var reason = await resp.Content.ReadFromJsonAsync<XrpcError>();
+            logger.LogError("Failed to send a PAR: {Reason}",
+                reason);
             
-            return ErrorOr<string>.Fail($"PDS returned a non-OK response while sending the PAR: {reason}");
+            return ErrorOr<string>.Fail($"PDS returned a non-OK response while sending the PAR: {reason?.Message}");
         }
 
         var parResponse = await resp.Content.ReadFromJsonAsync<PushedAuthorizationRequestResponse>();

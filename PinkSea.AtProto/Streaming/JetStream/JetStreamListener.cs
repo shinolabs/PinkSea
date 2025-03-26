@@ -109,7 +109,8 @@ public class JetStreamListener(
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Encountered an exception while handling JetStream event: {e}");
+            logger.LogError(e,
+                "Encountered an exception while handling a JetStream event.");
         }
     }
 
