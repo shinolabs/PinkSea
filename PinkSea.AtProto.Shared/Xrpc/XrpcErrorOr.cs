@@ -72,7 +72,7 @@ public interface IXrpcErrorOr
     /// <summary>
     /// The error.
     /// </summary>
-    XrpcError Error { get; }
+    XrpcError? Error { get; }
 
     /// <summary>
     /// Gets either the error or the value.

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using PinkSea.AtProto.Http;
 using PinkSea.AtProto.Models.Authorization;
 using PinkSea.AtProto.OAuth;
@@ -13,7 +14,8 @@ public class DefaultXrpcClientFactory(
     IOAuthStateStorageProvider stateStorageProvider,
     IHttpClientFactory httpClientFactory,
     IJwtSigningProvider jwtSigningProvider,
-    IOAuthClientDataProvider clientDataProvider) : IXrpcClientFactory
+    IOAuthClientDataProvider clientDataProvider,
+    ILogger<IXrpcClient> logger) : IXrpcClientFactory
 {
     /// <inheritdoc />
     public async Task<IXrpcClient?> GetForOAuthStateId(string stateId)
@@ -28,16 +30,16 @@ public class DefaultXrpcClientFactory(
         {
             var dpopClient = new DpopHttpClient(httpClient, jwtSigningProvider, clientDataProvider.ClientData);
             dpopClient.SetAuthorizationCode(oauthState.AuthorizationCode);
-            return new DPopXrpcClient(dpopClient, oauthState);
+            return new DPopXrpcClient(dpopClient, oauthState, logger);
         }
         
-        return new SessionXrpcClient(httpClient, oauthState);
+        return new SessionXrpcClient(httpClient, oauthState, logger);
     }
 
     /// <inheritdoc />
     public Task<IXrpcClient> GetWithoutAuthentication(string host)
     {
         var httpClient = httpClientFactory.CreateClient("xrpc-client");
-        return Task.FromResult<IXrpcClient>(new BasicXrpcClient(httpClient, host));
+        return Task.FromResult<IXrpcClient>(new BasicXrpcClient(httpClient, host, logger));
     }
 }

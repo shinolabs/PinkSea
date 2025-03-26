@@ -1,3 +1,5 @@
+using PinkSea.AtProto.Shared.Xrpc;
+
 namespace PinkSea.AtProto.Xrpc.Client;
 
 /// <summary>
@@ -12,7 +14,7 @@ public interface IXrpcClient : IDisposable
     /// <param name="parameters">The parameters.</param>
     /// <typeparam name="TResponse">The type of the response.</typeparam>
     /// <returns>The response, if it exists.</returns>
-    Task<TResponse?> Query<TResponse>(
+    Task<XrpcErrorOr<TResponse>> Query<TResponse>(
         string nsid,
         object? parameters = null);
 
@@ -23,7 +25,7 @@ public interface IXrpcClient : IDisposable
     /// <param name="parameters">The parameters.</param>
     /// <typeparam name="TResponse">The type of the response.</typeparam>
     /// <returns>The response, if it exists.</returns>
-    Task<TResponse?> Procedure<TResponse>(
+    Task<XrpcErrorOr<TResponse>> Procedure<TResponse>(
         string nsid,
         object? parameters = null);
     
@@ -34,7 +36,7 @@ public interface IXrpcClient : IDisposable
     /// <param name="bodyContent">The body content.</param>
     /// <typeparam name="TResponse">The response type.</typeparam>
     /// <returns>The response, if it exists.</returns>
-    Task<TResponse?> RawCall<TResponse>(
+    Task<XrpcErrorOr<TResponse>> RawCall<TResponse>(
         string nsid,
         HttpContent bodyContent);
 }
