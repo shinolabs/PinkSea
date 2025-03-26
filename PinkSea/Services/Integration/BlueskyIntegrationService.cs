@@ -1,15 +1,15 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Options;
-using PinkSea.AtProto.Lexicons.AtProto;
-using PinkSea.AtProto.Lexicons.AtProto.Records;
-using PinkSea.AtProto.Lexicons.Bluesky.Records;
-using PinkSea.AtProto.Lexicons.Types;
 using PinkSea.AtProto.Providers.Storage;
+using PinkSea.AtProto.Shared.Lexicons.AtProto;
+using PinkSea.AtProto.Shared.Lexicons.AtProto.Records;
+using PinkSea.AtProto.Shared.Lexicons.Bluesky.Records;
+using PinkSea.AtProto.Shared.Lexicons.Types;
 using PinkSea.AtProto.Xrpc.Client;
 using PinkSea.Lexicons.Records;
 using PinkSea.Models;
-using Image = PinkSea.AtProto.Lexicons.Bluesky.Records.Image;
+using Image = PinkSea.AtProto.Shared.Lexicons.Bluesky.Records.Image;
 
 namespace PinkSea.Services.Integration;
 

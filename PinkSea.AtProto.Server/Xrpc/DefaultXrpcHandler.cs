@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using PinkSea.AtProto.Shared.Xrpc;
 
 namespace PinkSea.AtProto.Server.Xrpc;
 

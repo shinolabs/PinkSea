@@ -1,6 +1,7 @@
 using PinkSea.AtProto.Authorization;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Server.Xrpc;
+using PinkSea.AtProto.Shared.Xrpc;
 using PinkSea.Lexicons.Procedures;
 
 namespace PinkSea.Xrpc;

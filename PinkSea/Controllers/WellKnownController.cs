@@ -1,7 +1,6 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using PinkSea.AtProto.Models.Did;
+using PinkSea.AtProto.Shared.Models.Did;
 using PinkSea.Models;
 
 namespace PinkSea.Controllers;

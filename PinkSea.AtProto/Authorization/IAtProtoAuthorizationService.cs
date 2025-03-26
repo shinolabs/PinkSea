@@ -1,4 +1,4 @@
-using PinkSea.AtProto.Models;
+using PinkSea.AtProto.Shared.Models;
 
 namespace PinkSea.AtProto.Authorization;
 

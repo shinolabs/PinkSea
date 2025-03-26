@@ -1,4 +1,4 @@
-using PinkSea.AtProto.Models.Did;
+using PinkSea.AtProto.Shared.Models.Did;
 
 namespace PinkSea.AtProto.Resolvers.Did;
 

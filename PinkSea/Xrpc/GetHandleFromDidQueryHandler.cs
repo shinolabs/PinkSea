@@ -1,5 +1,6 @@
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Server.Xrpc;
+using PinkSea.AtProto.Shared.Xrpc;
 using PinkSea.Lexicons.Queries;
 
 namespace PinkSea.Xrpc;

@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using PinkSea.AtProto.Models.Did;
+using PinkSea.AtProto.Shared.Models.Did;
 
 namespace PinkSea.AtProto.Resolvers.Did;
 
