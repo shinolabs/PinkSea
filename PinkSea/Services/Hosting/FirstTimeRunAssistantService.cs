@@ -93,15 +93,16 @@ public class FirstTimeRunAssistantService(
                 Limit = 2000 // The max limit as defined.
             });
 
-        if (repos is null)
+        if (!repos.IsSuccess)
         {
-            logger.LogError("Failed to backfill posts. Got no repos from the relay.");
+            logger.LogError("Failed to backfill posts. {Error}",
+                repos.Error);
             return;
         }
 
         // Store the children to be added after their parents.
         var children = new List<(string, string, string, Oekaki)>();
-        foreach (var did in repos.Repos.Select(r => r.Did))
+        foreach (var did in repos.Value!.Repos.Select(r => r.Did))
         {
             children.AddRange(await BackfillForDid(did));
         }
@@ -151,12 +152,12 @@ public class FirstTimeRunAssistantService(
                     Cursor = cursor
                 });
 
-            if (response is null)
+            if (!response.IsSuccess)
                 break;
 
-            cursor = response.Cursor;
+            cursor = response.Value!.Cursor;
 
-            foreach (var oekaki in response.Records)
+            foreach (var oekaki in response.Value.Records)
             {
                 if (appViewConfig.Value.BackfillSkipDimensionsVerification != true &&
                     !await ValidateRemoteOekakiDimensions(xrpcClient, oekaki.Value, did))
@@ -231,10 +232,15 @@ public class FirstTimeRunAssistantService(
                     cid = record.Image.Blob.Reference.Link
                 });
 
-        if (!response!.IsSuccessStatusCode)
+        if (!response.IsSuccess)
+        {
+            logger.LogWarning("Failed to fetch blob for {Did}/{Cid}.",
+                authorDid,
+                record.Image.Blob.Reference.Link);
             return false;
+        }
 
-        var data = await response.Content.ReadAsByteArrayAsync();
+        var data = await response.Value!.Content.ReadAsByteArrayAsync();
         return PngHeaderHelper.ValidateDimensionsForOekaki(data);
     }
 }

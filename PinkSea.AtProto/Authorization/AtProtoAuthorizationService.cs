@@ -1,5 +1,4 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Json;
 using Microsoft.Extensions.Logging;
 using PinkSea.AtProto.Helpers;
 using PinkSea.AtProto.Models.Authorization;
@@ -20,15 +19,12 @@ public class AtProtoAuthorizationService(
     IDidResolver didResolver,
     IDomainDidResolver domainDidResolver,
     IOAuthStateStorageProvider oauthStateStorageProvider,
-    IHttpClientFactory httpClientFactory,
     IXrpcClientFactory xrpcClientFactory,
     ILogger<AtProtoAuthorizationService> logger) : IAtProtoAuthorizationService
 {
     /// <inheritdoc />
     public async Task<ErrorOr<string>> LoginWithPassword(string handle, string password)
     {
-        const string endpoint = "/xrpc/com.atproto.server.createSession";
-        
         var identifier = handle.StartsWith("did")
             ? handle
             : await domainDidResolver.GetDidForDomainHandle(handle);
@@ -41,24 +37,23 @@ public class AtProtoAuthorizationService(
             return ErrorOr<string>.Fail($"Could not fetch the DID document for {identifier}.");
 
         var pds = didDocument.GetPds()!;
-        using var httpClient = httpClientFactory.CreateClient();
+        using var xrpcClient = await xrpcClientFactory.GetWithoutAuthentication(pds);
+        var resp = await xrpcClient.Procedure<CreateSessionResponse>(
+            "com.atproto.server.createSession",
+            new
+            {
+                identifier,
+                password
+            });
 
-        var resp = await httpClient.PostAsJsonAsync($"{pds}{endpoint}", new
+        if (!resp.IsSuccess)
         {
-            identifier,
-            password
-        });
-
-        if (!resp.IsSuccessStatusCode)
-        {
-            var reason = await resp.Content.ReadAsStringAsync();
-            logger.LogError($"Failed login for {handle} with reason {reason}");
-            
-            return ErrorOr<string>.Fail($"Got a non-OK response from your PDS {reason}.");
+            logger.LogError($"Failed login for {handle} with reason {resp.Error}");
+            return ErrorOr<string>.Fail(resp.Error!.Message ?? resp.Error.Error);
         }
 
-        var tokenResponse = await resp.Content.ReadFromJsonAsync<CreateSessionResponse>();
-        if (tokenResponse is null || !tokenResponse.Active)
+        var tokenResponse = resp.Value!;
+        if (!tokenResponse.Active)
             return ErrorOr<string>.Fail($"The password token is not active.");
 
         var jwt = new JwtSecurityTokenHandler();
@@ -99,18 +94,18 @@ public class AtProtoAuthorizationService(
             return false;
 
         var resp = await xrpcClient.Procedure<CreateSessionResponse>("com.atproto.server.refreshSession");
-        if (resp is null)
+        if (!resp.IsSuccess)
             return false;
 
         var jwt = new JwtSecurityTokenHandler();
-        var jwtToken = jwt.ReadJwtToken(resp.AccessToken);
+        var jwtToken = jwt.ReadJwtToken(resp.Value!.AccessToken);
 
         var expiry = new DateTimeOffset(jwtToken.ValidTo)
             .UtcDateTime;
         
         var oauthState = await oauthStateStorageProvider.GetForStateId(stateId);
-        oauthState!.AuthorizationCode = resp.AccessToken;
-        oauthState.RefreshToken = resp.RefreshToken;
+        oauthState!.AuthorizationCode = resp.Value.AccessToken;
+        oauthState.RefreshToken = resp.Value.RefreshToken;
         oauthState.ExpiresAt = expiry;
 
         await oauthStateStorageProvider.SetForStateId(stateId, oauthState);

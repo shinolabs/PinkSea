@@ -135,7 +135,7 @@ public partial class OekakiService(
             "com.atproto.repo.uploadBlob",
             byteArrayContent);
 
-        return result?.Blob;
+        return result.Value?.Blob;
     }
 
     /// <summary>
@@ -198,8 +198,8 @@ public partial class OekakiService(
                 Record = oekaki
             });
 
-        return response is not null 
-            ? (oekaki, response.Cid)
+        return response.IsSuccess 
+            ? (oekaki, response.Value!.Cid)
             : null;
     }
 

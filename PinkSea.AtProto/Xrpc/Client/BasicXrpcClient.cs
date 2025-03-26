@@ -1,6 +1,8 @@
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Web;
+using Microsoft.Extensions.Logging;
+using PinkSea.AtProto.Shared.Xrpc;
+using PinkSea.AtProto.Xrpc.Extensions;
 
 namespace PinkSea.AtProto.Xrpc.Client;
 
@@ -9,14 +11,15 @@ namespace PinkSea.AtProto.Xrpc.Client;
 /// </summary>
 public sealed class BasicXrpcClient(
     HttpClient client,
-    string host) : IXrpcClient
+    string host,
+    ILogger logger) : IXrpcClient
 {
     /// <inheritdoc />
-    public async Task<TResponse?> Query<TResponse>(string nsid, object? parameters = null)
+    public async Task<XrpcErrorOr<TResponse>> Query<TResponse>(string nsid, object? parameters = null)
     {
         var actualEndpoint = $"{host}/xrpc/{nsid}";
         if (parameters is not null)
-            actualEndpoint += $"?{ObjectToQueryParams(parameters)}";
+            actualEndpoint += $"?{parameters.ToQueryString()}";
 
         var request = new HttpRequestMessage
         {
@@ -25,18 +28,11 @@ public sealed class BasicXrpcClient(
         };
         
         var resp = await client.SendAsync(request);
-        if (!resp.IsSuccessStatusCode)
-            return default;
-
-        if (typeof(TResponse) == resp.GetType())
-            return (TResponse)(object)resp;
-        
-        var str = await resp.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<TResponse>(str);
+        return await resp.ReadXrpcResponse<TResponse>(logger);
     }
 
     /// <inheritdoc />
-    public async Task<TResponse?> Procedure<TResponse>(string nsid, object? parameters = null)
+    public async Task<XrpcErrorOr<TResponse>> Procedure<TResponse>(string nsid, object? parameters = null)
     {
         var actualEndpoint = $"{host}/xrpc/{nsid}";
 
@@ -50,16 +46,11 @@ public sealed class BasicXrpcClient(
             request.Content = JsonContent.Create(parameters);
         
         var resp = await client.SendAsync(request);
-        
-        var str = await resp.Content.ReadAsStringAsync();
-        
-        return resp.IsSuccessStatusCode
-            ? JsonSerializer.Deserialize<TResponse>(str)
-            : default;
+        return await resp.ReadXrpcResponse<TResponse>(logger);
     }
 
     /// <inheritdoc />
-    public async Task<TResponse?> RawCall<TResponse>(string nsid, HttpContent bodyContent)
+    public async Task<XrpcErrorOr<TResponse>> RawCall<TResponse>(string nsid, HttpContent bodyContent)
     {
         var actualEndpoint = $"{host}/xrpc/{nsid}";
         
@@ -72,30 +63,12 @@ public sealed class BasicXrpcClient(
         };
         
         var resp = await client.SendAsync(request);
-        var str = await resp.Content.ReadAsStringAsync();
-        
-        return resp.IsSuccessStatusCode
-            ? JsonSerializer.Deserialize<TResponse>(str)
-            : default;
+        return await resp.ReadXrpcResponse<TResponse>(logger);
     }
     
     /// <inheritdoc />
     public void Dispose()
     {
         client.Dispose();
-    }
-    
-    /// <summary>
-    /// Converts an object to a query string.
-    /// </summary>
-    /// <param name="obj">The object.</param>
-    /// <returns>The resulting query string.</returns>
-    private static string ObjectToQueryParams(object obj)
-    {
-        var props = from p in obj.GetType().GetProperties()
-            where p.GetValue(obj, null) != null
-            select p.Name.ToLowerInvariant() + "=" + HttpUtility.UrlEncode(p.GetValue(obj, null)!.ToString());
-
-        return string.Join('&', props.ToArray());
     }
 }
