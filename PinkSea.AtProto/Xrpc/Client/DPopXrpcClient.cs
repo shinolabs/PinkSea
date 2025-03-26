@@ -1,5 +1,3 @@
-using System.Text.Json;
-using System.Web;
 using Microsoft.Extensions.Logging;
 using PinkSea.AtProto.Http;
 using PinkSea.AtProto.Models.OAuth;

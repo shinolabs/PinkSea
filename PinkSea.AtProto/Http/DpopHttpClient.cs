@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.OAuth;
@@ -13,7 +14,7 @@ namespace PinkSea.AtProto.Http;
 /// <summary>
 /// A DPoP-capable HTTP client.
 /// </summary>
-public class DpopHttpClient : IDisposable
+public sealed class DpopHttpClient : IDisposable
 {
     /// <summary>
     /// The HTTP client.
@@ -29,6 +30,11 @@ public class DpopHttpClient : IDisposable
     /// The OAuth client data.
     /// </summary>
     private readonly OAuthClientData _clientData;
+
+    /// <summary>
+    /// The logger.
+    /// </summary>
+    private readonly ILogger? _logger;
 
     /// <summary>
     /// The authorization header value.
@@ -51,11 +57,13 @@ public class DpopHttpClient : IDisposable
     public DpopHttpClient(
         HttpClient client,
         IJwtSigningProvider jwtSigningProvider,
-        OAuthClientData clientData)
+        OAuthClientData clientData,
+        ILogger? logger = null)
     {
         _client = client;
         _jwtSigningProvider = jwtSigningProvider;
         _clientData = clientData;
+        _logger = logger;
     }
 
     /// <summary>
@@ -108,13 +116,12 @@ public class DpopHttpClient : IDisposable
     /// <summary>
     /// Performs a raw send.
     /// </summary>
-    /// <param name="endpoint"></param>
-    /// <param name="method"></param>
-    /// <param name="keyPair"></param>
-    /// <param name="nonce"></param>
-    /// <param name="value"></param>
-    /// <typeparam name="TValue"></typeparam>
-    /// <returns></returns>
+    /// <param name="endpoint">The endpoint we're sending to.</param>
+    /// <param name="method">The method to send via.</param>
+    /// <param name="keyPair">The DPoP keypair.</param>
+    /// <param name="nonce">The DPoP nonce.</param>
+    /// <param name="value">The value to add in the body.</param>
+    /// <returns>The response from the server.</returns>
     public async Task<HttpResponseMessage> Send(
         string endpoint,
         HttpMethod method,
@@ -152,7 +159,8 @@ public class DpopHttpClient : IDisposable
         if ((resp.StatusCode != HttpStatusCode.BadRequest && resp.StatusCode != HttpStatusCode.Unauthorized) || nonce is not null)
             return resp;
         
-        Console.WriteLine($"Failed to fetch with DPoP: {await resp.Content.ReadAsStringAsync()}");
+        _logger?.LogWarning("Failed to fetch with DPoP: {Reason}",
+            await resp.Content.ReadAsStringAsync());
         
         // Failed to send, maybe requires DPoP nonce?
         // Retry sending with the nonce.
@@ -171,6 +179,7 @@ public class DpopHttpClient : IDisposable
             value);
     }
     
+    /// <inheritdoc />
     public void Dispose()
     {
         _client.Dispose();

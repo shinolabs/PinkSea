@@ -15,7 +15,7 @@ public class DefaultXrpcClientFactory(
     IHttpClientFactory httpClientFactory,
     IJwtSigningProvider jwtSigningProvider,
     IOAuthClientDataProvider clientDataProvider,
-    ILogger<IXrpcClient> logger) : IXrpcClientFactory
+    ILoggerFactory loggerFactory) : IXrpcClientFactory
 {
     /// <inheritdoc />
     public async Task<IXrpcClient?> GetForOAuthStateId(string stateId)
@@ -24,22 +24,30 @@ public class DefaultXrpcClientFactory(
         if (oauthState?.AuthorizationCode is null)
             return null;
 
+        var xrpcLogger = loggerFactory.CreateLogger<IXrpcClient>();
         var httpClient = httpClientFactory.CreateClient("xrpc-client");
 
         if (oauthState.AuthorizationType == AuthorizationType.OAuth2)
         {
-            var dpopClient = new DpopHttpClient(httpClient, jwtSigningProvider, clientDataProvider.ClientData);
+            var dpopClientLogger = loggerFactory.CreateLogger<DpopHttpClient>();
+            var dpopClient = new DpopHttpClient(
+                httpClient,
+                jwtSigningProvider,
+                clientDataProvider.ClientData,
+                dpopClientLogger);
+            
             dpopClient.SetAuthorizationCode(oauthState.AuthorizationCode);
-            return new DPopXrpcClient(dpopClient, oauthState, logger);
+            return new DPopXrpcClient(dpopClient, oauthState, xrpcLogger);
         }
         
-        return new SessionXrpcClient(httpClient, oauthState, logger);
+        return new SessionXrpcClient(httpClient, oauthState, xrpcLogger);
     }
 
     /// <inheritdoc />
     public Task<IXrpcClient> GetWithoutAuthentication(string host)
     {
+        var xrpcLogger = loggerFactory.CreateLogger<IXrpcClient>();
         var httpClient = httpClientFactory.CreateClient("xrpc-client");
-        return Task.FromResult<IXrpcClient>(new BasicXrpcClient(httpClient, host, logger));
+        return Task.FromResult<IXrpcClient>(new BasicXrpcClient(httpClient, host, xrpcLogger));
     }
 }
