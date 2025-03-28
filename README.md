@@ -63,16 +63,14 @@ In order to run the AppView, you need the [.NET 8 SDK](https://dotnet.microsoft.
 
 ### First-time run
 
-1. Run `docker compose up -d` inside of the root folder to start PostgreSQL (if you do not have PostgreSQL installed yet.)
-2. Open the `PinkSea` folder
-3. Copy the sample `appsettings.example.json` file to `appsettings.json`
+1. Open the `PinkSea` folder
+2. Copy the sample `appsettings.example.json` file to `appsettings.json`
 	
-	1. Modify the `PostgresConfig` to point to your PostgreSQL settings. If you're using the supplied docker compose, you do not need to change this.
+	1. Modify the `PostgresConfig` to point to your PostgreSQL settings.
 	2. Point the `AppViewConfig` URL to where your AppView will reside, this is the URL that will be used to identify your PinkSea instance. (As an example, for the official PinkSea instance, it's `https://api.pinksea.art`)
 	3. (OPTIONAL) Point the `FrontendConfig` to point to where your PinkSea frontend resides. This is used for BlueSky cross-posting with a link. Leaving it blank will disallow cross-posting. (Again, as an example, for the official PinkSea instance it's `https://pinksea.art`)
 
-4. Perform `dotnet ef database update` to run the neccessary migrations.
-5. Run `dotnet run --configuration Release` to start the PinkSea AppView.
+3. Run `dotnet run --configuration Release` to start the PinkSea AppView. PinkSea will automatically perform migrations.
 
 That's it! Your server now is connected to the ATmosphere and is ready to start cooperating with other PinkSea AppViews.
 
@@ -90,8 +88,8 @@ In order to run the client app locally, you need a fairly modern [Node.js](https
 
 1. Navigate to `PinkSea.Frontend`.
 2. Run `npm i` to download the required packages.
-3. Navigate to the `src/api/atproto` folder.
-3. Point the `serviceEndpoint` value inside of `client.ts` to your AppView instance. (For example, for the official PinkSea instance, the endpoint is `https://api.pinksea.art`)
+3. Copy the `.env.example` file to `.env`.
+4. Set `VITE_PINKSEA_API_URL` to your AppView instance. (For example, for the official PinkSea instance, the endpoint is `https://api.pinksea.art`)
 
 ### Running a local server
 
@@ -106,6 +104,21 @@ In order to run the client app locally, you need a fairly modern [Node.js](https
 3. Finally, execute `npm run build`, to build and minify the client app.
 
 The built app will be inside of the `dist` folder.
+
+## Gateway (SSR helpers for the frontend)
+
+### Configuration
+
+1. Open the `PinkSea.Gateway` folder.
+2. Copy the sample `appsettings.example.json` file to `appsettings.json`
+3. Edit the values inside of it
+	
+	1. Point `AppViewEndpoint` URL to where your AppView resides. (As an example, for the official PinkSea instance, it's `https://api.pinksea.art`).
+	2. Point `FrontEndEndpoint` URL to where your frontend will reside. (As an example, for the official PinkSea instance, it's `https://pinksea.art`).
+
+4. Create the `wwwroot` folder.
+5. Copy the built frontend from `PinkSea.Frontend/dist` to `wwwroot`
+6. Run `dotnet run --configuration Release` to start the PinkSea gateway helper.
 
 # Acknowledgments
 
