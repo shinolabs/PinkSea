@@ -122,10 +122,24 @@ The built app will be inside of the `dist` folder.
 
 # Acknowledgments
 
-This is a list of people I'd love to extend my most sincere gratitude to!!
+PinkSea was built by these wonderful people, I'd like to extend a massive thank you to everyone involved with the project!
 
 * [GlitchyPSI](https://bsky.app/profile/glitchypsi.xyz) for drawing the "post is missing" image visible whenever we see a post that does not exist! Thank you so much!!!
 
+![contributors badge](https://readme-contribs.as93.net/contributors/shinolabs/PinkSea?shape=circle)
+
 # License
 
-The PinkSea code (with the exception of PinkSea.AtProto and PinkSea.AtProto.Server) is licensed under the European Union Public License-1.2. PinkSea.AtProto is released into the public domain as specified by the Unlicense. The appropriate licenses are in each folder's LICENSE files.
+PinkSea's licensing is split across projects in this monorepo.
+
+The following projects are licensed under the European Union Public License-1.2:
+- PinkSea
+- PinkSea.Frontend
+- PinkSea.Gateway
+
+The following libraries that PinkSea is built on top of are licensed under the Creative Commons Zero license:
+- PinkSea.AtProto
+- PinkSea.AtProto.Shared
+- PinkSea.AtProto.Server
+
+Please use them to built your own projects!
