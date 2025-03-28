@@ -1,3 +1,49 @@
-This is an AT Protocol Application View (AppView) for the "PinkSea" application: <a href="https://github.com/shinolabs/PinkSea">https://github.com/shinolabs/PinkSea</a>
-<br />
-Most API routes are under /xrpc/
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PinkSea</title>
+        <style>
+            * {
+                font-family: "MS PGothic", sans-serif;
+                font-size: 12pt;
+            }
+
+            html, body {
+                height: 100%;
+                width: 100%;
+                overflow: hidden;
+            }
+
+            body {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-size: 8px 8px;
+                background-image: repeating-linear-gradient(45deg, #FFB6C1 0, #FFB6C1 0.8px, #FFFFFF 0, #FFFFFF 50%);
+            }
+
+            img {
+                display: inline;
+                margin-bottom: 20px;
+            }
+
+            #container {
+                text-align: center;
+                background: white;
+                padding: 30px;
+                border: 2px solid #FFB6C1;
+            }
+        </style>
+        <meta name='viewport' content='width=device-width, initial-scale=1'/>
+    </head>
+    <body>
+        <div id="container">
+            <img src="logo.png" />
+            <br />
+            This is an <a href="https://atproto.com/guides/glossary#app-view">AT Protocol Application View</a> (AppView) for the <b>PinkSea</b> application: <a href="https://github.com/shinolabs/PinkSea">https://github.com/shinolabs/PinkSea</a>
+            <br />
+            Most API routes are under <a href="https://github.com/shinolabs/PinkSea/tree/master/PinkSea.Lexicons/com/shinolabs/pinksea">/xrpc/</a>
+        </div>
+    </body>
+</html>
+
