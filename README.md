@@ -125,8 +125,43 @@ The built app will be inside of the `dist` folder.
 PinkSea was built by these wonderful people, I'd like to extend a massive thank you to everyone involved with the project!
 
 * [GlitchyPSI](https://bsky.app/profile/glitchypsi.xyz) for drawing the "post is missing" image visible whenever we see a post that does not exist! Thank you so much!!!
+* [yazuto](https://bsky.app/profile/cryztl.bsky.social) for designing our lovely mascot PinkSea-tan! She's the cutest being ever!!
 
 ![contributors badge](https://readme-contribs.as93.net/contributors/shinolabs/PinkSea?shape=circle)
+
+Thank you to everyone who participated in the GitHub drawing thread as well to make this README this much nicer!! All of the images in this README have been drawn by PinkSea users inside of PinkSea!
+
+### Page screenshot
+
+Top to bottom:
+
+* [bye.omg.lol](https://bsky.app/profile/did:plc:3vjz7behkko4oxk5cun2jebo)
+* [fatty2can.bsky.social](https://bsky.app/profile/did:plc:tyugvzks6xkrx4rqt6qsnnuo)
+* [sako.works](https://bsky.app/profile/did:plc:akbwbra4o3smxvbi77aebelp)
+
+### Header
+
+Clockwise from the top left:
+
+* [reileky.com](https://bsky.app/profile/did:plc:6n5bcgoq5q2d734ggiddmeph)
+* [fluff.im](https://bsky.app/profile/did:plc:k6yjal5gikabksjw4kdgnpg6)
+* [domatoxi.bsky.social](https://bsky.app/profile/did:plc:zndnaxckapyzp4q2yoeeyva4)
+* [lyrinne.bsky.social](https://bsky.app/profile/did:plc:ru3xmujndfpilmaexvsyz6zh)
+* [aikoyori.xyz](https://bsky.app/profile/did:plc:6aakz2mue7yaw4olibq3loql)
+* [chimpbeef.bsky.social](https://bsky.app/profile/did:plc:e3u5a3bbv5j6hz42ew5xucng)
+
+### Footer
+
+Clockwise from the top left:
+
+* [alyxia.dev](https://bsky.app/profile/did:plc:6vwpm5wzk6t4n3jenj2dl2bj)
+* [docshoebox.bsky.social](https://bsky.app/profile/did:plc:qcumxnjbtxhrpsrtn5lhglkf)
+* [ofplayers.net](https://bsky.app/profile/did:plc:h7qqicb64fhosb6o7t5hvgwu)
+* [thememesniper.dev](https://bsky.app/profile/did:plc:5wh3hjau5fsq65evluglwduk)
+* [murrax.dev](https://bsky.app/profile/did:plc:rr4f7bfwd32fgpbr35gy5lfb)
+* [vescien.bsky.social](https://bsky.app/profile/did:plc:set35dzzhdxffu7cmxtljng3)
+
+Click [here](https://pinksea.art/did:plc:vrk3nc7pk3b5kuk6y5dewnuw/oekaki/3ll5pqkgkdsvx) to visit the original thread!
 
 # License
 
@@ -143,3 +178,5 @@ The following libraries that PinkSea is built on top of are licensed under the C
 - PinkSea.AtProto.Server
 
 Please use them to build your own projects!
+
+<small>made with ❤ by shinonome laboratories, 2024-2025. we're glad you're here</small>
