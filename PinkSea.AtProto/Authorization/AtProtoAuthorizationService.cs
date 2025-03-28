@@ -112,4 +112,21 @@ public class AtProtoAuthorizationService(
 
         return true;
     }
+
+    /// <inheritdoc />
+    public async Task InvalidateSession(string stateId)
+    {
+        try
+        {
+            using var xrpcClient = await xrpcClientFactory.GetForOAuthStateId(stateId);
+            if (xrpcClient is null)
+                return;
+
+            await xrpcClient.Procedure<object>("com.atproto.server.deleteSession");
+        }
+        finally
+        {
+            await oauthStateStorageProvider.DeleteForStateId(stateId);
+        }
+    }
 }

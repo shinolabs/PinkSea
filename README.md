@@ -1,18 +1,61 @@
 
 <p align="center">
-	<img width="200" src="Meta/logo.svg"><br>
-	<b>PinkSea</b><br>
-	<span>poniko's house</span><br>
-	<a href="https://weblate.shinolabs.com/projects/pinksea/frontend/"><img src="https://weblate.shinolabs.com/widget/pinksea/frontend/svg-badge.svg" /></a>
+	<img src="Meta/banner.png"><br>
 </p>
+<a href="https://weblate.shinolabs.com/projects/pinksea/frontend/"><img src="https://weblate.shinolabs.com/widget/pinksea/frontend/svg-badge.svg" /></a>
 
 <hr>
 
+A decentralized oekaki (お絵描き, jp. drawing) BBS running as an [AT Protocol AppView](https://atproto.com/guides/glossary#app-view).
+
+It allows you to log in with your AT Protocol account and draw right in the browser using a modified variant of the [tegaki.js](https://github.com/desuwa/tegaki) editor! Your images are stored on your ATProto Personal Data Server, meaning that no PinkSea instance actually controls them. If one goes down, another one can take its place. You are in full control of everything you draw.
+
+Other than just drawing, PinkSea allows you to tag your oekaki, grouping them together like in sites akin to Pixiv. PinkSea also permits responding with oekaki to other oekaki!
+
 ![An image of PinkSea's frontend displaying an oekaki post.](Meta/screenshot.png)
 
-An oekaki BBS running as an [AT Protocol AppView](https://atproto.com/guides/glossary#app-view).
 
-# Running
+# Running (Docker)
+
+In order to run PinkSea as a Docker container, you need to have the [Docker runtime](https://www.docker.com/) installed.
+
+1. Clone this repository by doing `git clone https://github.com/shinolabs/PinkSea`
+
+2. Navigate to the cloned repository.
+
+3. Copy `.env.example` to `.env` and modify the settings according to your setup.
+
+| ENV Config Name                         | Description                                                                                                                                   | Default Value                                            |
+|----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------|
+| POSTGRES_USERNAME                      | The username used for the PostgreSQL database login                                                                                          | pinksea                                                  |
+| POSTGRES_PASSWORD                      | The password used for the PostgreSQL database login                                                                                          | pinksea                                                  |
+| POSTGRES_PORT                          | The port used to connect to PostgreSQL                                                                                                       | 5432                                                     |
+| POSTGRES_DATABASE                      | The name of the database used for PinkSea                                                                                                    | PinkSea                                                  |
+| APPVIEW_URL                            | The URL used by the AppView API                                                                                                               | https://api.your.tld                                     |
+| FRONTEND_URL                           | The URL used by the frontend. (Can be the same as the AppView)                                                                               | https://your.tld                                         |
+| BACKFILL_SOURCE                        | The source used for backfilling the local instance. (Can be either a relay or another PinkSea instance)                                      | https://relay1.us-west.bsky.network                      |
+| BACKFILL_SKIP_DIMENSIONS_VERIFICATION | Whether to skip verifying dimensions for each oekaki post while backfilling. Will speed it up sacrificing full validity.                    | false                                                    |
+| JETSTREAM_ENDPOINT                     | The ATProto [JetStream](https://github.com/bluesky-social/jetstream) endpoint used by this PinkSea instance.                                                                                | jetstream1.us-east.bsky.network                          |
+| PLC_DIRECTORY                          | The [PLC directory](https://github.com/did-method-plc/did-method-plc) endpoint used by this PinkSea instance.                                                                                    | https://plc.directory                                    |
+| IMAGE_PROXY_TEMPLATE                   | The image proxy endpoint used by this PinkSea instance. {0} will be populated with the author's DID, while {1} will be populated with the CID of the blob. | https://cdn.bsky.app/img/feed_fullsize/plain/{0}/{1}     |
+
+4. Run `docker compose up -d` to start the containers and detach from them.
+
+5. (Initial run only) Wait for PinkSea to finish backfilling all the oekaki posts.
+
+Your PinkSea instance will now be accessible at the `FRONTEND_URL` endpoint you've specified for it, fully connected with the entire ATProto network! Simple as that!
+
+## Updating
+
+1. Run `docker compose down` to shut down the containers.
+
+2. Run `git pull` to fetch the latest changes to the repository.
+
+2. Run `docker compose up -d --build` to force rebuild all the PinkSea dockerfiles.
+
+Your PinkSea instance should now be up-to-date!
+
+# Running (Manual)
 
 ## Backend (AppView)
 

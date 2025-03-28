@@ -18,7 +18,13 @@ public interface IAtProtoAuthorizationService
     /// <summary>
     /// Refreshes the session.
     /// </summary>
-    /// <param name="stateId"></param>
-    /// <returns></returns>
+    /// <param name="stateId">The id of the session.</param>
+    /// <returns>Whether the session has been refreshed.</returns>
     public Task<bool> RefreshSession(string stateId);
+
+    /// <summary>
+    /// Invalidates the session.
+    /// </summary>
+    /// <param name="stateId">The id of the session.</param>
+    public Task InvalidateSession(string stateId);
 }
