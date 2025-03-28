@@ -8,6 +8,7 @@ using PinkSea.AtProto.Helpers;
 using PinkSea.AtProto.Http;
 using PinkSea.AtProto.Models.Authorization;
 using PinkSea.AtProto.Models.OAuth;
+using PinkSea.AtProto.OAuth.Models;
 using PinkSea.AtProto.Providers.OAuth;
 using PinkSea.AtProto.Providers.Storage;
 using PinkSea.AtProto.Resolvers.Did;
@@ -232,6 +233,38 @@ public class AtProtoOAuthClient(
         
         await oAuthStateStorageProvider.SetForStateId(stateId, oauthState);
         return true;
+    }
+
+    /// <inheritdoc />
+    public async Task InvalidateSession(string stateId)
+    {
+        try
+        {
+            var oauthState = await oAuthStateStorageProvider.GetForStateId(stateId);
+            if (oauthState is null)
+                return;
+        
+            var clientData = clientDataProvider.ClientData;
+            var assertion = jwtSigningProvider.GenerateClientAssertion(new JwtSigningData
+            {
+                ClientId = clientData.ClientId,
+                Audience = oauthState.Issuer,
+                Key = clientData.Key
+            });
+
+            var tokenRequest = new TokenRevokeRequest()
+            {
+                ClientId = clientData.ClientId,
+                Token = oauthState.AuthorizationCode!,
+                ClientAssertionType = JwtClientAssertionType,
+                ClientAssertion = assertion,
+                CodeVerifier = oauthState.PkceString,
+            };
+        }
+        finally
+        {
+            await oAuthStateStorageProvider.DeleteForStateId(stateId);
+        }
     }
 
     /// <inheritdoc />
