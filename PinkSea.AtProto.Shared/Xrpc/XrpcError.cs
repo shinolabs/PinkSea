@@ -18,6 +18,12 @@ public sealed class XrpcError
     /// </summary>
     [JsonPropertyName("message")]
     public string? Message { get; set; }
+    
+    /// <summary>
+    /// An optional status code, to override the status code within the XRPC server handler.
+    /// </summary>
+    [JsonIgnore]
+    public int? StatusCode { get; set; }
 
     /// <inheritdoc />
     public override string ToString()

@@ -59,14 +59,16 @@ public static class ServiceCollectionExtensions
         [FromServices] IServiceProvider serviceProvider)
     {
         var xrpcHandler = serviceProvider.GetRequiredService<IXrpcHandler>();
-        var result = await xrpcHandler.HandleXrpc(nsid, ctx);
-        if (result is null)
-        {
-            return Results.StatusCode(StatusCodes.Status500InternalServerError);
-        }
+        var result = await xrpcHandler.HandleXrpc(nsid, ctx) ?? XrpcErrorOr<object>.Fail(
+            "InternalServerError",
+            "An unknown error has occurred.",
+            500);
 
-        return !result.IsSuccess
-            ? Results.BadRequest(result.Error)
-            : Results.Ok(result.GetUnderlyingObject());
+        if (result.IsSuccess)
+            return Results.Ok(result.GetUnderlyingObject());
+
+        return Results.Json(
+            result.Error,
+            statusCode: result.Error!.StatusCode ?? 400);
     }
 }

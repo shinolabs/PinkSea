@@ -43,17 +43,20 @@ public class XrpcErrorOr<TResult> : IXrpcErrorOr
     /// </summary>
     /// <param name="error">The error type.</param>
     /// <param name="message">The error message (optional.)</param>
+    /// <param name="statusCode">The status code to send back.</param>
     /// <returns>The failed XrpcErrorOr.</returns>
     public static XrpcErrorOr<TResult> Fail(
         string error,
-        string? message = null)
+        string? message = null,
+        int? statusCode = 400)
     {
         return new XrpcErrorOr<TResult>
         {
             Error = new XrpcError
             {
                 Error = error,
-                Message = message
+                Message = message,
+                StatusCode = statusCode
             }
         };
     }
