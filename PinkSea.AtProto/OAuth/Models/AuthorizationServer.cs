@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace PinkSea.AtProto.Models.OAuth;
+namespace PinkSea.AtProto.OAuth.Models;
 
 public class AuthorizationServer
 {
@@ -15,6 +15,9 @@ public class AuthorizationServer
     
     [JsonPropertyName("pushed_authorization_request_endpoint")]
     public required string PushedAuthorizationRequestEndpoint { get; init; }
+    
+    [JsonPropertyName("revocation_endpoint")]
+    public required string RevocationEndpoint { get; init; }
     
     // TODO: Rest from https://atproto.com/specs/oauth#summary-of-authorization-flow
 }

@@ -33,4 +33,10 @@ public class TokenRevokeRequest
     /// </summary>
     [JsonPropertyName("client_assertion")]
     public string? ClientAssertion { get; init; }
+    
+    /// <summary>
+    /// The hint as to the type of the token being revoked.
+    /// </summary>
+    [JsonPropertyName("token_type_hint")]
+    public string? TokenTypeHint { get; init; }
 }
