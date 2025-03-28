@@ -72,6 +72,7 @@ public class AtProtoAuthorizationService(
             PkceString = "",
             Issuer = "",
             TokenEndpoint = "",
+            RevocationEndpoint = "",
             KeyPair = new DpopKeyPair()
             {
                 PrivateKey = "",

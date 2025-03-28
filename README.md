@@ -142,4 +142,4 @@ The following libraries that PinkSea is built on top of are licensed under the C
 - PinkSea.AtProto.Shared
 - PinkSea.AtProto.Server
 
-Please use them to built your own projects!
+Please use them to build your own projects!

@@ -130,6 +130,7 @@ public class AtProtoOAuthClient(
                 Issuer = authServer.Issuer,
                 KeyPair = keyPair,
                 TokenEndpoint = authServer.TokenEndpoint,
+                RevocationEndpoint = authServer.RevocationEndpoint,
                 Pds = pds,
                 ClientRedirectUrl = redirectUrl
             });
@@ -252,14 +253,54 @@ public class AtProtoOAuthClient(
                 Key = clientData.Key
             });
 
-            var tokenRequest = new TokenRevokeRequest()
+            // Revoke the access token first.
+            var revokeRequest = new TokenRevokeRequest()
             {
                 ClientId = clientData.ClientId,
                 Token = oauthState.AuthorizationCode!,
+                TokenTypeHint = "access_token",
                 ClientAssertionType = JwtClientAssertionType,
                 ClientAssertion = assertion,
                 CodeVerifier = oauthState.PkceString,
             };
+            
+            var resp = await _client.Post(
+                oauthState.RevocationEndpoint,
+                revokeRequest,
+                oauthState.KeyPair);
+
+            if (!resp.IsSuccessStatusCode)
+            {
+                logger.LogError($"Failed to revoke the access token: {await resp.Content.ReadAsStringAsync()}");
+            }
+            
+            var assertion2 = jwtSigningProvider.GenerateClientAssertion(new JwtSigningData
+            {
+                ClientId = clientData.ClientId,
+                Audience = oauthState.Issuer,
+                Key = clientData.Key
+            });
+
+            // Now revoke the refresh token.
+            var refreshRevokeRequest = new TokenRevokeRequest()
+            {
+                ClientId = clientData.ClientId,
+                Token = oauthState.RefreshToken!,
+                TokenTypeHint = "refresh_token",
+                ClientAssertionType = JwtClientAssertionType,
+                ClientAssertion = assertion2,
+                CodeVerifier = oauthState.PkceString,
+            };
+            
+            var resp2 = await _client.Post(
+                oauthState.RevocationEndpoint,
+                refreshRevokeRequest,
+                oauthState.KeyPair);
+            
+            if (!resp2.IsSuccessStatusCode)
+            {
+                logger.LogError($"Failed to revoke the refresh token: {await resp2.Content.ReadAsStringAsync()}");
+            }
         }
         finally
         {

@@ -1,5 +1,6 @@
 using PinkSea.AtProto.Authorization;
 using PinkSea.AtProto.Models.Authorization;
+using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.Storage;
 using PinkSea.AtProto.Server.Xrpc;
 using PinkSea.AtProto.Shared.Xrpc;
@@ -14,6 +15,7 @@ namespace PinkSea.Xrpc;
 [Xrpc("com.shinolabs.pinksea.invalidateSession")]
 public class InvalidateSessionProcedure(
     IAtProtoAuthorizationService atProtoAuthorizationService,
+    IAtProtoOAuthClient oAuthClient,
     IOAuthStateStorageProvider oAuthStateStorageProvider,
     IHttpContextAccessor contextAccessor,
     ILogger<InvalidateSessionProcedure> logger) : IXrpcProcedure<Empty, Empty>
@@ -33,13 +35,9 @@ public class InvalidateSessionProcedure(
             state);
 
         if (state.AuthorizationType == AuthorizationType.PdsSession)
-        {
             await atProtoAuthorizationService.InvalidateSession(stateId);
-        }
         else
-        {
-            await oAuthStateStorageProvider.DeleteForStateId(stateId);
-        }
+            await oAuthClient.InvalidateSession(stateId);
         
         return XrpcErrorOr<Empty>.Ok(new Empty());
     }
