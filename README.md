@@ -155,10 +155,10 @@ Clockwise from the top left:
 Clockwise from the top left:
 
 * [alyxia.dev](https://bsky.app/profile/did:plc:6vwpm5wzk6t4n3jenj2dl2bj)
-* [docshoebox.bsky.social](https://bsky.app/profile/did:plc:qcumxnjbtxhrpsrtn5lhglkf)
+* [murrax.dev](https://bsky.app/profile/did:plc:rr4f7bfwd32fgpbr35gy5lfb)
 * [ofplayers.net](https://bsky.app/profile/did:plc:h7qqicb64fhosb6o7t5hvgwu)
 * [thememesniper.dev](https://bsky.app/profile/did:plc:5wh3hjau5fsq65evluglwduk)
-* [murrax.dev](https://bsky.app/profile/did:plc:rr4f7bfwd32fgpbr35gy5lfb)
+* [docshoebox.bsky.social](https://bsky.app/profile/did:plc:qcumxnjbtxhrpsrtn5lhglkf)
 * [vescien.bsky.social](https://bsky.app/profile/did:plc:set35dzzhdxffu7cmxtljng3)
 
 Click [here](https://pinksea.art/did:plc:vrk3nc7pk3b5kuk6y5dewnuw/oekaki/3ll5pqkgkdsvx) to visit the original thread!
@@ -179,4 +179,9 @@ The following libraries that PinkSea is built on top of are licensed under the C
 
 Please use them to build your own projects!
 
-<small>made with ❤ by shinonome laboratories, 2024-2025. we're glad you're here</small>
+---
+
+<p align="center">
+	made with love by<br>
+	<img src="Meta/footer.png">
+</p>
