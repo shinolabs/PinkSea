@@ -5,6 +5,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <OutputType>library</OutputType>
+        <Authors>shinonome laboratories</Authors>
+        <Description>An XRPC handler implementation for ASP.NET Core based on top of PinkSea.AtProto.</Description>
+        <PackageProjectUrl>https://github.com/shinolabs/PinkSea/tree/master/PinkSea.AtProto.Server</PackageProjectUrl>
+        <PackageLicenseUrl>https://creativecommons.org/public-domain/cc0/</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/shinolabs/PinkSea</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
     <ItemGroup>

@@ -4,6 +4,13 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <OutputType>library</OutputType>
+        <Authors>shinonome laboratories</Authors>
+        <Description>The shared libraries for PinkSea's ATProto services.</Description>
+        <PackageProjectUrl>https://github.com/shinolabs/PinkSea/tree/master/PinkSea.AtProto.Shared</PackageProjectUrl>
+        <PackageLicenseUrl>https://creativecommons.org/public-domain/cc0/</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/shinolabs/PinkSea</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
 </Project>
