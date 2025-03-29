@@ -5,6 +5,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <OutputType>library</OutputType>
+        <Authors>shinonome laboratories</Authors>
+        <Description>ATProto libraries built for PinkSea.</Description>
+        <PackageProjectUrl>https://github.com/shinolabs/PinkSea/tree/master/PinkSea.AtProto</PackageProjectUrl>
+        <PackageLicenseUrl>https://creativecommons.org/public-domain/cc0/</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/shinolabs/PinkSea</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
     <ItemGroup>
