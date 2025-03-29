@@ -127,7 +127,7 @@ PinkSea was built by these wonderful people, I'd like to extend a massive thank 
 * [GlitchyPSI](https://bsky.app/profile/glitchypsi.xyz) for drawing the "post is missing" image visible whenever we see a post that does not exist! Thank you so much!!!
 * [yazuto](https://bsky.app/profile/cryztl.bsky.social) for designing our lovely mascot PinkSea-tan! She's the cutest being ever!!
 
-![contributors badge](https://readme-contribs.as93.net/contributors/shinolabs/PinkSea?shape=circle)
+![contributors badge](https://readme-contribs.as93.net/contributors/shinolabs/PinkSea?perRow=10&shape=circle&textColor=white)
 
 Thank you to everyone who participated in the GitHub drawing thread as well to make this README this much nicer!! All of the images in this README have been drawn by PinkSea users inside of PinkSea!
 
