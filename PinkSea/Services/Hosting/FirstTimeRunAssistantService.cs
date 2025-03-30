@@ -21,10 +21,13 @@ public class FirstTimeRunAssistantService(
     IOptions<AppViewConfig> appViewConfig,
     IXrpcClientFactory xrpcClientFactory,
     IDidResolver didResolver,
-    ILogger<FirstTimeRunAssistantService> logger) : BackgroundService
+    ILogger<FirstTimeRunAssistantService> logger)
 {
-    /// <inheritdoc />
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    /// <summary>
+    /// Runs the service.
+    /// </summary>
+    /// <param name="stoppingToken">The cancellation token.</param>
+    public async Task Run(CancellationToken stoppingToken)
     {
         await Migrate();
         

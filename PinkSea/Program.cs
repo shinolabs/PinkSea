@@ -33,6 +33,7 @@ builder.Services.AddSingleton<ConfigurationService>();
 builder.Services.AddScoped<OekakiService>();
 builder.Services.AddScoped<TagsService>();
 builder.Services.AddScoped<BlueskyIntegrationService>();
+builder.Services.AddScoped<FirstTimeRunAssistantService>();
 builder.Services.AddTransient<FeedBuilder>();
 builder.Services.AddDbContext<PinkSeaDbContext>();
 
@@ -62,7 +63,7 @@ builder.Services.AddCors(options =>
         });
 });
 
-builder.Services.AddHostedService<FirstTimeRunAssistantService>();
+builder.Services.AddHostedService<FirstTimeRunAssistantServiceRunner>();
 
 var app = builder.Build();
 
