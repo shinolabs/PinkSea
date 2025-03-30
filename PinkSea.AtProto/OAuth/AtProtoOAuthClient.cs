@@ -106,7 +106,7 @@ public class AtProtoOAuthClient(
         var resp = await _client.Post(authServer!.PushedAuthorizationRequestEndpoint!, body, keyPair);
         if (!resp.IsSuccessStatusCode)
         {
-            var reason = await resp.Content.ReadFromJsonAsync<XrpcError>();
+            var reason = await resp.Content.ReadFromJsonAsync<OAuthError>();
             logger.LogError("Failed to send a PAR: {Reason}",
                 reason);
             
@@ -341,7 +341,7 @@ public class AtProtoOAuthClient(
     /// Generates a DPoP keypair.
     /// </summary>
     /// <returns>The DPoP keypair.</returns>
-    private DpopKeyPair GenerateDPopKeypair()
+    private static DpopKeyPair GenerateDPopKeypair()
     {
         using var ecdsa = ECDsa.Create(ECCurve.CreateFromFriendlyName("nistp256"));
         return new DpopKeyPair
