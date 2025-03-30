@@ -48,4 +48,4 @@ Your new query will now be available at `<your url>/xrpc/tld.domain.handlerName`
 
 # Licensing
 
-Unlike the rest of the PinkSea repository, which is EUPL licensed, PinkSea.AtProto is released under the public domain, as described by the Unlicense. Please build on top of it!
+Unlike the rest of the PinkSea repository, which is EUPL licensed, PinkSea.AtProto.Server is released under the Creative Commons Zero license, effectively putting it in the public domain. Please build on top of it!
