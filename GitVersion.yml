@@ -1,0 +1,9 @@
+mode: Mainline
+branches:
+  main:
+    regex: ^main$|^master$
+    increment: Minor
+    is-mainline: true
+ignore:
+  sha: []
+merge-message-strategy: MergeMessage
