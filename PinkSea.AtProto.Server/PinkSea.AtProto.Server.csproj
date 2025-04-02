@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <OutputType>library</OutputType>
+        <IsPackable>true</IsPackable>
         <Authors>shinonome laboratories</Authors>
         <Description>An XRPC handler implementation for ASP.NET Core based on top of PinkSea.AtProto.</Description>
         <PackageProjectUrl>https://github.com/shinolabs/PinkSea/tree/master/PinkSea.AtProto.Server</PackageProjectUrl>

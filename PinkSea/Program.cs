@@ -42,6 +42,8 @@ builder.Services.AddAtProtoClientServices(o =>
     o.PlcDirectory = new Uri(builder.Configuration["AppViewConfig:PlcDirectory"]!);
 });
 
+builder.Services.AddAtProtoOAuthServices();
+
 builder.Services.AddJetStream(o =>
 {
     o.Endpoint = builder.Configuration["AppViewConfig:JetStreamEndpoint"];

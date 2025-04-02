@@ -3,14 +3,48 @@ using Microsoft.Extensions.DependencyInjection;
 using PinkSea.AtProto.Authorization;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.OAuth;
+using PinkSea.AtProto.Providers.Storage;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Resolvers.Domain;
 using PinkSea.AtProto.Xrpc.Client;
 
 namespace PinkSea.AtProto;
 
+/// <summary>
+/// Extensions for the service collection.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds in dummy authorization providers.
+    /// </summary>
+    /// <param name="collection">The service collection to add them to.</param>
+    /// <returns>The updated service collection.</returns>
+    public static IServiceCollection AddDummyAuthorizationProviders(
+        this IServiceCollection collection)
+    {
+        collection.AddScoped<IOAuthStateStorageProvider, InMemoryOAuthStateStorageProvider>();
+        return collection;
+    }
+
+    /// <summary>
+    /// Adds the ATProto OAuth services.
+    /// </summary>
+    /// <param name="collection">The service collection to add them to.</param>
+    /// <returns>The updated service collection.</returns>
+    public static IServiceCollection AddAtProtoOAuthServices(
+        this IServiceCollection collection)
+    {
+        collection.AddScoped<IAtProtoOAuthClient, AtProtoOAuthClient>();
+        return collection;
+    }
+    
+    /// <summary>
+    /// Adds the ATProto client services.
+    /// </summary>
+    /// <param name="collection">The service collection to add them to.</param>
+    /// <param name="config">The config method.</param>
+    /// <returns>The updated service collection.</returns>
     public static IServiceCollection AddAtProtoClientServices(
         this IServiceCollection collection,
         Action<AtProtoClientServicesConfig>? config = null)
@@ -25,7 +59,6 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<IDomainDidResolver, DomainDidResolver>();
         collection.AddTransient<IJwtSigningProvider, JwtSigningProvider>();
         collection.AddScoped<IDidResolver, DidResolver>();
-        collection.AddScoped<IAtProtoOAuthClient, AtProtoOAuthClient>();
         collection.AddScoped<IXrpcClientFactory, DefaultXrpcClientFactory>();
         collection.AddScoped<IAtProtoAuthorizationService, AtProtoAuthorizationService>();
 

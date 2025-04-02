@@ -14,7 +14,7 @@ public class DefaultXrpcClientFactory(
     IOAuthStateStorageProvider stateStorageProvider,
     IHttpClientFactory httpClientFactory,
     IJwtSigningProvider jwtSigningProvider,
-    IOAuthClientDataProvider clientDataProvider,
+    IOAuthClientDataProvider? clientDataProvider,
     ILoggerFactory loggerFactory) : IXrpcClientFactory
 {
     /// <inheritdoc />
@@ -29,6 +29,11 @@ public class DefaultXrpcClientFactory(
 
         if (oauthState.AuthorizationType == AuthorizationType.OAuth2)
         {
+            if (clientDataProvider is null)
+            {
+                throw new InvalidOperationException("Missing client data provider for OAuth2.");
+            }
+            
             var dpopClientLogger = loggerFactory.CreateLogger<DpopHttpClient>();
             var dpopClient = new DpopHttpClient(
                 httpClient,

@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <OutputType>library</OutputType>
+        <IsPackable>true</IsPackable>
         <Authors>shinonome laboratories</Authors>
         <Description>The shared libraries for PinkSea's ATProto services.</Description>
         <PackageProjectUrl>https://github.com/shinolabs/PinkSea/tree/master/PinkSea.AtProto.Shared</PackageProjectUrl>
