@@ -30,4 +30,10 @@ public class AtProtoAccount
     /// </summary>
     [JsonPropertyName("time")]
     public required DateTimeOffset Timestamp { get; set; }
+    
+    /// <summary>
+    /// The status of the account.
+    /// </summary>
+    [JsonPropertyName("status")]
+    public string? Status { get; set; }
 }
