@@ -34,6 +34,7 @@ builder.Services.AddScoped<OekakiService>();
 builder.Services.AddScoped<TagsService>();
 builder.Services.AddScoped<BlueskyIntegrationService>();
 builder.Services.AddScoped<FirstTimeRunAssistantService>();
+builder.Services.AddScoped<SearchService>();
 builder.Services.AddTransient<FeedBuilder>();
 builder.Services.AddDbContext<PinkSeaDbContext>();
 

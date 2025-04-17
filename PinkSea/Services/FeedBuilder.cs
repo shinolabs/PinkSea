@@ -98,13 +98,12 @@ public class FeedBuilder(
     }
 
     /// <summary>
-    /// Gets the feed.
+    /// Builds a feed from a list of <see cref="OekakiModel"/>
     /// </summary>
+    /// <param name="list">The oekaki models.</param>
     /// <returns>The list of oekaki DTOs.</returns>
-    public async Task<List<HydratedOekaki>> GetFeed()
+    public async Task<List<HydratedOekaki>> FromOekakiModelList(IList<OekakiModel> list)
     {
-        var list = await _query.ToListAsync();
-        
         var dids = list.Select(o => o.AuthorDid);
         var map = new ConcurrentDictionary<string, string>();
 
@@ -121,5 +120,15 @@ public class FeedBuilder(
             .ToList();
 
         return oekakiDtos;
+    }
+
+    /// <summary>
+    /// Gets the feed.
+    /// </summary>
+    /// <returns>The list of oekaki DTOs.</returns>
+    public async Task<List<HydratedOekaki>> GetFeed()
+    {
+        var list = await _query.ToListAsync();
+        return await FromOekakiModelList(list);
     }
 }
