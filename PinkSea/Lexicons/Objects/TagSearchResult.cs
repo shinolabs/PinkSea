@@ -18,4 +18,10 @@ public class TagSearchResult
     /// </summary>
     [JsonPropertyName("oekaki")]
     public required HydratedOekaki Oekaki { get; set; }
+    
+    /// <summary>
+    /// How many posts have this tag?
+    /// </summary>
+    [JsonPropertyName("count")]
+    public required int Count { get; set; }
 }
