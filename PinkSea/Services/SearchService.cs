@@ -41,7 +41,8 @@ public class SearchService(
             .Select(c => new
             {
                 Tag = c.Key,
-                Oekaki = c.First().o
+                Oekaki = c.First().o,
+                Count = c.Count()
             })
             .ToListAsync();
         
@@ -60,7 +61,8 @@ public class SearchService(
             .Select(o => new TagSearchResult
             {
                 Tag = o.Tag,
-                Oekaki = HydratedOekaki.FromOekakiModel(o.Oekaki, map[o.Oekaki.AuthorDid], opts.Value.ImageProxyTemplate)
+                Oekaki = HydratedOekaki.FromOekakiModel(o.Oekaki, map[o.Oekaki.AuthorDid], opts.Value.ImageProxyTemplate),
+                Count = o.Count
             })
             .ToList();
 
