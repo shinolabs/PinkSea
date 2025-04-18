@@ -13,4 +13,10 @@ public class GetSearchResultsQueryResponse
     /// </summary>
     [JsonPropertyName("oekaki")]
     public IReadOnlyList<HydratedOekaki>? Oekaki { get; set; }
+    
+    /// <summary>
+    /// The list of tags.
+    /// </summary>
+    [JsonPropertyName("tags")]
+    public IReadOnlyList<TagSearchResult>? Tags { get; set; }
 }
