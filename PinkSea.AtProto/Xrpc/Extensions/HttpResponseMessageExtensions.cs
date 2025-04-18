@@ -23,7 +23,17 @@ public static class HttpResponseMessageExtensions
         var body = await message.Content.ReadAsStringAsync();
         if (!message.IsSuccessStatusCode)
         {
-            var error = JsonSerializer.Deserialize<XrpcError>(body) ?? new XrpcError
+            XrpcError? error = null;
+            try
+            {
+                error = JsonSerializer.Deserialize<XrpcError>(body);
+            }
+            catch (Exception e)
+            {
+                logger?.LogError(e, "Failed to deserialize JSON when parsing XRPC result.");
+            }
+
+            error ??= new XrpcError
             {
                 Error = "UnknownError",
                 Message = body
@@ -43,7 +53,21 @@ public static class HttpResponseMessageExtensions
         if (message is TResponse typedResponse)
             return XrpcErrorOr<TResponse>.Ok(typedResponse);
 
-        var result = JsonSerializer.Deserialize<TResponse>(body);
-        return XrpcErrorOr<TResponse>.Ok(result!);
+        try
+        {
+            var result = JsonSerializer.Deserialize<TResponse>(body);
+            return XrpcErrorOr<TResponse>.Ok(result!);
+        }
+        catch (Exception e)
+        {
+            logger?.LogError(e, "Failed to deserialize JSON when parsing XRPC result.");
+            var error = new XrpcError
+            {
+                Error = "UnknownError",
+                Message = body
+            };
+            
+            return XrpcErrorOr<TResponse>.Fail(error.Error, error.Message);
+        }
     }
 }

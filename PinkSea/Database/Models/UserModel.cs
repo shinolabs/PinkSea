@@ -14,6 +14,11 @@ public class UserModel
     public required string Did { get; set; }
     
     /// <summary>
+    /// The cached handle of the user. May be out of date if an account event was skipped.
+    /// </summary>
+    public string? Handle { get; set; }
+    
+    /// <summary>
     /// When was this user created at?
     /// </summary>
     public required DateTimeOffset CreatedAt { get; set; }
