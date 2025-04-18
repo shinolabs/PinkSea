@@ -12,11 +12,17 @@ public class GetSearchResultsQueryResponse
     /// The list of oekaki.
     /// </summary>
     [JsonPropertyName("oekaki")]
-    public IReadOnlyList<HydratedOekaki>? Oekaki { get; set; }
+    public IReadOnlyList<HydratedOekaki>? Oekaki { get; set; } = [];
     
     /// <summary>
     /// The list of tags.
     /// </summary>
     [JsonPropertyName("tags")]
-    public IReadOnlyList<TagSearchResult>? Tags { get; set; }
+    public IReadOnlyList<TagSearchResult>? Tags { get; set; } = [];
+    
+    /// <summary>
+    /// The list of profiles.
+    /// </summary>
+    [JsonPropertyName("profiles")]
+    public IReadOnlyList<Author>? Profiles { get; set; } = [];
 }
