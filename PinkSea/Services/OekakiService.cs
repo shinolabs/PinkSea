@@ -28,6 +28,7 @@ public partial class OekakiService(
     IDomainDidResolver didResolver,
     PinkSeaDbContext dbContext,
     TagsService tagsService,
+    UserService userService,
     IMemoryCache memoryCache)
 {
     /// <summary>
@@ -221,20 +222,8 @@ public partial class OekakiService(
         bool useRecordIndexedAt = false)
     {
         // First, see if the author exists.
-        var author = await dbContext.Users
-            .FirstOrDefaultAsync(u => u.Did == authorDid);
-
-        if (author is null)
-        {
-            author = new UserModel
-            {
-                Did = authorDid,
-                CreatedAt = DateTimeOffset.UtcNow
-            };
-
-            await dbContext.Users.AddAsync(author);
-            await dbContext.SaveChangesAsync();
-        }
+        var author = await dbContext.Users.FirstOrDefaultAsync(u => u.Did == authorDid)
+                     ?? await userService.Create(authorDid);
 
         var indexed = DateTimeOffset.UtcNow;
         if (useRecordIndexedAt)

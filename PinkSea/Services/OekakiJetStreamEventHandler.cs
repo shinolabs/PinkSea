@@ -13,18 +13,32 @@ namespace PinkSea.Services;
 /// </summary>
 public class OekakiJetStreamEventHandler(
     OekakiService oekakiService,
+    UserService userService,
     IDidResolver didResolver,
     IHttpClientFactory httpClientFactory,
     ILogger<OekakiJetStreamEventHandler> logger,
     IMemoryCache memoryCache) : IJetStreamEventHandler
 {
     /// <inheritdoc />
-    public async Task HandleEvent(JetStreamEvent @event)
+    public Task HandleEvent(JetStreamEvent @event)
     {
-        if (@event.Kind != "commit")
-            return;
+        return @event.Kind switch
+        {
+            "commit" => HandleCommit(@event, @event.Commit!),
+            "identity" => HandleIdentity(@event, @event.Identity!),
+            _ => Task.CompletedTask
+        };
+    }
 
-        var commit = @event.Commit!;
+    /// <summary>
+    /// Handles a commit event.
+    /// </summary>
+    /// <param name="event">The event.</param>
+    /// <param name="commit">The commit.</param>
+    private async Task HandleCommit(
+        JetStreamEvent @event,
+        AtProtoCommit commit)
+    {
         if (commit.Operation == "create")
         {
             await ProcessCreatedOekaki(
@@ -37,6 +51,22 @@ public class OekakiJetStreamEventHandler(
                 commit,
                 @event.Did);
         }
+    }
+
+    /// <summary>
+    /// Handles the identity event.
+    /// </summary>
+    /// <param name="event">The event.</param>
+    /// <param name="identity">The identity data.</param>
+    private async Task HandleIdentity(
+        JetStreamEvent @event,
+        AtProtoIdentity identity)
+    {
+        if (!await userService.UserExists(@event.Did))
+            return;
+
+        if (!string.IsNullOrEmpty(identity.Handle))
+            await userService.UpdateHandle(@event.Did, identity.Handle);
     }
 
     /// <summary>
