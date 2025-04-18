@@ -66,4 +66,20 @@ public class SearchService(
 
         return oekakiDtos;
     }
+
+    public async Task<List<Author>> SearchAccounts(string query, int limit, DateTimeOffset since)
+    {
+        var list = await dbContext.Users
+            .Where(u => u.Handle != null && u.Handle.ToLower().Contains(query))
+            .OrderByDescending(u => u.CreatedAt)
+            .Where(u => u.CreatedAt < since)
+            .Take(limit)
+            .ToListAsync();
+
+        return list.Select(u => new Author
+        {
+            Did = u.Did,
+            Handle = u.Handle ?? "invalid.handle"
+        }).ToList();
+    }
 }

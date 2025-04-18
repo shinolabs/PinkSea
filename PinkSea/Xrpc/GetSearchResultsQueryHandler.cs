@@ -44,6 +44,18 @@ public class GetSearchResultsQueryHandler(
             return XrpcErrorOr<GetSearchResultsQueryResponse>.Ok(result);
         }
 
+        if (request.Type == SearchType.Profiles)
+        {
+            var profiles = await searchService.SearchAccounts(request.Query, limit, since);
+
+            var result = new GetSearchResultsQueryResponse
+            {
+                Profiles = profiles
+            };
+            
+            return XrpcErrorOr<GetSearchResultsQueryResponse>.Ok(result);
+        }
+
         return XrpcErrorOr<GetSearchResultsQueryResponse>.Fail("InvalidSearchType", "Invalid search type.");
     }
 }
