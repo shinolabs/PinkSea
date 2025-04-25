@@ -101,6 +101,25 @@ declare module '@atcute/client/lexicons' {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace ComShinolabsPinkseaUnspeccedGetProfile {
+    interface Params {
+      did: string
+    }
+
+    interface Output {
+      did: string,
+      handle: string,
+      nick: string,
+      description: string,
+      links: [{
+        name: string,
+        url: string
+      }],
+      avatar: string
+    }
+  }
+
   interface Queries {
     'com.shinolabs.pinksea.getRecent': {
       params: GenericTimelineQueryRequest,
@@ -133,6 +152,10 @@ declare module '@atcute/client/lexicons' {
     'com.shinolabs.pinksea.getParentForReply': {
       params: ComShinolabsPinkseaGetParentForReply.Params,
       output: ComShinolabsPinkseaGetParentForReply.Params
+    },
+    'com.shinolabs.pinksea.unspecced.getProfile': {
+      params: ComShinolabsPinkseaUnspeccedGetProfile.Params,
+      output: ComShinolabsPinkseaUnspeccedGetProfile.Output
     }
   }
 

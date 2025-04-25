@@ -6,6 +6,7 @@ import { computed, ref, watch } from 'vue'
 import { xrpc } from '@/api/atproto/client'
 import { useRoute } from 'vue-router'
 import { UserProfileTab } from '@/models/user-profile-tab'
+import { XRPCError } from '@atcute/client'
 
 const tabs = [
   {
@@ -21,11 +22,27 @@ const tabs = [
 const handle = ref<string>("");
 const route = useRoute();
 
+const exists = ref<boolean | null>(null);
+const profileError = ref<string>("");
+
 const currentTab = ref<UserProfileTab>(UserProfileTab.Posts);
 
 watch(() => route.params.did, async () => {
-  const { data } = await xrpc.get("com.shinolabs.pinksea.getHandleFromDid", { params: { did: route.params.did as string }});
-  handle.value = data.handle;
+  try {
+    const { data } = await xrpc.get("com.shinolabs.pinksea.unspecced.getProfile", { params: { did: route.params.did as string }});
+    handle.value = data.handle;
+    exists.value = true;
+  } catch (e) {
+    if (e instanceof XRPCError) {
+      const xrpcError = e as XRPCError;
+      profileError.value = xrpcError.description ?? "An unknown error has occurred.";
+    } else {
+      profileError.value = "Failed to load the profile.";
+    }
+
+    exists.value = false;
+  }
+
 }, { immediate: true });
 
 const bskyUrl = computed(() => {
@@ -40,17 +57,25 @@ const domainUrl = computed(() => {
 
 <template>
   <PanelLayout>
-    <div class="user-card">
-      <h2>{{ $t("breadcrumb.user_profile", { handle: handle }) }}</h2>
-      <div><a class="bluesky-link" :href="bskyUrl" target="_blank">{{ $t("profile.bluesky_profile") }}</a></div>
-      <div><a class="domain-link" :href="domainUrl" target="_blank">{{ $t("profile.domain") }}</a></div>
+    <div v-if="exists == null">
+      loading...
     </div>
-    <div id="profile-tabs">
-      <a v-for="tab in tabs" :class="tab.id == currentTab ? 'selected' : ''" v-on:click.prevent="currentTab = tab.id" v-bind:key="tab.id">{{ $t(tab.i18n) }}</a>
+    <div v-else-if="exists == true">
+      <div class="user-card">
+        <h2>{{ $t("breadcrumb.user_profile", { handle: handle }) }}</h2>
+        <div><a class="bluesky-link" :href="bskyUrl" target="_blank">{{ $t("profile.bluesky_profile") }}</a></div>
+        <div><a class="domain-link" :href="domainUrl" target="_blank">{{ $t("profile.domain") }}</a></div>
+      </div>
+      <div id="profile-tabs">
+        <a v-for="tab in tabs" :class="tab.id == currentTab ? 'selected' : ''" v-on:click.prevent="currentTab = tab.id" v-bind:key="tab.id">{{ $t(tab.i18n) }}</a>
+      </div>
+      <TimeLine v-if="currentTab == UserProfileTab.Posts" endpoint="com.shinolabs.pinksea.getAuthorFeed" :xrpc-params="{ did: $route.params.did }" />
+      <TimeLine v-if="currentTab == UserProfileTab.Replies" endpoint="com.shinolabs.pinksea.getAuthorReplies" :xrpc-params="{ did: $route.params.did }" :show-as-replies="true" />
     </div>
-    <TimeLine v-if="currentTab == UserProfileTab.Posts" endpoint="com.shinolabs.pinksea.getAuthorFeed" :xrpc-params="{ did: $route.params.did }" />
-    <TimeLine v-if="currentTab == UserProfileTab.Replies" endpoint="com.shinolabs.pinksea.getAuthorReplies" :xrpc-params="{ did: $route.params.did }" :show-as-replies="true" />
-  </PanelLayout>
+    <div v-else>
+      {{ profileError }}
+    </div>
+   </PanelLayout>
 </template>
 
 <style scoped>

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Streaming.JetStream;
 using PinkSea.AtProto.Streaming.JetStream.Events;
+using PinkSea.Database.Models;
 using PinkSea.Helpers;
 using PinkSea.Lexicons.Records;
 
@@ -26,8 +27,47 @@ public class OekakiJetStreamEventHandler(
         {
             "commit" => HandleCommit(@event, @event.Commit!),
             "identity" => HandleIdentity(@event, @event.Identity!),
+            "account" => HandleAccount(@event, @event.Account!),
             _ => Task.CompletedTask
         };
+    }
+
+    /// <summary>
+    /// Handles an account event.
+    /// </summary>
+    /// <param name="event">The event.</param>
+    /// <param name="account">The account event data.</param>
+    private async Task HandleAccount(
+        JetStreamEvent @event,
+        AtProtoAccount account)
+    {
+        if (!await userService.UserExists(@event.Did))
+            return;
+
+        // If the account is marked as active, we don't have the status as the account is implicitly active.
+        if (account.Active)
+        {
+            await userService.UpdateRepoStatus(@event.Did, UserRepoStatus.Active);
+            return;
+        }
+
+        var repoStatus = account.Status switch
+        {
+            "takendown" => UserRepoStatus.TakenDown,
+            "suspended" => UserRepoStatus.Suspended,
+            "deactivated" => UserRepoStatus.Deactivated,
+            "deleted" => UserRepoStatus.Deleted,
+            _ => UserRepoStatus.Unknown
+        };
+
+        // Additionally, if the account is deleted, start deleting all the posts from this user.
+        if (repoStatus == UserRepoStatus.Deleted)
+        {
+            await oekakiService.MarkAllOekakiForUserAsDeleted(@event.Did);
+            return;
+        }
+        
+        await userService.UpdateRepoStatus(@event.Did, repoStatus);
     }
 
     /// <summary>

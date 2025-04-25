@@ -26,6 +26,18 @@ public class UserService(
     }
 
     /// <summary>
+    /// Gets a user by their DID.
+    /// </summary>
+    /// <param name="did">The DID of the user.</param>
+    /// <returns>The user model, or nothing if they don't exist.</returns>
+    public async Task<UserModel?> GetUserByDid(
+        string did)
+    {
+        return await dbContext.Users
+            .FirstOrDefaultAsync(u => u.Did == did);
+    }
+
+    /// <summary>
     /// Creates a new user.
     /// </summary>
     /// <param name="did">The DID of the user.</param>
@@ -48,6 +60,23 @@ public class UserService(
         await dbContext.SaveChangesAsync();
 
         return author;
+    }
+
+    /// <summary>
+    /// Updates the repo status for a user.
+    /// </summary>
+    /// <param name="did">The DID of the user.</param>
+    /// <param name="repoStatus">The status of the repository.</param>
+    public async Task UpdateRepoStatus(
+        string did,
+        UserRepoStatus repoStatus)
+    {
+        logger.LogInformation("Updating the repo status of {Did}. New repo status is {Status}",
+            did, repoStatus);
+
+        await dbContext.Users
+            .Where(u => u.Did == did)
+            .ExecuteUpdateAsync(sp => sp.SetProperty(u => u.RepoStatus, repoStatus));
     }
     
     /// <summary>

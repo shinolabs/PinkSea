@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PinkSea.Database;
@@ -11,9 +12,11 @@ using PinkSea.Database;
 namespace PinkSea.Migrations
 {
     [DbContext(typeof(PinkSeaDbContext))]
-    partial class PinkSeaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250425103946_Add repo status and app view blocked status")]
+    partial class Addrepostatusandappviewblockedstatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -46,6 +46,14 @@ public class PinkSeaDbContext(
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.UseIdentityColumns();
+
+        // Add a query filter to avoid any deleted users from appearing when querying for oekaki.
+        modelBuilder.Entity<OekakiModel>(b =>
+        {
+            b.HasQueryFilter(o => !(
+                o.Author.AppViewBlocked ||
+                o.Author.RepoStatus != UserRepoStatus.Active));
+        });
         
         if (Database.ProviderName != "Microsoft.EntityFrameworkCore.Sqlite")
             return;
