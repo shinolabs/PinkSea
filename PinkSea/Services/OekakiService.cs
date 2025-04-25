@@ -397,7 +397,34 @@ public partial class OekakiService(
 
         if (oekakiObject is null)
             return;
-        
+
+        await MarkOekakiModelAsDeleted(oekakiObject);
+    }
+
+    /// <summary>
+    /// Marks all the oekaki for a given user as deleted.
+    /// </summary>
+    /// <param name="did"></param>
+    public async Task MarkAllOekakiForUserAsDeleted(
+        string did)
+    {
+        var oekakiList = await dbContext.Oekaki
+            .Where(o => o.AuthorDid == did)
+            .ToListAsync();
+
+        foreach (var oekaki in oekakiList)
+        {
+            await MarkOekakiModelAsDeleted(oekaki);
+        }
+    }
+
+    /// <summary>
+    /// Marks an oekaki model as deleted.
+    /// </summary>
+    /// <param name="oekakiObject">The oekaki model.</param>
+    private async Task MarkOekakiModelAsDeleted(
+        OekakiModel oekakiObject)
+    {
         // First, check if we can remove it outright. This will be for objects that either are a reply
         // or have no children of their own.
         var canBeHardRemoved = !string.IsNullOrEmpty(oekakiObject.ParentId);
