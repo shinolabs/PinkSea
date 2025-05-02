@@ -5,6 +5,8 @@ using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Shared.Lexicons.AtProto;
 using PinkSea.AtProto.Xrpc.Client;
 using PinkSea.Database;
+using PinkSea.Database.Models;
+using PinkSea.Extensions;
 using PinkSea.Helpers;
 using PinkSea.Lexicons.Records;
 using PinkSea.Models;
@@ -18,6 +20,7 @@ public class FirstTimeRunAssistantService(
     PinkSeaDbContext dbContext,
     OekakiService oekakiService,
     ConfigurationService configurationService,
+    UserService userService,
     IOptions<AppViewConfig> appViewConfig,
     IXrpcClientFactory xrpcClientFactory,
     IDidResolver didResolver,
@@ -30,9 +33,17 @@ public class FirstTimeRunAssistantService(
     public async Task Run(CancellationToken stoppingToken)
     {
         await Migrate();
-        
-        if (await HasPerformedFirstTimeRun())
+
+        var config = await TryGetConfiguration();
+        if (config is not null)
+        {
+            if (config.SynchronizedAccountStates != true)
+            {
+                await SynchronizeAccountStates();
+            }
+            
             return;
+        }
         
         logger.LogInformation("Hiya! Detected PinkSea running on a fresh installation, hang on while we set things up for you :)");
         BuildConfiguration();
@@ -40,19 +51,19 @@ public class FirstTimeRunAssistantService(
     }
 
     /// <summary>
-    /// Check if we have performed a first time run.
+    /// Tries to get the configuration.
     /// </summary>
-    /// <returns>Whether we have performed a first time run.</returns>
-    private async Task<bool> HasPerformedFirstTimeRun()
+    /// <returns>The configuration if it exists.</returns>
+    private async Task<ConfigurationModel?> TryGetConfiguration()
     {
         try
         {
             var config = await dbContext.Configuration.FirstOrDefaultAsync();
-            return config != null;
+            return config;
         }
         catch (NpgsqlException)
         {
-            return false;
+            return null;
         }
     }
 
@@ -73,6 +84,67 @@ public class FirstTimeRunAssistantService(
     {
         logger.LogInformation(" - Performing migrations...");
         await dbContext.Database.MigrateAsync();
+    }
+
+    /// <summary>
+    /// Synchronizes the account states. Used after migrating from an earlier version of PinkSea.
+    /// </summary>
+    private async Task SynchronizeAccountStates()
+    {
+        logger.LogInformation(" - Migrating users and checking their activity status...");
+        
+        // Start fetching all the accounts.
+        foreach (var user in await userService.GetAllUsers())
+        {
+            var did = await didResolver.GetDocumentForDid(user.Did);
+            if (did is null)
+            {
+                logger.LogWarning("Failed to resolve the DID document for {Did}. Cautiously this user as active.",
+                    user.Did);
+
+                continue;
+            }
+
+            var xrpcClient = await xrpcClientFactory.GetWithoutAuthentication(did.GetPds()!);
+            var response = await xrpcClient.Query<GetRepoStatusResponse>(
+                "com.atproto.sync.getRepoStatus",
+                new GetRepoStatusRequest
+                {
+                    Did = user.Did
+                });
+
+            if (!response.IsSuccess)
+            {
+                if (response.Error?.Error == "RepoNotFound")
+                {
+                    logger.LogWarning("Repo not found for did {Did}. Probably removed.", user.Did);
+                    await userService.UpdateRepoStatus(user.Did, UserRepoStatus.Deleted);
+                }
+                
+                continue;
+            }
+            
+            // First, update this user's handle.
+            var handle = did.GetHandle()!;
+            await userService.UpdateHandle(user.Did, handle);
+
+            var repoStatus = response.Value!;
+            if (repoStatus.Active)
+                continue;
+
+            var userRepoStatus = repoStatus.Status?.ToRepoStatus() ?? UserRepoStatus.Unknown;
+            
+            logger.LogInformation("User with DID {Did} ({Handle}) has now a status of {Status}",
+                user.Did, handle, userRepoStatus);
+
+            await userService.UpdateRepoStatus(user.Did, userRepoStatus);
+        }
+        
+        // Remember that we've already done it.
+        await configurationService.EditConfiguration(cfg =>
+        {
+            cfg.SynchronizedAccountStates = true;
+        });
     }
 
     /// <summary>

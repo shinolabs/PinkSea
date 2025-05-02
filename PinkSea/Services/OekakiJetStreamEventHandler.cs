@@ -4,6 +4,7 @@ using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Streaming.JetStream;
 using PinkSea.AtProto.Streaming.JetStream.Events;
 using PinkSea.Database.Models;
+using PinkSea.Extensions;
 using PinkSea.Helpers;
 using PinkSea.Lexicons.Records;
 
@@ -51,14 +52,7 @@ public class OekakiJetStreamEventHandler(
             return;
         }
 
-        var repoStatus = account.Status switch
-        {
-            "takendown" => UserRepoStatus.TakenDown,
-            "suspended" => UserRepoStatus.Suspended,
-            "deactivated" => UserRepoStatus.Deactivated,
-            "deleted" => UserRepoStatus.Deleted,
-            _ => UserRepoStatus.Unknown
-        };
+        var repoStatus = account.Status?.ToRepoStatus() ?? UserRepoStatus.Unknown;
 
         // Additionally, if the account is deleted, start deleting all the posts from this user.
         if (repoStatus == UserRepoStatus.Deleted)
