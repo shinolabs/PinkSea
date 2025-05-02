@@ -29,6 +29,25 @@ public class ConfigurationService(
     }
 
     /// <summary>
+    /// Edits the config.
+    /// </summary>
+    public async Task EditConfiguration(Action<ConfigurationModel> method)
+    {
+        await using var scope = serviceScopeFactory.CreateAsyncScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<PinkSeaDbContext>();
+
+        var config = GetConfigurationFromDatabase();
+
+        method(config);
+
+        _configuration = config;
+        dbContext.Configuration
+            .Update(config);
+        
+        await dbContext.SaveChangesAsync();
+    }
+
+    /// <summary>
     /// Gets the configuration from a database.
     /// </summary>
     /// <returns></returns>
@@ -64,7 +83,8 @@ public class ConfigurationService(
         {
             ClientPrivateKey = curve.ExportECPrivateKeyPem(),
             ClientPublicKey = curve.ExportSubjectPublicKeyInfoPem(),
-            KeyId = Base64UrlEncoder.Encode(securityKey.ComputeJwkThumbprint())
+            KeyId = Base64UrlEncoder.Encode(securityKey.ComputeJwkThumbprint()),
+            SynchronizedAccountStates = true
         };
     }
 }

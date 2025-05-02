@@ -38,6 +38,16 @@ public class UserService(
     }
 
     /// <summary>
+    /// Gets all of the users.
+    /// </summary>
+    /// <returns>All of the users.</returns>
+    public async Task<List<UserModel>> GetAllUsers()
+    {
+        return await dbContext.Users
+            .ToListAsync();
+    }
+    
+    /// <summary>
     /// Creates a new user.
     /// </summary>
     /// <param name="did">The DID of the user.</param>
