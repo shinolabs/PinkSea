@@ -27,7 +27,13 @@
     "settings": "your settings",
     "user_profile": "{{handle}}'s profile",
     "user_post": "{{handle}}'s post",
-    "tagged": "posts tagged #{{tag}}"
+    "tagged": "posts tagged #{{tag}}",
+    "search": "searching for {{value}}"
+  },
+  "search": {
+    "posts_tab": "Posts",
+    "tags_tab": "Tags",
+    "profiles_tab": "Profiles"
   },
   "timeline": {
     "by_before_handle": "By ",

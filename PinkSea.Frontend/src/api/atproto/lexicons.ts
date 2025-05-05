@@ -1,4 +1,7 @@
 import type { Oekaki } from '@/models/oekaki'
+import type { SearchType } from '@/models/search-type'
+import type { Author } from '@/models/author'
+import type { TagSearchResult } from '@/models/tag-search-result'
 
 declare module '@atcute/client/lexicons' {
   type EmptyParams = object
@@ -120,6 +123,22 @@ declare module '@atcute/client/lexicons' {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace ComShinolabsPinkseaGetSearchResults {
+    interface Params {
+      query: string,
+      type: SearchType,
+      since?: Date | null,
+      limit?: number | null
+    }
+
+    interface Output {
+      oekaki?: Oekaki[] | null,
+      tags?: TagSearchResult[] | null,
+      profiles?: Author[] | null
+    }
+  }
+
   interface Queries {
     'com.shinolabs.pinksea.getRecent': {
       params: GenericTimelineQueryRequest,
@@ -156,6 +175,10 @@ declare module '@atcute/client/lexicons' {
     'com.shinolabs.pinksea.unspecced.getProfile': {
       params: ComShinolabsPinkseaUnspeccedGetProfile.Params,
       output: ComShinolabsPinkseaUnspeccedGetProfile.Output
+    },
+    'com.shinolabs.pinksea.getSearchResults': {
+      params: ComShinolabsPinkseaGetSearchResults.Params,
+      output: ComShinolabsPinkseaGetSearchResults.Output
     }
   }
 

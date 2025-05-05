@@ -10,6 +10,7 @@ import TagView from '@/views/TagView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import i18next from 'i18next'
 import { withTegakiViewBackProtection } from '@/api/tegaki/tegaki-view-helper'
+import SearchView from '@/views/SearchView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -78,6 +79,16 @@ const router = createRouter({
       meta: {
         resolveBreadcrumb: async () => {
           return {  name: 'breadcrumb.settings' };
+        }
+      }
+    },
+    {
+      path: '/search/:value',
+      name: 'search',
+      component: SearchView,
+      meta: {
+        resolveBreadcrumb: async (route: RouteParamsGeneric) => {
+          return { name: "breadcrumb.search", params: { value: route.value } };
         }
       }
     }
