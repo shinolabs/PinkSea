@@ -1,11 +1,15 @@
 <script setup lang="ts">
+  const props = defineProps<{
+    image: string,
+    i18nKey: string
+  }>()
 </script>
 
 <template>
   <div class="oekaki-card">
-    <img src="/assets/img/missing.png" />
+    <img :src="props.image" />
     <div class="oekaki-meta">
-      {{ $t("post.this_post_no_longer_exists") }}
+      {{ $t(props.i18nKey) }}
     </div>
   </div>
 </template>

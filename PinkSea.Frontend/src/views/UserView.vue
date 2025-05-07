@@ -7,6 +7,7 @@ import { xrpc } from '@/api/atproto/client'
 import { useRoute } from 'vue-router'
 import { UserProfileTab } from '@/models/user-profile-tab'
 import { XRPCError } from '@atcute/client'
+import ErrorCard from '@/components/ErrorCard.vue'
 
 const tabs = [
   {
@@ -73,7 +74,7 @@ const domainUrl = computed(() => {
       <TimeLine v-if="currentTab == UserProfileTab.Replies" endpoint="com.shinolabs.pinksea.getAuthorReplies" :xrpc-params="{ did: $route.params.did }" :show-as-replies="true" />
     </div>
     <div v-else>
-      {{ profileError }}
+      <ErrorCard image="/assets/img/missing.png" :i18n-key="profileError" />
     </div>
    </PanelLayout>
 </template>

@@ -9,8 +9,9 @@ import PostViewOekakiParentCard from '@/components/oekaki/PostViewOekakiParentCa
 import PostViewOekakiChildCard from '@/components/oekaki/PostViewOekakiChildCard.vue'
 import RespondBox from '@/components/RespondBox.vue'
 import Loader from '@/components/Loader.vue'
-import PostViewOekakiTombstoneCard from '@/components/oekaki/PostViewOekakiTombstoneCard.vue'
+import PostViewOekakiTombstoneCard from '@/components/ErrorCard.vue'
 import type { OekakiTombstone } from '@/models/oekaki-tombstone'
+import ErrorCard from '@/components/ErrorCard.vue'
 
 const route = useRoute();
 
@@ -47,7 +48,7 @@ onBeforeMount(async () => {
   <PanelLayout>
     <Loader v-if="parent === null" />
     <div v-else>
-      <PostViewOekakiTombstoneCard v-if="parentIsTombstone" />
+      <ErrorCard v-if="parentIsTombstone" image="/assets/img/missing.png" i18n-key="post.this_post_no_longer_exists" />
       <PostViewOekakiParentCard v-else :oekaki="parent as Oekaki" />
       <br />
       <PostViewOekakiChildCard v-for="child of children" v-bind:key="child.at" :oekaki="child" />
