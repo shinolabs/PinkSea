@@ -28,6 +28,13 @@ app.MapGet(
     return Results.Text(file, contentType: "text/html");
 });
 
+app.MapGet(
+    "/xrpc/_health",
+    () => new
+    {
+        version = "PinkSea.Gateway"
+    });
+
 app.MapFallback(async ([FromServices] MetaGeneratorService metaGenerator) =>
 {
     var file = await File.ReadAllTextAsync($"./wwwroot/index.html");
