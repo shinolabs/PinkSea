@@ -43,6 +43,13 @@ public static class ServiceCollectionExtensions
             "/xrpc/{nsid}",
             HandleXrpc);
 
+        routeBuilder.MapGet(
+            "/xrpc/_health",
+            () => new
+            {
+                version = "PinkSea"
+            });
+
         return routeBuilder;
     }
 
