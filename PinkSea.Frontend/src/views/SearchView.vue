@@ -6,7 +6,7 @@ import TimeLine from '@/components/TimeLine.vue'
 import type { TagSearchResult } from '@/models/tag-search-result'
 import type { Author } from '@/models/author'
 import { xrpc } from '@/api/atproto/client'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Intersector from '@/components/Intersector.vue'
 import SearchTag from '@/components/search/SearchTag.vue'
 import SearchProfileCard from '@/components/search/SearchProfileCard.vue'
@@ -32,6 +32,7 @@ const tags = ref<TagSearchResult[]>([]);
 const profiles = ref<Author[]>([]);
 
 const route = useRoute();
+const router = useRouter();
 
 const applyNew = (resp: {
   tags?: TagSearchResult[] | null
@@ -43,6 +44,17 @@ const applyNew = (resp: {
     profiles.value = profiles.value.concat(resp.profiles!);
   }
 }
+
+const open = async (id: string) => {
+  let url = ""
+  if (currentTab.value == SearchType.Tags) {
+    url = `/tag/${id}`;
+  } else if (currentTab.value == SearchType.Profiles) {
+    url = `/${id}`;
+  }
+
+  await router.push(url);
+};
 
 const loadMore = async () => {
   const opts = { params: { query: route.params.value, type: currentTab.value } };
@@ -64,13 +76,13 @@ const loadMore = async () => {
     </div>
     <div v-else-if="currentTab == SearchType.Tags" class="search-result-list">
       <div v-for="tag of tags" :key="tag.tag">
-        <SearchTag :tag="tag" />
+        <SearchTag :tag="tag" v-on:click.prevent="open(tag.tag)" />
       </div>
       <Intersector @intersected="loadMore" />
     </div>
     <div v-else-if="currentTab == SearchType.Profiles" class="search-result-list">
       <div v-for="profile of profiles" :key="profile.did">
-        <SearchProfileCard :profile="profile" />
+        <SearchProfileCard :profile="profile" v-on:click.prevent="open(profile.did)" />
       </div>
       <Intersector @intersected="loadMore" />
     </div>
@@ -110,5 +122,9 @@ const loadMore = async () => {
 
 .search-result-list {
   padding: 10px;
+}
+
+.search-result-list > div {
+  cursor: pointer;
 }
 </style>

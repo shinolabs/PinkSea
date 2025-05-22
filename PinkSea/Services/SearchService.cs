@@ -22,6 +22,7 @@ public class SearchService(
             .Where(o => !o.Tombstone)
             .Where(o => o.AltText!.ToLower().Contains(query.ToLower()) ||
                         o.TagOekakiRelations!.Any(to => to.TagId.ToLower().Contains(query.ToLower()))) // TODO: Author
+            .Distinct()
             .OrderByDescending(o => o.IndexedAt)
             .Where(o => o.IndexedAt < since)
             .Take(limit)
@@ -36,6 +37,7 @@ public class SearchService(
             .Where(t => t.Name.ToLower().Contains(query.ToLower()))
             .Join(dbContext.TagOekakiRelations, t => t.Name, to => to.TagId, (t, to) => new { t, to })
             .Join(dbContext.Oekaki, c => c.to.OekakiId, o => o.Key, (c, o) => new { c.t, c.to, o })
+            .Distinct()
             .GroupBy(c => c.t.Name)
             .Take(limit)
             .Select(c => new

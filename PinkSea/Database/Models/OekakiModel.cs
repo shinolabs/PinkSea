@@ -78,7 +78,7 @@ public class OekakiModel
     /// The Bluesky crosspost record TID.
     /// </summary>
     public string? BlueskyCrosspostRecordTid { get; set; }
-
+    
     /// <summary>
     /// The tag-oekaki relations.
     /// </summary>
