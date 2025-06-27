@@ -16,12 +16,14 @@ public class SearchService(
 {
     public async Task<List<OekakiModel>> SearchPosts(string query, int limit, DateTimeOffset since)
     {
+        var lowerQuery = query.ToLower();
         var list = await dbContext.Oekaki
             .Include(o => o.TagOekakiRelations)
             .Include(o => o.Author)
-            .Where(o => !o.Tombstone)
-            .Where(o => o.AltText!.ToLower().Contains(query.ToLower()) ||
-                        o.TagOekakiRelations!.Any(to => to.TagId.ToLower().Contains(query.ToLower()))) // TODO: Author
+            .Where(o => !o.Tombstone && o.ParentId == null)
+            .Where(o => o.AltText!.ToLower().Contains(lowerQuery) ||
+                        o.TagOekakiRelations!.Any(to => to.TagId.ToLower().Contains(lowerQuery)) ||
+                        o.Author.Handle!.ToLower().Contains(lowerQuery))
             .Distinct()
             .OrderByDescending(o => o.IndexedAt)
             .Where(o => o.IndexedAt < since)
@@ -37,14 +39,14 @@ public class SearchService(
             .Where(t => t.Name.ToLower().Contains(query.ToLower()))
             .Join(dbContext.TagOekakiRelations, t => t.Name, to => to.TagId, (t, to) => new { t, to })
             .Join(dbContext.Oekaki, c => c.to.OekakiId, o => o.Key, (c, o) => new { c.t, c.to, o })
-            .Distinct()
+            .Where(c => !c.o.Tombstone && c.o.ParentId == null)
             .GroupBy(c => c.t.Name)
             .Take(limit)
             .Select(c => new
             {
                 Tag = c.Key,
                 Oekaki = c.First().o,
-                Count = c.Count()
+                Count = c.Select(p => p.o.Key).Distinct().Count()
             })
             .ToListAsync();
         

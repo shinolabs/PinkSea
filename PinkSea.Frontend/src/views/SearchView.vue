@@ -64,25 +64,43 @@ const loadMore = async () => {
 
   applyNew(data);
 };
+
+const setTab = (tab: SearchType) => {
+  currentTab.value = tab;
+
+  if (currentTab.value == SearchType.Tags) {
+    tags.value = [];
+  } else if (currentTab.value == SearchType.Profiles) {
+    profiles.value = [];
+  }
+};
 </script>
 
 <template>
   <PanelLayout>
     <div id="tabs">
-      <a v-for="tab in tabs" :class="tab.id == currentTab ? 'selected' : ''" v-on:click.prevent="currentTab = tab.id" v-bind:key="tab.id">{{ $t(tab.i18n) }}</a>
+      <a v-for="tab in tabs" :class="tab.id == currentTab ? 'selected' : ''" v-on:click.prevent="setTab(tab.id)"
+        v-bind:key="tab.id">{{ $t(tab.i18n) }}</a>
     </div>
     <div v-if="currentTab == SearchType.Posts">
-      <TimeLine endpoint="com.shinolabs.pinksea.getSearchResults" :xrpc-params="{ query: $route.params.value, type: SearchType.Posts }" />
+      <TimeLine endpoint="com.shinolabs.pinksea.getSearchResults"
+        :xrpc-params="{ query: $route.params.value, type: SearchType.Posts }" />
     </div>
     <div v-else-if="currentTab == SearchType.Tags" class="search-result-list">
-      <div v-for="tag of tags" :key="tag.tag">
+      <div v-if="tags.length > 0" v-for="tag of tags" :key="tag.tag">
         <SearchTag :tag="tag" v-on:click.prevent="open(tag.tag)" />
+      </div>
+      <div v-else class="search-centered">
+        {{ $t("timeline.nothing_here") }}
       </div>
       <Intersector @intersected="loadMore" />
     </div>
     <div v-else-if="currentTab == SearchType.Profiles" class="search-result-list">
-      <div v-for="profile of profiles" :key="profile.did">
+      <div v-if="profiles.length > 0" v-for="profile of profiles" :key="profile.did">
         <SearchProfileCard :profile="profile" v-on:click.prevent="open(profile.did)" />
+      </div>
+      <div v-else class="search-centered">
+        {{ $t("timeline.nothing_here") }}
       </div>
       <Intersector @intersected="loadMore" />
     </div>
@@ -112,7 +130,8 @@ const loadMore = async () => {
 }
 
 #tabs a.selected {
-  background: #ffb6c1; color: #263b48;
+  background: #ffb6c1;
+  color: #263b48;
   font-weight: bold;
 }
 
@@ -124,7 +143,11 @@ const loadMore = async () => {
   padding: 10px;
 }
 
-.search-result-list > div {
+.search-result-list>div {
   cursor: pointer;
+}
+
+.search-centered {
+  text-align: center;
 }
 </style>
