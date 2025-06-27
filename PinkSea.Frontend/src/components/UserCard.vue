@@ -1,0 +1,98 @@
+<script setup lang="ts">
+import type Profile from '@/models/profile';
+import { computed } from 'vue';
+
+const props = defineProps<{
+    profile: Profile
+}>();
+
+const description = computed(() => {
+    return props.profile.description.length < 1
+        ? "This user has no description."
+        : props.profile.description;
+})
+
+</script>
+
+<template>
+    <div class="user-card">
+        <div class="user-card-avatar">
+            <img :src="props.profile.avatar" />
+        </div>
+        <div class="user-card-data-container">
+            <div class="user-card-nickname-container">
+                <h2>{{ props.profile.nick }}</h2>
+                <h3>@{{ props.profile.handle }}</h3>
+            </div>
+            <div class="user-card-description">
+                {{ description }}
+            </div>
+            <div>
+                <a v-for="link of props.profile.links" class="link" :href="link.url" target="_blank">{{ link.name }}</a>
+            </div>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+.user-card {
+    display: flex;
+    text-align: left;
+    margin: 6px 0px -12px 20px;
+    box-sizing: border-box;
+    position: relative;
+    padding: 10px;
+    border-left: 6px double #FFB6C1;
+}
+
+.user-card>div {
+    margin-right: 10px;
+}
+
+.user-card-avatar>img {
+    max-width: 100px;
+}
+
+.user-card-nickname-container {
+    line-height: 12pt;
+    margin-bottom: 10pt;
+}
+
+.user-card-data-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-card-description {
+    margin-bottom: 10pt;
+    word-wrap: break-word;
+    word-break: break-all;
+    flex: 1;
+}
+
+.user-card a {
+    color: #0085FF;
+    text-decoration: 1px dotted underline;
+    margin-right: 10px;
+}
+
+.user-card a:hover {
+    color: #FFFFFF;
+    background: #0085FF;
+    text-decoration: none;
+}
+
+.user-card h2 {
+    margin: 0px;
+    font-size: 16pt;
+    font-weight: bold;
+    padding-bottom: 5px;
+}
+
+.user-card h3 {
+    margin: 0px;
+    font-size: 12pt;
+    font-weight: normal;
+    padding-bottom: 5px;
+}
+</style>
