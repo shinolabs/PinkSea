@@ -42,7 +42,8 @@ onBeforeMount(async () => {
         params: {},
         headers: {
           "Authorization": `Bearer ${persistedStore.token}`
-        }});
+        }
+      });
 
       identityStore.did = data.did;
       identityStore.handle = data.handle;
@@ -71,7 +72,8 @@ const logout = async () => {
       data: {},
       headers: {
         "Authorization": `Bearer ${persistedStore.token}`
-      }});
+      }
+    });
   } finally {
     persistedStore.token = null;
   }
@@ -107,8 +109,10 @@ const getCreateSomethingButtonName = computed(() => {
       <div class="aside-box">
         <b>{{ $t("menu.search") }}</b>
         <br />
-        <input type="text" :placeholder="i18next.t('menu.search_placeholder')" v-on:keyup.enter.prevent="navigateTo(`/tag/${queryToTag(searchbox.value)}`)" ref="search-box">
-        <button v-on:click.prevent="navigateTo(`/search/${encodeURI(searchbox.value)}`)">{{ $t("menu.search_go") }}</button>
+        <input type="text" :placeholder="i18next.t('menu.search_placeholder')"
+          v-on:keyup.enter.prevent="navigateTo(`/search/${encodeURI(searchbox.value)}`)" ref="search-box">
+        <button v-on:click.prevent="navigateTo(`/search/${encodeURI(searchbox.value)}`)">{{ $t("menu.search_go")
+        }}</button>
       </div>
       <br />
       <div class="aside-box">
@@ -118,13 +122,15 @@ const getCreateSomethingButtonName = computed(() => {
         </div>
         <div class="prompt" v-else>{{ $t("menu.greeting", { name: identityStore.handle }) }}</div>
         <ul class="aside-menu">
-          <li v-on:click.prevent="navigateTo(selfProfileUrl)" v-if="persistedStore.token !== null">{{ $t("menu.my_oekaki") }}</li>
+          <li v-on:click.prevent="navigateTo(selfProfileUrl)" v-if="persistedStore.token !== null">{{
+            $t("menu.my_oekaki") }}</li>
           <li v-on:click.prevent="navigateTo('/')">{{ $t("menu.recent") }}</li>
           <li v-on:click.prevent="navigateTo('/settings')">{{ $t("menu.settings") }}</li>
           <li v-on:click.prevent="logout" v-if="persistedStore.token !== null">{{ $t("menu.logout") }}</li>
         </ul>
         <div>
-          <button v-on:click.prevent="openPainter" v-if="persistedStore.token !== null">{{ getCreateSomethingButtonName }}</button>
+          <button v-on:click.prevent="openPainter" v-if="persistedStore.token !== null">{{ getCreateSomethingButtonName
+          }}</button>
         </div>
       </div>
       <div class="aside-box bottom">
@@ -212,12 +218,14 @@ h1 {
   padding-bottom: 6px;
 }
 
-h1, .title h2 {
+h1,
+.title h2 {
   padding-right: 4px;
   padding-left: 4px;
 }
 
-.title, .aside-box {
+.title,
+.aside-box {
   box-shadow: 0px 1px #FFB6C1, 0px -1px #FFB6C1;
 }
 
