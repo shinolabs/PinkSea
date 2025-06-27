@@ -2,6 +2,7 @@ import type { Oekaki } from '@/models/oekaki'
 import type { SearchType } from '@/models/search-type'
 import type { Author } from '@/models/author'
 import type { TagSearchResult } from '@/models/tag-search-result'
+import type Profile from '@/models/profile'
 
 declare module '@atcute/client/lexicons' {
   type EmptyParams = object
@@ -109,18 +110,6 @@ declare module '@atcute/client/lexicons' {
     interface Params {
       did: string
     }
-
-    interface Output {
-      did: string,
-      handle: string,
-      nick: string,
-      description: string,
-      links: [{
-        name: string,
-        url: string
-      }],
-      avatar: string
-    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -174,7 +163,7 @@ declare module '@atcute/client/lexicons' {
     },
     'com.shinolabs.pinksea.unspecced.getProfile': {
       params: ComShinolabsPinkseaUnspeccedGetProfile.Params,
-      output: ComShinolabsPinkseaUnspeccedGetProfile.Output
+      output: Profile
     },
     'com.shinolabs.pinksea.getSearchResults': {
       params: ComShinolabsPinkseaGetSearchResults.Params,
