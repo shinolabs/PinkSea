@@ -1,56 +1,136 @@
 {
-  "sidebar": {
-    "title": "PinkSea",
-    "tag": "oekaki BBS",
-    "shinolabs": "Una produzione Shinonome Laboratories"
-  },
-  "menu": {
-    "greeting": "Salve @{{name}}!",
-    "invitation": "Accedi per iniziare a creare!",
-    "input_placeholder": "@il-tuo-handle.bsky.social",
-    "atp_login": "@ Accedi",
-    "my_oekaki": "Il Mio Oekaki",
-    "recent": "Recente",
-    "settings": "Impostazioni",
-    "logout": "Disconnetti",
-    "create_something": "Crea Qualcosa"
-  },
-  "breadcrumb": {
-    "recent": "recente",
-    "painter": "bozzetto",
-    "settings": "le tue impostazioni",
-    "user_profile": "profilo di {{handle}}",
-    "user_post": "pubblicazione di {{handle}}",
-    "tagged": "pubblicazioni taggate #{{tag}}"
-  },
-  "timeline": {
-    "by_before_handle": "Fatto Da ",
-    "by_after_handle": ""
-  },
-  "post": {
-    "response_from_before_handle": "Risposta Fatta Da ",
-    "response_from_after_handle": "",
-    "response_from_at_date": " alle "
-  },
-  "response_box": {
-    "login_to_respond": "Accedi per rispondere!",
-    "click_to_respond": "Clicca per aprire il pannello da disegno",
-    "open_painter": "Apri Bozzetto",
-    "reply": "Rispondi!"
-  },
-  "settings": {
-    "category_general": "generale",
-    "general_language": "Lingua",
-
-    "category_sensitive": "materiale sensibile",
-    "sensitive_blur_nsfw": "Sfoca pubblicazioni NSFW",
-    "sensitive_hide_nsfw": "Non mostrare pubblicazioni NSFW"
-  },
-  "painter": {
-    "do_you_want_to_restore": "L'ultimo caricamento ha avuto un' errore e la tua immagine è stata salvata. Vuoi ripristinarlo?",
-    "could_not_send_post": "C'è stato un problema con il caricamento della tua pubblicazione. Riprova dopo, perfavore. La tua pubblicazione è stata salvata nel tuo browser."
-  },
-  "profile": {
-    "bluesky_profile": "Profilo Bluesky"
-  }
+    "sidebar": {
+        "title": "PinkSea",
+        "tag": "oekaki BBS",
+        "shinolabs": "un progetto shinonome laboratories"
+    },
+    "menu": {
+        "greeting": "Ciao @{{name}}!",
+        "invitation": "Accedi per iniziare a creare!",
+        "input_placeholder": "@alice.bsky.social",
+        "atp_login": "@ Accedi",
+        "my_oekaki": "Il mio oekaki",
+        "recent": "Recenti",
+        "settings": "Impostazioni",
+        "logout": "Esci",
+        "create_something": "Crea qualcosa",
+        "search_placeholder": "Cerca un tag",
+        "search": "Cerca",
+        "search_go": "Vai",
+        "password": "Password (Opzionale)",
+        "oauth2_info": "Se lasci il campo password vuoto, PinkSea userà OAuth2 per connettersi al tuo PDS. In genere è più sicuro di accedere tramite password."
+    },
+    "breadcrumb": {
+        "recent": "recenti",
+        "painter": "bozzetto",
+        "settings": "le tue impostazioni",
+        "user_profile": "profilo di {{handle}}",
+        "user_post": "post di {{handle}}",
+        "tagged": "post taggati #{{tag}}"
+    },
+    "timeline": {
+        "by_before_handle": "Di ",
+        "by_after_handle": "",
+        "nothing_here": "Non c'è nulla qui per ora... (╥﹏╥)"
+    },
+    "post": {
+        "response_from_before_handle": "Risposta da ",
+        "response_from_after_handle": "",
+        "response_from_at_date": " il ",
+        "this_post_no_longer_exists": "Questo post non esiste più."
+    },
+    "response_box": {
+        "login_to_respond": "Accedi per rispondere!",
+        "click_to_respond": "Clicca per aprire il pannello di disegno",
+        "open_painter": "Apri bozzetto",
+        "reply": "Rispondi!",
+        "cancel": "Annulla"
+    },
+    "settings": {
+        "category_general": "generale",
+        "general_language": "Lingua",
+        "category_sensitive": "materiale sensibile",
+        "sensitive_blur_nsfw": "Sfoca post NSFW",
+        "sensitive_hide_nsfw": "Non mostrare post NSFW"
+    },
+    "painter": {
+        "do_you_want_to_restore": "L'ultimo caricamento è risultato in un errore e la tua immagine è stata salvata. Vuoi ripristinarla?",
+        "could_not_send_post": "C'è stato un problema con il caricamento del tuo post. Riprova dopo, per favore. Il tuo post è stato salvato nel tuo browser.",
+        "hint_description": "Allegare una breve descrizione aiuta a dare contesto al tuo disegno. Opzionale.",
+        "hint_tags": "Dai fino a cinque tag al tuo post per aiutare gli altri a scoprirlo! Per esempio: personaggi (koiwai_yotsuba), copyright (yotsubato! / oc) o informazioni generali (ritratto). Opzionale.",
+        "add_a_description": "Aggiungi una descrizione!",
+        "tag": "Tag",
+        "crosspost_to_bluesky": "Cross-posta su Bluesky",
+        "upload": "Carica!",
+        "upload_description": "Descrizione",
+        "upload_tags": "Tag",
+        "upload_social": "Sociale",
+        "upload_confirm": "Conferma",
+        "hint_nsfw": "Per piacere controlla se il tuo post contiene contenuti da adulti come nudo o temi altamente suggestivi.",
+        "hint_xpost": "Se spuntato, creeremo automaticamente un post su Bluesky per te con allegati l'immagine e un link a PinkSea.",
+        "hint_confirm": "Quando sei pronto, clicca sul bottone sopra per pubblicare la tua immagine!"
+    },
+    "profile": {
+        "bluesky_profile": "Profilo Bluesky",
+        "domain": "Sito web",
+        "posts_tab": "Post",
+        "replies_tab": "Risposte"
+    },
+    "tegakijs": {
+        "confirmCancel": "Sei sicuro? Il tuo lavoro andrà perso.",
+        "paletteSlotReplace": "Click destro per sostituire con il colore attuale",
+        "badDimensions": "Dimensioni non valide.",
+        "promptWidth": "Larghezza della tela in pixel",
+        "promptHeight": "Altezza della tela in pixel",
+        "confirmDelLayers": "Cancella layer selezionati?",
+        "confirmMergeLayers": "Unisci layer selezionati?",
+        "tooManyLayers": "Limite di layer raggiunto.",
+        "noActiveLayer": "Nessun layer attivo.",
+        "hiddenActiveLayer": "Il layer attivo non è visibile.",
+        "color": "Colore",
+        "size": "Dimensione",
+        "alpha": "Opacità",
+        "flow": "Flusso",
+        "zoom": "Zoom",
+        "layers": "Layer",
+        "switchPalette": "Cambia tavolozza",
+        "layer": "Layer",
+        "addLayer": "Aggiungi layer",
+        "gapless": "Ininterrotto",
+        "mergeLayers": "Unisci layer",
+        "moveLayerUp": "Sposta sopra",
+        "moveLayerDown": "Sposta sotto",
+        "newCanvas": "Nuovo",
+        "open": "Apri",
+        "save": "Salva",
+        "saveAs": "Salva Come",
+        "export": "Esporta",
+        "undo": "Annulla",
+        "redo": "Ripeti",
+        "close": "Chiudi",
+        "finish": "Termina",
+        "pressure": "Pressione",
+        "preserveAlpha": "Mantieni Alfa",
+        "pen": "Penna",
+        "pencil": "Matita",
+        "airbrush": "Aerografo",
+        "pipette": "Pipetta",
+        "blur": "Sfoca",
+        "eraser": "Gomma",
+        "tone": "Tonalità",
+        "play": "Riproduci",
+        "pause": "Pausa",
+        "rewind": "Riavvolgi",
+        "slower": "Più lento",
+        "faster": "Più veloce",
+        "errorLoadReplay": "Non è stato possibile caricare il replay: ",
+        "loadingReplay": "Caricamento replay…",
+        "confirmChangeCanvas": "Sei sicuro? Cambiare la tela rimuoverà tutti i layer e lo storico e disattiverà la registrazione del replay.",
+        "delLayers": "Elimina layer",
+        "recordingEnabled": "Registrazione replay",
+        "toggleVisibility": "Inverti visibilità",
+        "errorLoadImage": "Non è stato possibile caricare l'immagine.",
+        "bucket": "Secchiello",
+        "tip": "Punta"
+    }
 }
