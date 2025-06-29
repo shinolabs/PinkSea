@@ -4,12 +4,13 @@ import TimeLine from '@/components/TimeLine.vue'
 import PanelLayout from '@/layouts/PanelLayout.vue'
 import { computed, ref, watch } from 'vue'
 import { xrpc } from '@/api/atproto/client'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { UserProfileTab } from '@/models/user-profile-tab'
 import { XRPCError } from '@atcute/client'
 import ErrorCard from '@/components/ErrorCard.vue'
 import type Profile from '@/models/profile'
 import UserCard from '@/components/UserCard.vue'
+import { useIdentityStore } from '@/state/store'
 
 const tabs = [
   {
@@ -22,6 +23,10 @@ const tabs = [
   }
 ];
 
+const ourProfile = computed(() => {
+  return profile !== null && identityStore.did == profile.value?.did;
+});
+
 const profile = ref<Profile | null>(null);
 const route = useRoute();
 
@@ -29,6 +34,8 @@ const exists = ref<boolean | null>(null);
 const profileError = ref<string>("");
 
 const currentTab = ref<UserProfileTab>(UserProfileTab.Posts);
+
+const identityStore = useIdentityStore();
 
 watch(() => route.params.did, async () => {
   try {
@@ -56,7 +63,7 @@ watch(() => route.params.did, async () => {
       loading...
     </div>
     <div v-else-if="exists == true">
-      <UserCard :profile="profile" />
+      <UserCard :profile="profile!" :show-edit-button="ourProfile" />
       <div id="profile-tabs">
         <a v-for="tab in tabs" :class="tab.id == currentTab ? 'selected' : ''" v-on:click.prevent="currentTab = tab.id"
           v-bind:key="tab.id">{{ $t(tab.i18n) }}</a>

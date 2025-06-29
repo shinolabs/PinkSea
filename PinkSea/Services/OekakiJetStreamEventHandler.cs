@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
+using Org.BouncyCastle.Asn1.X509;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Streaming.JetStream;
 using PinkSea.AtProto.Streaming.JetStream.Events;
@@ -69,22 +70,50 @@ public class OekakiJetStreamEventHandler(
     /// </summary>
     /// <param name="event">The event.</param>
     /// <param name="commit">The commit.</param>
-    private async Task HandleCommit(
+    private Task HandleCommit(
         JetStreamEvent @event,
         AtProtoCommit commit)
     {
         if (commit.Operation == "create")
         {
-            await ProcessCreatedOekaki(
-                commit,
-                @event.Did);
+            return commit.Collection switch
+            {
+                "com.shinolabs.pinksea.oekaki" => ProcessCreatedOekaki(
+                    commit,
+                    @event.Did),
+                "com.shinolabs.pinksea.profile" => ProcessCreatedProfile(
+                    commit,
+                    @event.Did),
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
-        else if (commit.Operation == "delete")
+
+        if (commit.Operation == "update")
         {
-            await ProcessDeletedOekaki(
-                commit,
-                @event.Did);
+            return commit.Collection switch
+            {
+                "com.shinolabs.pinksea.profile" => ProcessCreatedProfile(
+                    commit,
+                    @event.Did),
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
+        
+        if (commit.Operation == "delete")
+        {
+            return commit.Collection switch
+            {
+                "com.shinolabs.pinksea.oekaki" => ProcessDeletedOekaki(
+                    commit,
+                    @event.Did),
+                "com.shinolabs.pinksea.profile" => ProcessDeletedProfile(
+                    commit,
+                    @event.Did),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -101,6 +130,31 @@ public class OekakiJetStreamEventHandler(
 
         if (!string.IsNullOrEmpty(identity.Handle))
             await userService.UpdateHandle(@event.Did, identity.Handle);
+    }
+
+    private async Task ProcessCreatedProfile(
+        AtProtoCommit commit,
+        string authorDid)
+    {
+        if (!await userService.UserExists(authorDid))
+            await userService.Create(authorDid);
+        
+        var profileRecord = commit.Record!
+            .Value
+            .Deserialize<Profile>()!;
+
+        await userService.UpdateProfile(authorDid, profileRecord);
+    }
+    
+    private async Task ProcessDeletedProfile(
+        AtProtoCommit commit,
+        string authorDid)
+    {
+        if (!await userService.UserExists(authorDid))
+            return;
+        
+        // We just reset all the data with a blank profile.
+        await userService.UpdateProfile(authorDid, new Profile());
     }
 
     /// <summary>

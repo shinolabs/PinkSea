@@ -3,9 +3,9 @@ export default interface Profile {
     handle: string,
     nick: string,
     description: string,
-    links: [{
+    links: {
         name: string,
         url: string
-    }],
+    }[],
     avatar: string
 }

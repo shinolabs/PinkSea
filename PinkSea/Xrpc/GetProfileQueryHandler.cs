@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Server.Xrpc;
+using PinkSea.AtProto.Shared.Lexicons.Types;
 using PinkSea.AtProto.Shared.Xrpc;
 using PinkSea.Database.Models;
 using PinkSea.Lexicons.Objects;
@@ -50,20 +51,27 @@ public class GetProfileQueryHandler(
             ?? userModel.Handle
             ?? "invalid.handle";
 
-        // TODO: This is only a mock for iOSSea before we implement profile editing for realsies.
-        //       Don't mind me being here!
+        var avatarUrl = $"{opts.Value.AppUrl}/blank_avatar.png";
+        if (userModel.Avatar != null)
+        {
+            avatarUrl = string.Format(
+                opts.Value.ImageProxyTemplate,
+                userModel.Did,
+                userModel.Avatar.BlobCid);
+        }
+
+        var links = userModel.Links?
+                        .Select(l => new Link { Url = l.Url, Name = l.Name })
+                        .ToList() ?? [];
+
         var profile = new GetProfileQueryResponse
         {
             Did = request.Did,
             Handle = handle,
-            Nickname = handle,
-            Description = "",
-            Links =
-            [
-                new Link { Name = "Bluesky", Url = $"https://bsky.app/profile/{request.Did}" },
-                new Link { Name = "Website", Url = $"https://{handle}" }
-            ],
-            Avatar = $"{opts.Value.AppUrl}/blank_avatar.png"
+            Nickname = userModel.Nickname,
+            Description = userModel.Description,
+            Links = links,
+            Avatar = avatarUrl
         };
         
         return XrpcErrorOr<GetProfileQueryResponse>.Ok(profile);

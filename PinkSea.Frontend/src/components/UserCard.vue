@@ -1,16 +1,20 @@
 <script setup lang="ts">
 import type Profile from '@/models/profile';
 import { computed } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const props = defineProps<{
-    profile: Profile
+    profile: Profile,
+    showEditButton: boolean
 }>();
 
 const description = computed(() => {
     return props.profile.description.length < 1
         ? "This user has no description."
         : props.profile.description;
-})
+});
 
 </script>
 
@@ -30,6 +34,9 @@ const description = computed(() => {
             <div>
                 <a v-for="link of props.profile.links" class="link" :href="link.url" target="_blank">{{ link.name }}</a>
             </div>
+        </div>
+        <div class="button-container" v-if="props.showEditButton">
+            <button v-on:click.prevent="router.push('/settings/profile')">Edit profile</button>
         </div>
     </div>
 </template>
@@ -61,6 +68,7 @@ const description = computed(() => {
 .user-card-data-container {
     display: flex;
     flex-direction: column;
+    flex: 1;
 }
 
 .user-card-description {
