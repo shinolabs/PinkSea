@@ -1,7 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using PinkSea.AtProto.Helpers;
 using PinkSea.AtProto.Resolvers.Did;
+using PinkSea.AtProto.Resolvers.Domain;
+using PinkSea.AtProto.Shared.Lexicons.Types;
 using PinkSea.Database;
 using PinkSea.Database.Models;
+using PinkSea.Lexicons.Records;
 
 namespace PinkSea.Services;
 
@@ -11,6 +15,7 @@ namespace PinkSea.Services;
 public class UserService(
     PinkSeaDbContext dbContext,
     IDidResolver didResolver,
+    IDomainDidResolver domainDidResolver,
     ILogger<UserService> logger)
 {
     /// <summary>
@@ -34,6 +39,7 @@ public class UserService(
         string did)
     {
         return await dbContext.Users
+            .Include(u => u.Avatar)
             .FirstOrDefaultAsync(u => u.Did == did);
     }
 
@@ -104,5 +110,49 @@ public class UserService(
         await dbContext.Users
             .Where(u => u.Did == did)
             .ExecuteUpdateAsync(sp => sp.SetProperty(u => u.Handle, newHandle));
+    }
+
+    public async Task UpdateProfile(
+        string did,
+        Profile profile)
+    {
+        var user = await GetUserByDid(did);
+        if (user is null)
+            return;
+
+        user.Nickname = profile.Nickname;
+        user.Description = profile.Bio;
+        await UpdateAvatarForProfile(user, profile.Avatar);
+        
+        dbContext.Users.Update(user);
+        await dbContext.SaveChangesAsync();
+    }
+
+    private async Task UpdateAvatarForProfile(
+        UserModel user,
+        StrongRef? avatarRef)
+    {
+        if (avatarRef is null)
+        {
+            user.Avatar = null;
+            return;
+        }
+        
+        // Check if the avatar being requested is one this user owns.
+        if (!AtLinkHelper.TryParse(avatarRef.Uri, out var atUri))
+            return;
+        
+        // Get the did from the authority
+        var authority = atUri.Authority;
+        if (!atUri.Authority.StartsWith("did:"))
+            authority = await domainDidResolver.GetDidForDomainHandle(authority) ?? authority;
+
+        // Get the avatar oekaki.
+        var oekaki = await dbContext.Oekaki
+            .Where(o => o.AuthorDid == authority && o.OekakiTid == atUri.RecordKey)
+            .FirstOrDefaultAsync();
+
+        user.Avatar = oekaki;
+        user.AvatarId = oekaki?.Key;
     }
 }

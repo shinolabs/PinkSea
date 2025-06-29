@@ -1,0 +1,59 @@
+{
+    "$schema": "https://internect.info/lexicon-schema.json",
+    "lexicon": 1,
+    "id": "com.shinolabs.pinksea.profile",
+    "defs": {
+        "main": {
+            "type": "record",
+            "description": "A profile of a PinkSea user.",
+            "record": {
+                "type": "object",
+                "properties": {
+                    "avatar": {
+                        "type": "ref",
+                        "description": "The oekaki image that's the avatar of this profile.",
+                        "ref": "com.atproto.repo.strongRef"
+                    },
+                    "nickname": {
+                        "type": "string",
+                        "description": "The display name of the user.",
+                        "maxGraphemes": 64,
+                        "maxLength": 640
+                    },
+                    "bio": {
+                        "type": "string",
+                        "description": "The bio of the user.",
+                        "maxGraphemes": 240,
+                        "maxLength": 2400
+                    },
+                    "links": {
+                        "type": "array",
+                        "description": "The links to outside platforms for this user",
+                        "maxLength": 5,
+                        "items": {
+                            "type": "ref",
+                            "ref": "#profileLink"
+                        }
+                    }
+                }
+            }
+        },
+        "profileLink": {
+            "type": "object",
+            "required": ["name", "link"],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The name of the link.",
+                    "maxGraphemes": 50,
+                    "maxLength": 500
+                },
+                "imageLink": {
+                    "type": "string",
+                    "description": "The URL of the link.",
+                    "format": "uri"
+                }
+            }
+        }
+    }
+}

@@ -52,6 +52,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DATABASE}
     volumes:
       - pinksea_db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
 networks:
   pinksea:
