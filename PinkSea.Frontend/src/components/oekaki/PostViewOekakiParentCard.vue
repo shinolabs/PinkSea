@@ -1,34 +1,20 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { Oekaki } from '@/models/oekaki'
-import TagContainer from '@/components/TagContainer.vue'
 import PostViewOekakiImageContainer from '@/components/oekaki/PostViewOekakiImageContainer.vue'
 import { usePersistedStore } from '@/state/store'
-import { formatDate } from '@/api/atproto/helpers'
-import PostActions from '@/components/PostActions.vue'
+import OekakiMetaContainer from './OekakiMetaContainer.vue'
 
 const props = defineProps<{
   oekaki: Oekaki
 }>()
 
 const persistedStore = usePersistedStore();
-
-const authorProfileLink = computed(() => `/${props.oekaki.author.did}`);
-const creationTime = computed(() => {
-  return formatDate(props.oekaki.creationTime)
-})
-
 </script>
 
 <template>
   <div class="oekaki-card" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
     <PostViewOekakiImageContainer :oekaki="props.oekaki" />
-    <div class="oekaki-meta">
-      <span>{{ $t("timeline.by_before_handle" )}}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.author.handle }}</RouterLink></b>{{ $t("timeline.by_after_handle" )}}</span><br>
-      <span>{{ creationTime }}</span><br>
-      <PostActions :oekaki="props.oekaki" />
-      <TagContainer v-if="props.oekaki.tags !== undefined" :tags="props.oekaki.tags" />
-    </div>
+    <OekakiMetaContainer :oekaki="props.oekaki" :show-post-actions="true" />
   </div>
 </template>
 
@@ -50,14 +36,5 @@ const creationTime = computed(() => {
   margin: 10px;
   z-index: 5;
   position: relative;
-}
-
-.oekaki-meta {
-  font-size: small;
-  padding: 10px;
-  color: #2f4858;
-  border-top: 2px dashed #FFB6C1;
-  border-left: 0.525em solid #FFB6C1;
-  background-color: white;
 }
 </style>
