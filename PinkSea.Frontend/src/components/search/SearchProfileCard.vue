@@ -2,16 +2,25 @@
 
 import CardWithImage from '@/components/CardWithImage.vue'
 import type { Author } from '@/models/author'
+import { computed } from 'vue';
 
 const props = defineProps<{
   profile: Author
 }>();
+
+const nickname = computed(() => {
+  return props.profile.nickname ?? props.profile.handle
+})
+
+const avatar = computed(() => {
+  return props.profile.avatar ?? "/assets/img/blank_avatar.png"
+})
 </script>
 
 <template>
-  <CardWithImage image-url="https://sea.ata.moe/blank_avatar.png">
+  <CardWithImage :image-url="avatar">
     <div style="font-weight: bold">
-      {{ props.profile.handle }}
+      {{ nickname }}
     </div>
     <div>
       @{{ props.profile.handle }}
@@ -19,6 +28,4 @@ const props = defineProps<{
   </CardWithImage>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
