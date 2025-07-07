@@ -1,3 +1,5 @@
+using PinkSea.AtProto.Models.OAuth;
+
 namespace PinkSea.AtProto.Xrpc.Client;
 
 /// <summary>
@@ -11,6 +13,13 @@ public interface IXrpcClientFactory
     /// <param name="stateId">The state id.</param>
     /// <returns>The XRPC client.</returns>
     Task<IXrpcClient?> GetForOAuthStateId(string stateId);
+    
+    /// <summary>
+    /// Gets an XRPC client for an oauth state.
+    /// </summary>
+    /// <param name="oauthState">The state.</param>
+    /// <returns>The XRPC client.</returns>
+    Task<IXrpcClient?> GetForOAuthState(OAuthState oauthState);
 
     /// <summary>
     /// Gets an XRPC client without any kind of authentication.

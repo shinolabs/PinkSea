@@ -18,7 +18,7 @@ namespace PinkSea.Xrpc;
 public class GetOekakiQueryHandler(
     PinkSeaDbContext dbContext,
     FeedBuilder feedBuilder,
-    IDidResolver didResolver,
+    UserService userService,
     IOptions<AppViewConfig> opts)
     : IXrpcQuery<GetOekakiQueryRequest, GetOekakiQueryResponse>
 {
@@ -27,11 +27,13 @@ public class GetOekakiQueryHandler(
     {
         var parent = await dbContext.Oekaki
             .Include(o => o.TagOekakiRelations)
+            .Include(o => o.Author)
+            .ThenInclude(u => u.Avatar)
             .FirstOrDefaultAsync(o => o.AuthorDid == request.Did && o.OekakiTid == request.RecordKey);
 
         if (parent == null)
             return XrpcErrorOr<GetOekakiQueryResponse>.Fail("NotFound", "Could not find this record.");
-
+        
         var childrenFeed = await feedBuilder
             .StartWithOrdering(c => c.IndexedAt)
             .Where(c => c.ParentId == parent.Key)
@@ -43,7 +45,7 @@ public class GetOekakiQueryHandler(
                 !parent.Tombstone
             ? HydratedOekaki.FromOekakiModel(
                 parent, 
-                await didResolver.GetHandleFromDid(parent.AuthorDid) ?? "invalid.handle",
+                parent.Author,
                 opts.Value.ImageProxyTemplate)
             : TombstoneOekaki.FromOekakiModel(
                 parent),

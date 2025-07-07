@@ -16,7 +16,7 @@ namespace PinkSea.Services;
 /// <param name="dbContext">The database context.</param>
 public class FeedBuilder(
     PinkSeaDbContext dbContext,
-    IDidResolver didResolver,
+    UserService userService,
     IOptions<AppViewConfig> opts)
 {
     /// <summary>
@@ -105,15 +105,7 @@ public class FeedBuilder(
     public async Task<List<HydratedOekaki>> FromOekakiModelList(IList<OekakiModel> list)
     {
         var dids = list.Select(o => o.AuthorDid);
-        var map = new ConcurrentDictionary<string, string>();
-
-        await Parallel.ForEachAsync(dids, new ParallelOptions
-        {
-            MaxDegreeOfParallelism = 5
-        }, async (did, _) =>
-        {
-            map[did] = await didResolver.GetHandleFromDid(did) ?? "invalid.handle";
-        });
+        var map = await userService.GetMultipleUsers(dids);
 
         var oekakiDtos = list
             .Select(o => HydratedOekaki.FromOekakiModel(o, map[o.AuthorDid], opts.Value.ImageProxyTemplate))

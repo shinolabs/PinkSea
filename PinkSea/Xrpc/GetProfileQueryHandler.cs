@@ -25,7 +25,7 @@ public class GetProfileQueryHandler(
     public async Task<XrpcErrorOr<GetProfileQueryResponse>> Handle(
         GetProfileQueryRequest request)
     {
-        var userModel = await userService.GetUserByDid(request.Did);
+        var userModel = await userService.GetFullUserByDid(request.Did);
         if (userModel is null)
         {
             return XrpcErrorOr<GetProfileQueryResponse>.Fail(

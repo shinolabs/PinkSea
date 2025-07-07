@@ -5,10 +5,11 @@ import UserCard from '@/components/UserCard.vue';
 import PanelLayout from '@/layouts/PanelLayout.vue';
 import type { Oekaki } from '@/models/oekaki';
 import type Profile from '@/models/profile';
-import { useIdentityStore } from '@/state/store';
+import { useIdentityStore, usePersistedStore } from '@/state/store';
 import { onMounted, ref, watch } from 'vue';
 
 const identityStore = useIdentityStore()
+const persistedStore = usePersistedStore()
 const profile = ref<Profile | null>(null);
 
 const linkUrl = ref<string>("");
@@ -60,6 +61,50 @@ const addLink = (name: string, url: string) => {
     ];
 };
 
+const buildAvatarRef = () => {
+    if (profile.value?.avatar === undefined) {
+        return undefined
+    }
+
+    const avatar = avatarList.value.find(a => a.image == profile.value?.avatar)
+
+    return {
+        uri: avatar!.at,
+        cid: avatar!.cid
+    }
+}
+
+const sendChanges = async () => {
+    try {
+        await xrpc.call("com.shinolabs.pinksea.putProfile", {
+            data: {
+                profile: {
+                    nickname: profile.value?.nick,
+                    bio: profile.value?.description,
+                    links: profile.value?.links.map(l => {
+                        return {
+                            link: l.url,
+                            name: l.name
+                        }
+                    }),
+                    avatar: buildAvatarRef()
+                }
+            },
+            headers: {
+                "Authorization": `Bearer ${persistedStore.token}`
+            }
+        })
+
+        alert("Your changes have been saved!")
+    } catch (e) {
+        alert(e)
+    }
+};
+
+const removeLink = (index: number) => {
+    profile.value?.links.splice(index, 1)
+}
+
 watch(identityStore, updateProfile);
 onMounted(updateProfile);
 
@@ -99,7 +144,8 @@ onMounted(updateProfile);
                                 <textarea placeholder="Your description (256 characters max)"
                                     v-model="profile.description"></textarea>
                                 <div class="settings-description">
-                                    This is your bio. It's a short piece of text that's visible on your profile. By default, it's empty.
+                                    This is your bio. It's a short piece of text that's visible on your profile. By
+                                    default, it's empty.
                                 </div>
                             </td>
                         </tr>
@@ -150,16 +196,17 @@ onMounted(updateProfile);
                         </tr>
                     </tbody>
                 </table>
-                <div v-for="link of profile.links" class="link-display">
+                <div v-for="(link, index) of profile.links" class="link-display">
                     <div class="link-name">
                         {{ link.name }}
                     </div>
                     <div class="link-link">
                         {{ link.url }}
                     </div>
-                    <button>x</button>
+                    <button v-on:click.prevent="removeLink(index)">x</button>
                 </div>
             </SettingsGroup>
+            <button v-on:click.prevent="sendChanges()">Save your changes</button>
         </div>
     </PanelLayout>
 </template>
@@ -170,7 +217,7 @@ onMounted(updateProfile);
     overflow: hidden;
 }
 
-.main-container > fieldset {
+.main-container>fieldset {
     margin-bottom: 20px;
 }
 
@@ -213,7 +260,7 @@ textarea {
     margin-bottom: 5px;
 }
 
-.link-display > button {
+.link-display>button {
     float: right;
 }
 
@@ -227,8 +274,7 @@ textarea {
     font-size: 10pt;
 }
 
-.link-display > div {
+.link-display>div {
     display: inline-block;
-} 
-
+}
 </style>

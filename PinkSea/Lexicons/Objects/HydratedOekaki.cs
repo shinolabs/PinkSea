@@ -59,12 +59,12 @@ public class HydratedOekaki
     /// Constructs an oekaki DTO from an oekaki model and the author's handle.
     /// </summary>
     /// <param name="oekakiModel">The oekaki model.</param>
-    /// <param name="authorHandle">The author's handle.</param>
+    /// <param name="authorModel">The author.</param>
     /// <param name="imageProxyEndpoint">The endpoint of the image proxy.</param>
     /// <returns>The oekaki DTO.</returns>
     public static HydratedOekaki FromOekakiModel(
         OekakiModel oekakiModel,
-        string authorHandle,
+        UserModel authorModel,
         string imageProxyEndpoint)
     {
         var imageLink = string.Format(
@@ -77,7 +77,14 @@ public class HydratedOekaki
             Author = new Author
             {
                 Did = oekakiModel.AuthorDid,
-                Handle = authorHandle
+                Handle = authorModel.Handle ?? "invalid.handle",
+                Avatar = authorModel.Avatar is not null ?
+                    string.Format(
+                        imageProxyEndpoint,
+                        oekakiModel.AuthorDid,
+                        authorModel.Avatar!.BlobCid)
+                    : null,
+                Nickname = authorModel.Nickname
             },
             CreationTime = oekakiModel.IndexedAt,
             ImageLink = imageLink,

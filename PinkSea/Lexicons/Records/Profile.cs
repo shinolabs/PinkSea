@@ -11,13 +11,13 @@ public class Profile
     /// <summary>
     /// The nickname of this profile.
     /// </summary>
-    [JsonPropertyName("nickname")]
+    [JsonPropertyName("nickname"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Nickname { get; set; }
     
     /// <summary>
     /// The bio of this profile.
     /// </summary>
-    [JsonPropertyName("bio")]
+    [JsonPropertyName("bio"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Bio { get; set; }
     
     /// <summary>
@@ -29,6 +29,6 @@ public class Profile
     /// <summary>
     /// The links this profile has.
     /// </summary>
-    [JsonPropertyName("links")]
+    [JsonPropertyName("links"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public IReadOnlyList<ProfileLink>? Links { get; set; }
 }

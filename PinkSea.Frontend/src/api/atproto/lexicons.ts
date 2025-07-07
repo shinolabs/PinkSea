@@ -39,6 +39,26 @@ declare module '@atcute/client/lexicons' {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace ComShinolabsPinkseaPutProfile {
+    interface Input {
+      profile: {
+        nickname?: string | null,
+        bio?: string | null,
+        avatar?: {
+          uri: string,
+          cid: string
+        },
+        links?: {
+          link: string,
+          name: string
+        }[]
+      }
+    }
+    interface Output {
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace ComShinolabsPinkseaDeleteOekaki {
     interface Input {
       rkey: string
@@ -175,6 +195,10 @@ declare module '@atcute/client/lexicons' {
     'com.shinolabs.pinksea.putOekaki': {
       input: ComShinolabsPinkseaPutOekaki.Input,
       output: ComShinolabsPinkseaPutOekaki.Output
+    },
+    'com.shinolabs.pinksea.putProfile': {
+      input: ComShinolabsPinkseaPutProfile.Input,
+      output: ComShinolabsPinkseaPutProfile.Output
     },
     'com.shinolabs.pinksea.deleteOekaki': {
       input: ComShinolabsPinkseaDeleteOekaki.Input,
