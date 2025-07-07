@@ -11,9 +11,11 @@ const props = defineProps<{
 }>();
 
 const description = computed(() => {
-    return props.profile.description.length < 1
-        ? "This user has no description."
-        : props.profile.description;
+    return props.profile.description ?? "This user has no description."
+});
+
+const nickname = computed(() => {
+    return props.profile.nick ?? props.profile.handle
 });
 
 </script>
@@ -25,7 +27,7 @@ const description = computed(() => {
         </div>
         <div class="user-card-data-container">
             <div class="user-card-nickname-container">
-                <h2>{{ props.profile.nick }}</h2>
+                <h2>{{ nickname }}</h2>
                 <h3>@{{ props.profile.handle }}</h3>
             </div>
             <div class="user-card-description">

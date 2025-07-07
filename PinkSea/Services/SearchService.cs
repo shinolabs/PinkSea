@@ -11,7 +11,7 @@ namespace PinkSea.Services;
 
 public class SearchService(
     PinkSeaDbContext dbContext,
-    IDidResolver didResolver,
+    UserService userService,
     IOptions<AppViewConfig> opts)
 {
     public async Task<List<OekakiModel>> SearchPosts(string query, int limit, DateTimeOffset since)
@@ -51,15 +51,7 @@ public class SearchService(
             .ToListAsync();
         
         var dids = list.Select(o => o.Oekaki.AuthorDid);
-        var map = new ConcurrentDictionary<string, string>();
-
-        await Parallel.ForEachAsync(dids, new ParallelOptions
-        {
-            MaxDegreeOfParallelism = 5
-        }, async (did, _) =>
-        {
-            map[did] = await didResolver.GetHandleFromDid(did) ?? "invalid.handle";
-        });
+        var map = await userService.GetMultipleUsers(dids);
 
         var oekakiDtos = list
             .Select(o => new TagSearchResult

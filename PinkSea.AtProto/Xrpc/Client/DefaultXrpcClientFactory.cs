@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using PinkSea.AtProto.Http;
 using PinkSea.AtProto.Models.Authorization;
+using PinkSea.AtProto.Models.OAuth;
 using PinkSea.AtProto.OAuth;
 using PinkSea.AtProto.Providers.OAuth;
 using PinkSea.AtProto.Providers.Storage;
@@ -24,6 +25,12 @@ public class DefaultXrpcClientFactory(
         if (oauthState?.AuthorizationCode is null)
             return null;
 
+        return await GetForOAuthState(oauthState);
+    }
+
+    /// <inheritdoc />
+    public async Task<IXrpcClient?> GetForOAuthState(OAuthState oauthState)
+    {
         var xrpcLogger = loggerFactory.CreateLogger<IXrpcClient>();
         var httpClient = httpClientFactory.CreateClient("xrpc-client");
 
@@ -36,7 +43,7 @@ public class DefaultXrpcClientFactory(
                 clientDataProvider.ClientData,
                 dpopClientLogger);
             
-            dpopClient.SetAuthorizationCode(oauthState.AuthorizationCode);
+            dpopClient.SetAuthorizationCode(oauthState.AuthorizationCode!);
             return new DPopXrpcClient(dpopClient, oauthState, xrpcLogger);
         }
         
