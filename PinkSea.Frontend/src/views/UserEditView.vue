@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { xrpc } from '@/api/atproto/client';
+import Avatar from '@/components/profile/Avatar.vue';
 import SettingsGroup from '@/components/SettingsGroup.vue';
 import UserCard from '@/components/UserCard.vue';
 import PanelLayout from '@/layouts/PanelLayout.vue';
@@ -155,9 +156,9 @@ onMounted(updateProfile);
 
             <SettingsGroup intl-key="Avatar">
                 <div v-if="avatarList.length > 0" class="avatar-list">
-                    <img v-for="oekaki of avatarList" :src="oekaki.image"
-                        v-on:click.prevent="profile.avatar = oekaki.image"
-                        :class="oekaki.image === profile.avatar ? 'selected' : ''" />
+                    <div v-for="oekaki of avatarList" :class="oekaki.image === profile.avatar ? 'selected' : ''">
+                        <Avatar :image="oekaki.image" v-on:click.prevent="profile.avatar = oekaki.image" :size="128" />
+                    </div>
                 </div>
                 <div class="settings-description">
                     Select an avatar from the list of oekaki you've drawn!
@@ -226,14 +227,13 @@ onMounted(updateProfile);
     overflow-y: scroll;
 }
 
-.avatar-list>img {
-    display: inline;
-    max-width: 120px;
+.avatar-list>div {
     padding: 5px;
+    display: inline-block;
 }
 
 .selected {
-    background-color: #FFB6C1;
+    background-color: #FFB6C1 !important;
 }
 
 .settings-row-heading {

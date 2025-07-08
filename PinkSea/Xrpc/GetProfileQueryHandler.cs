@@ -51,7 +51,7 @@ public class GetProfileQueryHandler(
             ?? userModel.Handle
             ?? "invalid.handle";
 
-        var avatarUrl = $"{opts.Value.AppUrl}/blank_avatar.png";
+        string? avatarUrl = null;
         if (userModel.Avatar != null)
         {
             avatarUrl = string.Format(
