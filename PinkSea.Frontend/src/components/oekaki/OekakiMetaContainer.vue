@@ -4,6 +4,7 @@ import type { Oekaki } from '@/models/oekaki';
 import { computed } from 'vue';
 import TagContainer from '../TagContainer.vue';
 import PostActions from '../PostActions.vue';
+import Avatar from '../profile/Avatar.vue';
 
 const props = defineProps<{
     oekaki: Oekaki
@@ -13,10 +14,6 @@ const props = defineProps<{
 
 const nickname = computed(() => {
     return props.oekaki.author.nickname ?? `@${props.oekaki.author.handle}`
-})
-
-const avatar = computed(() => {
-    return props.oekaki.author.avatar ?? `/assets/img/blank_avatar.png`
 })
 
 const authorProfileLink = computed(() => `/${props.oekaki.author.did}`);
@@ -30,7 +27,7 @@ const creationTime = computed(() => {
     <div class="oekaki-meta">
         <div class="oekaki-user-info-container">
             <div>
-                <img class="oekaki-avatar" :src="avatar">
+                <Avatar :image="props.oekaki.author.avatar" :size="42" />
             </div>
             <div class="oekaki-handle-container">
                 <span>{{ $t("timeline.by_before_handle") }}<b class="oekaki-author">
@@ -60,10 +57,6 @@ const creationTime = computed(() => {
 .oekaki-author:hover {
     text-decoration: underline;
     cursor: pointer;
-}
-
-.oekaki-avatar {
-    max-width: 42px;
 }
 
 .oekaki-user-info-container {

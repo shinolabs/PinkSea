@@ -2,6 +2,7 @@
 import type Profile from '@/models/profile';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import Avatar from './profile/Avatar.vue';
 
 const router = useRouter();
 
@@ -23,7 +24,7 @@ const nickname = computed(() => {
 <template>
     <div class="user-card">
         <div class="user-card-avatar">
-            <img :src="props.profile.avatar" />
+            <Avatar :image="props.profile.avatar" :size="100" />
         </div>
         <div class="user-card-data-container">
             <div class="user-card-nickname-container">
@@ -56,10 +57,6 @@ const nickname = computed(() => {
 
 .user-card>div {
     margin-right: 10px;
-}
-
-.user-card-avatar>img {
-    max-width: 100px;
 }
 
 .user-card-nickname-container {
