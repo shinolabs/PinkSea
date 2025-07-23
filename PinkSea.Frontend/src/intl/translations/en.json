@@ -56,6 +56,10 @@
   "settings": {
     "category_general": "general",
     "general_language": "Language",
+    "general_handle_display": "Display nicknames as",
+    "general_only_handle": "Only handles",
+    "general_nickname_with_handle": "Nickname (@handle)",
+    "general_only_nickname": "Only nicknames",
 
     "category_sensitive": "sensitive media",
     "sensitive_blur_nsfw": "Blur NSFW posts",

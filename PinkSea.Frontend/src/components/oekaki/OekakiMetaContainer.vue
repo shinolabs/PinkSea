@@ -5,16 +5,13 @@ import { computed } from 'vue';
 import TagContainer from '../TagContainer.vue';
 import PostActions from '../PostActions.vue';
 import Avatar from '../profile/Avatar.vue';
+import Username from '../profile/Username.vue';
 
 const props = defineProps<{
     oekaki: Oekaki
     showPostActions?: boolean
     showSubstituteOnNoTags?: boolean
 }>();
-
-const nickname = computed(() => {
-    return props.oekaki.author.nickname ?? `@${props.oekaki.author.handle}`
-})
 
 const authorProfileLink = computed(() => `/${props.oekaki.author.did}`);
 const creationTime = computed(() => {
@@ -31,7 +28,9 @@ const creationTime = computed(() => {
             </div>
             <div class="oekaki-handle-container">
                 <span>{{ $t("timeline.by_before_handle") }}<b class="oekaki-author">
-                        <RouterLink :to="authorProfileLink">{{ nickname }}</RouterLink>
+                        <RouterLink :to="authorProfileLink">
+                            <Username :author='props.oekaki.author' />
+                        </RouterLink>
                     </b>{{ $t("timeline.by_after_handle") }}</span><br>
                 <span>{{ creationTime }}</span><br>
             </div>

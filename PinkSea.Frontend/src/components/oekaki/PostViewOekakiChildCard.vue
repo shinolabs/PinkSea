@@ -7,6 +7,9 @@ import { useRouter } from 'vue-router'
 import { xrpc } from '@/api/atproto/client'
 import { formatDate, getRecordKeyFromAtUri } from '@/api/atproto/helpers'
 import PostActions from '@/components/PostActions.vue'
+import Username from '../profile/Username.vue'
+import OekakiMetaContainer from './OekakiMetaContainer.vue'
+import Avatar from '../profile/Avatar.vue'
 
 const props = defineProps<{
   oekaki: Oekaki,
@@ -43,10 +46,20 @@ const redirectToParent = async () => {
 <template>
   <div :class="classList" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
     <div class="oekaki-child-info">
-      {{ $t("post.response_from_before_handle") }}<b class="oekaki-author"> <RouterLink :to="authorProfileLink" >@{{ props.oekaki.author.handle }}</RouterLink></b>{{ $t("post.response_from_after_handle") }}{{ $t("post.response_from_at_date") }}{{ creationTime }}
+      <Avatar :image="props.oekaki.author.avatar" :size="20" />
+      <div class="oekaki-info-text">
+        <b class="oekaki-author">
+          <RouterLink :to="authorProfileLink">
+            <Username :author='props.oekaki.author' />
+          </RouterLink>
+        </b>
+        responded {{ $t("post.response_from_after_handle") }}{{ $t("post.response_from_at_date") }}{{ creationTime
+        }}
+      </div>
       <PostActions :oekaki="props.oekaki" />
     </div>
-    <PostViewOekakiImageContainer :oekaki="props.oekaki" v-on:click="redirectToParent" style="max-height: 400px; cursor: pointer;"/>
+    <PostViewOekakiImageContainer :oekaki="props.oekaki" v-on:click="redirectToParent"
+      style="max-height: 400px; cursor: pointer;" />
   </div>
 </template>
 
@@ -72,23 +85,29 @@ const redirectToParent = async () => {
 }
 
 .line-bar-element:before {
-  content: ""; z-index: 1;
+  content: "";
+  z-index: 1;
   position: absolute;
-  height: 150%; width: 10px;
+  height: 150%;
+  width: 10px;
   border-left: 2px solid #FFB6C1;
   border-bottom: 2px solid #FFB6C1;
   display: block;
-  left: -22px; top: -100%;
+  left: -22px;
+  top: -100%;
 }
 
 .line-bar-element:nth-of-type(2):before {
-  content: ""; z-index: 1;
+  content: "";
+  z-index: 1;
   position: absolute;
-  height: 90%; width: 10px;
+  height: 90%;
+  width: 10px;
   border-left: 2px solid #FFB6C1;
   border-bottom: 2px solid #FFB6C1;
   display: block;
-  left: -22px; top: -35%;
+  left: -22px;
+  top: -35%;
 }
 
 .oekaki-image-container img {
@@ -99,9 +118,16 @@ const redirectToParent = async () => {
 .oekaki-child-info {
   border-bottom: 2px dashed #FFB6C1;
   padding: 10px;
+  display: flex;
+  align-items: center;
 }
 
-.oekaki-child-info, .oekaki-child-info * {
+.oekaki-child-info>* {
+  margin-right: 5px;
+}
+
+.oekaki-child-info,
+.oekaki-child-info * {
   font-size: small;
 }
 

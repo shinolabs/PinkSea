@@ -5,6 +5,7 @@ import { usePersistedStore } from '@/state/store'
 import i18next from 'i18next'
 import I18n from '@/intl/i18n'
 import { watch } from 'vue'
+import { UsernameDisplayType } from '@/models/username-display-type'
 
 const persistedStore = usePersistedStore();
 watch(persistedStore, () => {
@@ -21,13 +22,18 @@ watch(persistedStore, () => {
         <select v-model="persistedStore.lang">
           <option v-for="(lang, code) in I18n" :key="code" :value="code">{{ lang.name }}</option>
         </select>
+        <br>
+        <span style="margin-right: 10px;">{{ $t("settings.general_handle_display") }}</span>
+        <select v-model="persistedStore.usernameDisplayType">
+          <option v-for="(key, _) in UsernameDisplayType" :value="key">{{ $t(`settings.general_${key}`) }}
+          </option>
+        </select>
       </fieldset>
       <fieldset>
         <legend>{{ $t("settings.category_sensitive") }}</legend>
         <input type="checkbox" v-model="persistedStore.blurNsfw"> <span>{{ $t("settings.sensitive_blur_nsfw")
         }}</span><br />
         <input type="checkbox" v-model="persistedStore.hideNsfw"> <span>{{ $t("settings.sensitive_hide_nsfw") }}</span>
-
       </fieldset>
     </div>
   </PanelLayout>

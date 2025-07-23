@@ -68,6 +68,7 @@ public class SearchService(
     public async Task<List<Author>> SearchAccounts(string query, int limit, DateTimeOffset since)
     {
         var list = await dbContext.Users
+            .Include(u => u.Avatar)
             .Where(u => u.Handle != null && u.Handle.ToLower().Contains(query))
             .OrderByDescending(u => u.CreatedAt)
             .Where(u => u.CreatedAt < since)
@@ -77,6 +78,10 @@ public class SearchService(
         return list.Select(u => new Author
         {
             Did = u.Did,
+            Avatar = u.Avatar != null ? string.Format(
+                opts.Value.ImageProxyTemplate,
+                u.Did,
+                u.Avatar.BlobCid) : null,
             Handle = u.Handle ?? "invalid.handle"
         }).ToList();
     }
