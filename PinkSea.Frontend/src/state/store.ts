@@ -1,3 +1,4 @@
+import { UsernameDisplayType } from '@/models/username-display-type';
 import { defineStore } from 'pinia'
 
 export const usePersistedStore = defineStore(
@@ -8,6 +9,7 @@ export const usePersistedStore = defineStore(
         token: null as (string | null),
         blurNsfw: true,
         hideNsfw: false,
+        usernameDisplayType: UsernameDisplayType.NicknameWithHandle,
 
         lang: null as (string | null)
       }
@@ -19,10 +21,10 @@ export const useIdentityStore = defineStore(
   'identityStore',
   {
     state: () => {
-        return {
-          did: null as (string | null),
-          handle: null as (string | null)
-        }
+      return {
+        did: null as (string | null),
+        handle: null as (string | null)
+      }
     }
   });
 

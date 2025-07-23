@@ -8,6 +8,7 @@ import type { Oekaki } from '@/models/oekaki';
 import type Profile from '@/models/profile';
 import { useIdentityStore, usePersistedStore } from '@/state/store';
 import { onMounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
 const identityStore = useIdentityStore()
 const persistedStore = usePersistedStore()
@@ -15,6 +16,8 @@ const profile = ref<Profile | null>(null);
 
 const linkUrl = ref<string>("");
 const linkName = ref<string>("");
+
+const router = useRouter()
 
 const avatarList = ref<Oekaki[]>([]);
 
@@ -54,7 +57,7 @@ const fetchPossibleAvatars = async () => {
 
 const addLink = (name: string, url: string) => {
     profile.value!.links = [
-        ...profile.value!.links,
+        ...profile.value!.links!,
         {
             name,
             url
@@ -82,7 +85,7 @@ const sendChanges = async () => {
                 profile: {
                     nickname: profile.value?.nick,
                     bio: profile.value?.description,
-                    links: profile.value?.links.map(l => {
+                    links: profile.value?.links!.map(l => {
                         return {
                             link: l.url,
                             name: l.name
@@ -96,14 +99,14 @@ const sendChanges = async () => {
             }
         })
 
-        alert("Your changes have been saved!")
+        router.push(`/${profile.value?.did}`)
     } catch (e) {
         alert(e)
     }
 };
 
 const removeLink = (index: number) => {
-    profile.value?.links.splice(index, 1)
+    profile.value?.links!.splice(index, 1)
 }
 
 watch(identityStore, updateProfile);
