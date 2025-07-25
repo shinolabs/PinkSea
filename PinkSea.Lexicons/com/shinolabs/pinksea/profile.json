@@ -48,7 +48,7 @@
                     "maxGraphemes": 50,
                     "maxLength": 500
                 },
-                "imageLink": {
+                "link": {
                     "type": "string",
                     "description": "The URL of the link.",
                     "format": "uri"
