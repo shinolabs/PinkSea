@@ -120,36 +120,35 @@ onMounted(updateProfile);
             loading...
         </div>
         <div class="main-container" v-else>
-            <SettingsGroup intl-key="This is how others will see you">
+            <SettingsGroup intl-key="profile_edit.how_others_will_see_you">
                 <div class="user-card-padding">
                     <UserCard :profile="profile" :show-edit-button="false" />
                 </div>
             </SettingsGroup>
 
-            <SettingsGroup intl-key="Basic data">
+            <SettingsGroup intl-key="profile_edit.basic_data">
                 <table>
                     <tbody>
                         <tr>
                             <td class="settings-row-heading">
-                                <div>Nickname</div>
+                                <div>{{ $t("profile_edit.nickname") }}</div>
                             </td>
                             <td>
                                 <input type="text" placeholder="" v-model="profile.nick" />
                                 <div class="settings-description">
-                                    This is the name others will identify you by. By default, it's equal to your handle.
+                                    {{ $t("profile_edit.nickname_description") }}
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td class="settings-row-heading">
-                                <div>Your bio</div>
+                                <div>{{ $t("profile_edit.your_bio") }}</div>
                             </td>
                             <td>
                                 <textarea placeholder="Your description (256 characters max)"
                                     v-model="profile.description"></textarea>
                                 <div class="settings-description">
-                                    This is your bio. It's a short piece of text that's visible on your profile. By
-                                    default, it's empty.
+                                    {{ $t("profile_edit.your_bio_description") }}
                                 </div>
                             </td>
                         </tr>
@@ -157,45 +156,46 @@ onMounted(updateProfile);
                 </table>
             </SettingsGroup>
 
-            <SettingsGroup intl-key="Avatar">
+            <SettingsGroup intl-key="profile_edit.avatar">
                 <div v-if="avatarList.length > 0" class="avatar-list">
                     <div v-for="oekaki of avatarList" :class="oekaki.image === profile.avatar ? 'selected' : ''">
                         <Avatar :image="oekaki.image" v-on:click.prevent="profile.avatar = oekaki.image" :size="128" />
                     </div>
                 </div>
                 <div class="settings-description">
-                    Select an avatar from the list of oekaki you've drawn!
+                    {{ $t("profile_edit.avatar_description") }}
                 </div>
             </SettingsGroup>
 
-            <SettingsGroup intl-key="Links">
+            <SettingsGroup intl-key="profile_edit.links">
                 <table>
                     <tbody>
                         <tr>
                             <td class="settings-row-heading">
-                                <div>Name</div>
+                                <div>{{ $t("profile_edit.link_name") }}</div>
                             </td>
                             <td>
                                 <input type="text" placeholder="Example" v-model="linkName" />
                                 <div class="settings-description">
-                                    This is the name of the link you're creating.
+                                    {{ $t("profile_edit.link_name_description") }}
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td class="settings-row-heading">
-                                <div>Url</div>
+                                <div>{{ $t("profile_edit.link_url") }}</div>
                             </td>
                             <td>
                                 <input type="text" placeholder="https://example.com/..." v-model="linkUrl" />
                                 <div class="settings-description">
-                                    This is the url of the link you're creating.
+                                    {{ $t("profile_edit.link_url_description") }}
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <button v-on:click.prevent="addLink(linkName, linkUrl)">Add</button>
+                                <button v-on:click.prevent="addLink(linkName, linkUrl)">{{ $t("profile_edit.link_add")
+                                }}</button>
                             </td>
                         </tr>
                     </tbody>
@@ -210,7 +210,7 @@ onMounted(updateProfile);
                     <button v-on:click.prevent="removeLink(index)">x</button>
                 </div>
             </SettingsGroup>
-            <button v-on:click.prevent="sendChanges()">Save your changes</button>
+            <button v-on:click.prevent="sendChanges()">{{ $t("profile_edit.save_changes") }}</button>
         </div>
     </PanelLayout>
 </template>

@@ -48,13 +48,13 @@ const redirectToParent = async () => {
     <div class="oekaki-child-info">
       <Avatar :image="props.oekaki.author.avatar" :size="20" />
       <div class="oekaki-info-text">
+        {{ $t("post.response_from_before_handle") }}
         <b class="oekaki-author">
           <RouterLink :to="authorProfileLink">
             <Username :author='props.oekaki.author' />
           </RouterLink>
         </b>
-        responded {{ $t("post.response_from_after_handle") }}{{ $t("post.response_from_at_date") }}{{ creationTime
-        }}
+        {{ $t("post.response_from_after_handle") }}{{ $t("post.response_from_at_date") }}{{ creationTime }}
       </div>
       <PostActions :oekaki="props.oekaki" />
     </div>

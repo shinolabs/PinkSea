@@ -41,8 +41,8 @@
     "nothing_here": "Nothing here so far... (╥﹏╥)"
   },
   "post": {
-    "response_from_before_handle": "Response from ",
-    "response_from_after_handle": "",
+    "response_from_before_handle": "",
+    "response_from_after_handle": "responded ",
     "response_from_at_date": " at ",
     "this_post_no_longer_exists": "This post no longer exists."
   },
@@ -84,10 +84,26 @@
     "hint_confirm": "Once you're ready, click the button above to publish your image!"
   },
   "profile": {
-    "bluesky_profile": "Bluesky profile",
-    "domain": "Website",
     "posts_tab": "Posts",
-    "replies_tab": "Replies"
+    "replies_tab": "Replies",
+    "edit_profile": "Edit profile"
+  },
+  "profile_edit": {
+    "how_others_will_see_you": "This is how others will see you",
+    "basic_data": "Basic data",
+    "nickname": "Nickname",
+    "nickname_description": "This is the name others will identify you by. By default, it's equal to your handle.",
+    "your_bio": "Your bio",
+    "your_bio_description": "This is your bio. It's a short piece of text that's visible on your profile. By default, it's empty.",
+    "avatar": "Avatar",
+    "avatar_description": "Select an avatar from the list of oekaki you've drawn!",
+    "links": "Links",
+    "link_name": "Name",
+    "link_name_description": "This is the name of the link you're creating.",
+    "link_url": "Url",
+    "link_url_description": "This is the url of the link you're creating.",
+    "link_add": "Add link",
+    "save_changes": "Save your changes"
   },
   "tegakijs": {
     "badDimensions": "Invalid dimensions.",
