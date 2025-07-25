@@ -72,6 +72,10 @@ const buildAvatarRef = () => {
 
     const avatar = avatarList.value.find(a => a.image == profile.value?.avatar)
 
+    if (avatar === undefined) {
+        return undefined
+    }
+
     return {
         uri: avatar!.at,
         cid: avatar!.cid
@@ -158,6 +162,10 @@ onMounted(updateProfile);
 
             <SettingsGroup intl-key="profile_edit.avatar">
                 <div v-if="avatarList.length > 0" class="avatar-list">
+                    <div :class="profile.avatar === undefined ? 'selected' : ''">
+                        <Avatar image="/assets/img/blank_avatar.png" v-on:click.prevent="profile.avatar = undefined"
+                            :size="128" />
+                    </div>
                     <div v-for="oekaki of avatarList" :class="oekaki.image === profile.avatar ? 'selected' : ''">
                         <Avatar :image="oekaki.image" v-on:click.prevent="profile.avatar = oekaki.image" :size="128" />
                     </div>
@@ -195,7 +203,7 @@ onMounted(updateProfile);
                         <tr>
                             <td>
                                 <button v-on:click.prevent="addLink(linkName, linkUrl)">{{ $t("profile_edit.link_add")
-                                }}</button>
+                                    }}</button>
                             </td>
                         </tr>
                     </tbody>
