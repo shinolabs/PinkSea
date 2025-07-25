@@ -5,6 +5,7 @@ using PinkSea.Extensions;
 using PinkSea.Lexicons;
 using PinkSea.Lexicons.Procedures;
 using PinkSea.Services;
+using PinkSea.Validators;
 
 namespace PinkSea.Xrpc;
 
@@ -25,6 +26,11 @@ public class PutProfileProcedureHandler(IHttpContextAccessor contextAccessor, IO
         var oauthState = await oauthStateStorageProvider.GetForStateId(state);
         if (oauthState is null)
             return XrpcErrorOr<Empty>.Fail("InvalidToken", "Invalid token.");
+
+        var validator = new ProfileValidator();
+
+        if (!validator.Validate(request.Profile))
+            return XrpcErrorOr<Empty>.Fail("InvalidRecord", "Invalid profile record.");
 
         await userService.UpdateProfile(oauthState.Did, request.Profile);
         await userService.PublishProfileUpdateToRepo(oauthState, request.Profile);
