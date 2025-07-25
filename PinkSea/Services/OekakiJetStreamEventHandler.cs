@@ -8,6 +8,7 @@ using PinkSea.Database.Models;
 using PinkSea.Extensions;
 using PinkSea.Helpers;
 using PinkSea.Lexicons.Records;
+using PinkSea.Validators;
 
 namespace PinkSea.Services;
 
@@ -142,6 +143,15 @@ public class OekakiJetStreamEventHandler(
         var profileRecord = commit.Record!
             .Value
             .Deserialize<Profile>()!;
+
+        var validator = new ProfileValidator();
+        if (!validator.Validate(profileRecord))
+        {
+            logger.LogError("User with DID {AuthorDid} tried to publish an invalid profile record! Record value: {Value}",
+                authorDid, JsonSerializer.Serialize(commit.Record!.Value));
+            
+            return;
+        }
 
         await userService.UpdateProfile(authorDid, profileRecord);
     }
