@@ -39,7 +39,7 @@ const nickname = computed(() => {
             </div>
         </div>
         <div class="button-container" v-if="props.showEditButton">
-            <button v-on:click.prevent="router.push('/settings/profile')">Edit profile</button>
+            <button v-on:click.prevent="router.push('/settings/profile')">{{ $t("profile.edit_profile") }}</button>
         </div>
     </div>
 </template>

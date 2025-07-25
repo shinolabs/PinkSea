@@ -2,9 +2,8 @@
 import { computed } from 'vue'
 import type { Oekaki } from '@/models/oekaki'
 import { useRouter } from 'vue-router'
-import TagContainer from '@/components/TagContainer.vue'
 import { usePersistedStore } from '@/state/store'
-import { buildOekakiUrlFromOekakiObject, formatDate } from '@/api/atproto/helpers'
+import { buildOekakiUrlFromOekakiObject } from '@/api/atproto/helpers'
 import OekakiMetaContainer from './oekaki/OekakiMetaContainer.vue'
 
 const router = useRouter();
