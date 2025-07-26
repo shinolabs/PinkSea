@@ -21,7 +21,9 @@ public class BeginLoginFlowProcedure(
     {
         try
         {
-            var normalizedHandle = request.Handle.TrimStart('@')
+            var normalizedHandle = request.Handle
+                .Trim()
+                .TrimStart('@')
                 .ToLower();
 
             // If we don't have a domain, that is, we don't have a '.' in the name
