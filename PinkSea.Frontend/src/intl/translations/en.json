@@ -86,7 +86,8 @@
   "profile": {
     "posts_tab": "Posts",
     "replies_tab": "Replies",
-    "edit_profile": "Edit profile"
+    "edit_profile": "Edit profile",
+    "this_user_has_no_description": "This user has no description."
   },
   "profile_edit": {
     "how_others_will_see_you": "This is how others will see you",
