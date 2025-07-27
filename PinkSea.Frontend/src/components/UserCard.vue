@@ -3,6 +3,7 @@ import type Profile from '@/models/profile';
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import Avatar from './profile/Avatar.vue';
+import i18next from 'i18next';
 
 const router = useRouter();
 
@@ -12,7 +13,7 @@ const props = defineProps<{
 }>();
 
 const description = computed(() => {
-    return props.profile.description ?? "This user has no description."
+    return props.profile.description ?? i18next.t("profile.this_user_has_no_description")
 });
 
 const nickname = computed(() => {
