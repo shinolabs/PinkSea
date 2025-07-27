@@ -12,6 +12,7 @@ import Loader from '@/components/Loader.vue'
 import PostViewOekakiTombstoneCard from '@/components/ErrorCard.vue'
 import type { OekakiTombstone } from '@/models/oekaki-tombstone'
 import ErrorCard from '@/components/ErrorCard.vue'
+import { getRecordKeyFromAtUri } from '@/api/atproto/helpers'
 
 const route = useRoute();
 
@@ -22,12 +23,12 @@ const parentIsTombstone = computed(() => {
   return parent.value !== null && 'formerAt' in parent.value;
 });
 
-onBeforeMount(async () => {
+const fetchOekaki = async (did: string, rkey: string) => {
   try {
     const { data } = await xrpc.get("com.shinolabs.pinksea.getOekaki", {
       params: {
-        did: route.params.did as string,
-        rkey: route.params.rkey as string
+        did: did,
+        rkey: rkey
       }
     });
 
@@ -40,6 +41,39 @@ onBeforeMount(async () => {
 
     children.value = [];
   }
+};
+
+onBeforeMount(async () => {
+  let did = route.params.did as string
+  let rkey = route.params.rkey as string
+
+  let scrollId = undefined
+
+  try {
+    const { data } = await xrpc.get("com.shinolabs.pinksea.getParentForReply", {
+      params: {
+        did: did,
+        rkey: rkey!
+      }
+    });
+
+    if (data.rkey !== rkey) {
+      scrollId = `${did}-${rkey}`;
+      did = data.did;
+      rkey = data.rkey;
+    }
+  } catch {
+
+  }
+
+  await fetchOekaki(did, rkey);
+
+  if (scrollId !== undefined) {
+    const element = document.getElementById(scrollId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
 });
 
 </script>
@@ -51,13 +85,12 @@ onBeforeMount(async () => {
       <ErrorCard v-if="parentIsTombstone" image="/assets/img/missing.png" i18n-key="post.this_post_no_longer_exists" />
       <PostViewOekakiParentCard v-else :oekaki="parent as Oekaki" />
       <br />
-      <PostViewOekakiChildCard v-for="child of children" v-bind:key="child.at" :oekaki="child" />
+      <PostViewOekakiChildCard v-for="child of children" v-bind:key="child.at" :oekaki="child"
+        :id="`${child.author.did}-${getRecordKeyFromAtUri(child.at)}`" />
 
       <RespondBox v-if="!parentIsTombstone" :parent="parent as Oekaki" />
     </div>
   </PanelLayout>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
