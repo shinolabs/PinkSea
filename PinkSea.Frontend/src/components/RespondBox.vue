@@ -38,6 +38,14 @@ const reply = () => {
   }
 };
 
+const edit = () => {
+  Tegaki.open({
+    onDone: () => {
+      image.value = Tegaki.flatten().toDataURL("image/png");
+    }
+  })
+}
+
 const cancel = () => {
   image.value = null;
 
@@ -90,8 +98,7 @@ const uploadImage = async () => {
 
 onBeforeMount(() => {
   if (imageStore.lastReplyId == props.parent.at
-    && imageStore.lastDoneReply !== null && imageStore.lastReplyErrored)
-  {
+    && imageStore.lastDoneReply !== null && imageStore.lastReplyErrored) {
     image.value = imageStore.lastDoneReply;
   }
 })
@@ -106,7 +113,7 @@ onBeforeMount(() => {
         <button v-on:click.prevent="reply">{{ $t("response_box.open_painter") }}</button>
       </div>
       <div v-else>
-        <img :src="image"/>
+        <img :src="image" />
         <br />
         <div class="respond-extra">
           <input type="text" :placeholder="i18next.t('painter.add_a_description')" v-model="alt" />
@@ -114,6 +121,7 @@ onBeforeMount(() => {
         </div>
         <div class="two-buttons">
           <button v-on:click.prevent="cancel">{{ $t("response_box.cancel") }}</button>
+          <button v-on:click.prevent="edit">{{ $t("response_box.edit") }}</button>
           <button v-on:click.prevent="uploadImage" ref="upload-button">{{ $t("response_box.reply") }}</button>
         </div>
       </div>
@@ -149,6 +157,10 @@ img {
 }
 
 .two-buttons {
-    display: flex;
+  display: flex;
+}
+
+input[type=checkbox] {
+  accent-color: #FFB6C1;
 }
 </style>
