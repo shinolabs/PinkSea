@@ -32,14 +32,8 @@ const classList = computed(() => {
 
 const redirectToParent = async () => {
   const rkey = getRecordKeyFromAtUri(props.oekaki.at);
-  const { data } = await xrpc.get("com.shinolabs.pinksea.getParentForReply", {
-    params: {
-      did: props.oekaki.author.did,
-      rkey: rkey!
-    }
-  });
 
-  await router.push(`/${data.did}/oekaki/${data.rkey}#${props.oekaki.author.did}-${rkey}`);
+  await router.push(`/${props.oekaki.author.did}/oekaki/${rkey}`);
 };
 </script>
 
