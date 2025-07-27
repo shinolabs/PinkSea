@@ -162,7 +162,7 @@ onMounted(updateProfile);
 
             <SettingsGroup intl-key="profile_edit.avatar">
                 <div v-if="avatarList.length > 0" class="avatar-list">
-                    <div :class="profile.avatar === undefined ? 'selected' : ''">
+                    <div :class="profile.avatar === undefined || profile.avatar === null ? 'selected' : ''">
                         <Avatar image="/assets/img/blank_avatar.png" v-on:click.prevent="profile.avatar = undefined"
                             :size="128" />
                     </div>
