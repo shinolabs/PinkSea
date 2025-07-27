@@ -179,7 +179,15 @@ public class FirstTimeRunAssistantService(
         var children = new List<(string, string, string, Oekaki)>();
         foreach (var did in repos.Value!.Repos.Select(r => r.Did))
         {
-            children.AddRange(await BackfillForDid(did));
+            try
+            {
+                children.AddRange(await BackfillForDid(did));
+                await BackfillProfile(did);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to backfill posts for DID {Did}. {Error}", did, ex.Message);
+            }
         }
 
         // Now add in the children.
@@ -193,6 +201,47 @@ public class FirstTimeRunAssistantService(
         }
         
         logger.LogInformation(" - Backfilling complete!");
+    }
+
+    /// <summary>
+    /// Backfills a profile for a DID.
+    /// </summary>
+    /// <param name="did">The DID.</param>
+    private async Task BackfillProfile(string did)
+    {
+        var document = await didResolver.GetDocumentForDid(did);
+        if (document is null)
+        {
+            logger.LogWarning("Couldn't get the DID document for {Did}.", did);
+            return;
+        }
+
+        using var xrpcClient = await xrpcClientFactory.GetWithoutAuthentication(document.GetPds()!);
+        
+        var response = await xrpcClient.Query<ListRecordsResponse<Profile>>(
+            "com.atproto.repo.listRecords",
+            new ListRecordsRequest
+            {
+                Repo = did,
+                Collection = "com.shinolabs.pinksea.profile"
+            });
+        
+        if (!response.IsSuccess)
+            return;
+
+        var profile = response.Value!
+            .Records
+            .FirstOrDefault(r => r.AtUri.Contains("self"));
+
+        if (profile is null)
+            return;
+
+        logger.LogInformation("Creating a profile for {Did}", did);
+        
+        if (!await userService.UserExists(did))
+            await userService.Create(did);
+
+        await userService.UpdateProfile(did, profile.Value);
     }
 
     /// <summary>
