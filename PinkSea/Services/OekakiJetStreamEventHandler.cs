@@ -133,6 +133,11 @@ public class OekakiJetStreamEventHandler(
             await userService.UpdateHandle(@event.Did, identity.Handle);
     }
 
+    /// <summary>
+    /// Processes a newly created or updated profile.
+    /// </summary>
+    /// <param name="commit">The commit that created a profile.</param>
+    /// <param name="authorDid">The DID of the profile's author.</param>
     private async Task ProcessCreatedProfile(
         AtProtoCommit commit,
         string authorDid)
@@ -156,6 +161,11 @@ public class OekakiJetStreamEventHandler(
         await userService.UpdateProfile(authorDid, profileRecord);
     }
     
+    /// <summary>
+    /// Processes a deleted profile.
+    /// </summary>
+    /// <param name="commit">The commit that deleted this profile.</param>
+    /// <param name="authorDid">The DID of the profile.</param>
     private async Task ProcessDeletedProfile(
         AtProtoCommit commit,
         string authorDid)
