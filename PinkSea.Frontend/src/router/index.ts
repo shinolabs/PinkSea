@@ -8,10 +8,10 @@ import PostView from '@/views/PostView.vue'
 import { xrpc } from '@/api/atproto/client'
 import TagView from '@/views/TagView.vue'
 import SettingsView from '@/views/SettingsView.vue'
-import i18next from 'i18next'
 import { withTegakiViewBackProtection } from '@/api/tegaki/tegaki-view-helper'
 import SearchView from '@/views/SearchView.vue'
 import UserEditView from '@/views/UserEditView.vue'
+import { withHandleDidRouteResolver } from '@/api/atproto/handle-did-route-resolver'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -107,6 +107,7 @@ const router = createRouter({
 });
 
 withBreadcrumb(router);
+withHandleDidRouteResolver(router);
 withTegakiViewBackProtection(router);
 
 export default router
