@@ -276,10 +276,6 @@ h1,
     z-index: 999;
   }
 
-  .container main {
-    text-align: center;
-  }
-
   .container aside {
     position: fixed;
     top: 0;

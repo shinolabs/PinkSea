@@ -12,10 +12,9 @@ using PinkSea.Services;
 namespace PinkSea.Xrpc;
 
 /// <summary>
-/// [UNSPECCED - DO NOT USE]
-/// Handler for the "com.shinolabs.pinksea.unspecced.getProfile" query. Gets the profile information for a DID.
+/// Handler for the "com.shinolabs.pinksea.getProfile" query. Gets the profile information for a DID.
 /// </summary>
-[Xrpc("com.shinolabs.pinksea.unspecced.getProfile")]
+[Xrpc("com.shinolabs.pinksea.getProfile")]
 public class GetProfileQueryHandler(
     UserService userService,
     IDidResolver didResolver,
