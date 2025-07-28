@@ -140,7 +140,7 @@ onMounted(updateProfile);
                                 <div>{{ $t("profile_edit.nickname") }}</div>
                             </td>
                             <td>
-                                <input type="text" placeholder="" v-model="profile.nick" />
+                                <input type="text" placeholder="" v-model="profile.nick" maxlength="64" />
                                 <div class="settings-description">
                                     {{ $t("profile_edit.nickname_description") }}
                                 </div>
@@ -152,7 +152,7 @@ onMounted(updateProfile);
                             </td>
                             <td>
                                 <textarea placeholder="Your description (256 characters max)"
-                                    v-model="profile.description"></textarea>
+                                    v-model="profile.description" maxlength="256"></textarea>
                                 <div class="settings-description">
                                     {{ $t("profile_edit.your_bio_description") }}
                                 </div>
@@ -185,7 +185,7 @@ onMounted(updateProfile);
                                 <div>{{ $t("profile_edit.link_name") }}</div>
                             </td>
                             <td>
-                                <input type="text" placeholder="Example" v-model="linkName" />
+                                <input type="text" placeholder="Example" v-model="linkName" maxlength="50" />
                                 <div class="settings-description">
                                     {{ $t("profile_edit.link_name_description") }}
                                 </div>
@@ -205,7 +205,7 @@ onMounted(updateProfile);
                         <tr>
                             <td>
                                 <button v-on:click.prevent="addLink(linkName, linkUrl)">{{ $t("profile_edit.link_add")
-                                }}</button>
+                                    }}</button>
                             </td>
                         </tr>
                     </tbody>
