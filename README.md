@@ -126,6 +126,7 @@ PinkSea was built by these wonderful people, I'd like to extend a massive thank 
 
 * [GlitchyPSI](https://bsky.app/profile/glitchypsi.xyz) for drawing the "post is missing" image visible whenever we see a post that does not exist! Thank you so much!!!
 * [yazuto](https://bsky.app/profile/cryztl.bsky.social) for designing our lovely mascot PinkSea-tan! She's the cutest being ever!!
+* [domatoxi](https://bsky.app/profile/domatoxi.bsky.social) for creating the default blank avatar, the PinkSea-tan silhouette. It's so cute!!
 
 ![contributors badge](https://readme-contribs.as93.net/contributors/shinolabs/PinkSea?perRow=10&shape=circle&textColor=white)
 
