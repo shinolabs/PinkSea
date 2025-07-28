@@ -23,12 +23,14 @@ const avatarList = ref<Oekaki[]>([]);
 
 const updateProfile = async () => {
     try {
-        const { data } = await xrpc.get("com.shinolabs.pinksea.unspecced.getProfile", { params: { did: identityStore.did as string } });
+        const { data } = await xrpc.get("com.shinolabs.pinksea.getProfile", { params: { did: identityStore.did as string } });
         profile.value = data;
+
+        console.log(profile.value)
 
         await fetchPossibleAvatars();
     } catch (e) {
-        console.error("Couldn't fetch our own profile, lol.")
+        console.error("Couldn't fetch our own profile, lol. " + e)
     }
 };
 
@@ -203,7 +205,7 @@ onMounted(updateProfile);
                         <tr>
                             <td>
                                 <button v-on:click.prevent="addLink(linkName, linkUrl)">{{ $t("profile_edit.link_add")
-                                    }}</button>
+                                }}</button>
                             </td>
                         </tr>
                     </tbody>

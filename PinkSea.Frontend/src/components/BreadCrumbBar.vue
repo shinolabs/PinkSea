@@ -1,18 +1,18 @@
 <script setup lang="ts">
-  import { useBreadcrumbBarStore } from '@/api/breadcrumb/store'
-  import { resolveCrumb } from '@/api/breadcrumb/breadcrumb'
-  import { onBeforeMount, ref } from 'vue'
-  import i18next from 'i18next'
+import { useBreadcrumbBarStore } from '@/api/breadcrumb/store'
+import { resolveCrumb } from '@/api/breadcrumb/breadcrumb'
+import { onBeforeMount, ref } from 'vue'
+import i18next from 'i18next'
 
-  const forceRerenderKey = ref<number>(0);
+const forceRerenderKey = ref<number>(0);
 
-  const store = useBreadcrumbBarStore();
+const store = useBreadcrumbBarStore();
 
-  onBeforeMount(() => {
-    i18next.on('languageChanged', () => {
-      forceRerenderKey.value += 1
-    });
-  })
+onBeforeMount(() => {
+  i18next.on('languageChanged', () => {
+    forceRerenderKey.value += 1
+  });
+})
 </script>
 
 <template>
@@ -56,5 +56,11 @@
 
 .bar-current {
   font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .bar {
+    text-align: center;
+  }
 }
 </style>

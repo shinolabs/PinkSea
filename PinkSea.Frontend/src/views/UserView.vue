@@ -39,7 +39,7 @@ const identityStore = useIdentityStore();
 
 watch(() => route.params.did, async () => {
   try {
-    const { data } = await xrpc.get("com.shinolabs.pinksea.unspecced.getProfile", { params: { did: route.params.did as string } });
+    const { data } = await xrpc.get("com.shinolabs.pinksea.getProfile", { params: { did: route.params.did as string } });
     profile.value = data;
     exists.value = true;
   } catch (e) {

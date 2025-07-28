@@ -181,7 +181,7 @@ declare module '@atcute/client/lexicons' {
       params: ComShinolabsPinkseaGetParentForReply.Params,
       output: ComShinolabsPinkseaGetParentForReply.Params
     },
-    'com.shinolabs.pinksea.unspecced.getProfile': {
+    'com.shinolabs.pinksea.getProfile': {
       params: ComShinolabsPinkseaUnspeccedGetProfile.Params,
       output: Profile
     },
