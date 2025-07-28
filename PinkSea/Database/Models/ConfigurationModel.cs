@@ -33,4 +33,9 @@ public class ConfigurationModel
     /// Have we synchronized the account states?
     /// </summary>
     public bool? SynchronizedAccountStates { get; set; }
+    
+    /// <summary>
+    /// Have we imported profiles?
+    /// </summary>
+    public bool? ImportedProfiles { get; set; }
 }

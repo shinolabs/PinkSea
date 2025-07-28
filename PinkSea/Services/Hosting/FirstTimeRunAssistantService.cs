@@ -41,6 +41,11 @@ public class FirstTimeRunAssistantService(
             {
                 await SynchronizeAccountStates();
             }
+
+            if (config.ImportedProfiles != true)
+            {
+                await ImportProfiles();
+            }
             
             return;
         }
@@ -144,6 +149,25 @@ public class FirstTimeRunAssistantService(
         await configurationService.EditConfiguration(cfg =>
         {
             cfg.SynchronizedAccountStates = true;
+        });
+    }
+
+    /// <summary>
+    /// Imports PinkSea profiles. Used after migrating from an earlier version of PinkSea.
+    /// </summary>
+    private async Task ImportProfiles()
+    {
+        logger.LogInformation(" - Importing profiles for existing users...");
+        
+        // Start fetching all the accounts.
+        foreach (var user in await userService.GetAllUsers())
+        {
+            await BackfillProfile(user.Did);
+        }
+
+        await configurationService.EditConfiguration(cfg =>
+        {
+            cfg.ImportedProfiles = true;
         });
     }
 
