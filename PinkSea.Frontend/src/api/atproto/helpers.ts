@@ -1,7 +1,7 @@
 import type { Oekaki } from '@/models/oekaki'
 import { usePersistedStore } from '@/state/store'
 
-const uriRegex = /^at:\/\/did:[a-zA-Z0-9:.]+\/[a-zA-Z0-9.]+\/([a-zA-Z0-9]+)$/;
+const uriRegex = /^at:\/\/did:[a-zA-Z0-9:.-]+\/[a-zA-Z0-9.]+\/([a-zA-Z0-9]+)$/;
 
 export const getRecordKeyFromAtUri = (uri: string) => {
   const match = uri.match(uriRegex);
