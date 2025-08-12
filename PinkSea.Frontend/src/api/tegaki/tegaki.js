@@ -5473,6 +5473,7 @@ var TegakiUI = {
     }
 
     el.appendChild(TegakiUI.buildToolModeBar());
+    el.appendChild(TegakiUI.buildCancelBtn());
 
     bg.appendChild(el);
 
@@ -5532,10 +5533,15 @@ var TegakiUI = {
   },
 
   buildMenuBar: function() {
-    var frag, btn;
+    var frag, btn, undoRedoWrapper;
 
     frag = $T.el('div');
     frag.id = 'tegaki-menu-bar';
+
+
+    var pinkSeaLogo = $T.el('span');
+    pinkSeaLogo.id = 'tegaki-pinksea-logo';
+    frag.appendChild(pinkSeaLogo);
 
     btn = $T.el('span');
     btn.className = 'tegaki-mb-btn';
@@ -5549,28 +5555,6 @@ var TegakiUI = {
     $T.on(btn, 'click', Tegaki.onExportClick);
     frag.appendChild(btn);
 
-    btn = $T.el('span');
-    btn.id = 'tegaki-undo-btn';
-    btn.className = 'tegaki-mb-btn';
-    btn.textContent = TegakiStrings().undo;
-    btn.title = TegakiKeybinds.getCaption('undo');
-    $T.on(btn, 'click', Tegaki.onUndoClick);
-    frag.appendChild(btn);
-
-    btn = $T.el('span');
-    btn.id = 'tegaki-redo-btn';
-    btn.className = 'tegaki-mb-btn';
-    btn.textContent = TegakiStrings().redo;
-    btn.title = TegakiKeybinds.getCaption('redo');
-    $T.on(btn, 'click', Tegaki.onRedoClick);
-    frag.appendChild(btn);
-
-    var cancelButton = $T.el('span');
-    cancelButton.className = 'tegaki-mb-btn';
-    cancelButton.textContent = TegakiStrings().close;
-    $T.on(cancelButton, 'click', Tegaki.onCancelClick);
-    frag.appendChild(cancelButton);
-
     var finishButton = $T.el('span');
     finishButton.id = 'tegaki-finish-btn';
     finishButton.className = 'tegaki-mb-btn';
@@ -5578,6 +5562,26 @@ var TegakiUI = {
     $T.on(finishButton, 'click', Tegaki.onDoneClick);
     frag.appendChild(finishButton);
 
+    undoRedoWrapper  = $T.el('div');
+    undoRedoWrapper.id = 'tegaki-undo-redo';
+
+      btn = $T.el('span');
+    btn.id = 'tegaki-undo-btn';
+    btn.className = 'tegaki-mb-btn';
+    /*btn.textContent = TegakiStrings().undo;*/
+    btn.title = TegakiKeybinds.getCaption('undo');
+    $T.on(btn, 'click', Tegaki.onUndoClick);
+    undoRedoWrapper.appendChild(btn);
+
+    btn = $T.el('span');
+    btn.id = 'tegaki-redo-btn';
+    btn.className = 'tegaki-mb-btn';
+    /*btn.textContent = TegakiStrings().redo;*/
+    btn.title = TegakiKeybinds.getCaption('redo');
+    $T.on(btn, 'click', Tegaki.onRedoClick);
+    undoRedoWrapper.appendChild(btn);
+
+    frag.appendChild(undoRedoWrapper);
     return frag;
   },
 
@@ -5685,6 +5689,14 @@ var TegakiUI = {
 
     return cnt;
   },
+  
+  buildCancelBtn: function() {
+    var cancelButton = $T.el('span');
+    cancelButton.className = 'tegaki-mb-btn';
+    cancelButton.id = 'tegaki-cancel-btn';
+    $T.on(cancelButton, 'click', Tegaki.onCancelClick);
+    return cancelButton;
+  },
 
   buildToolsMenu: function() {
     var grp, el, lbl, name;
@@ -5696,7 +5708,7 @@ var TegakiUI = {
       el = $T.el('span');
       el.setAttribute('data-tool', name);
 
-      lbl = TegakiStrings[name];
+      lbl = TegakiStrings()[name];
 
       if (Tegaki.tools[name].keybind) {
         lbl += ' (' + Tegaki.tools[name].keybind.toUpperCase() + ')';
@@ -5792,13 +5804,13 @@ var TegakiUI = {
 
     el = $T.el('span');
     el.title = TegakiStrings().addLayer;
-    el.className = 'tegaki-ui-btn tegaki-icon tegaki-plus';
+    el.className = 'tegaki-ui-btn tegaki-icon tegaki-add-layer';
     $T.on(el, 'click', Tegaki.onLayerAddClick);
     row.appendChild(el);
 
     el = $T.el('span');
     el.title = TegakiStrings().delLayers;
-    el.className = 'tegaki-ui-btn tegaki-icon tegaki-minus';
+    el.className = 'tegaki-ui-btn tegaki-icon tegaki-delete';
     $T.on(el, 'click', Tegaki.onLayerDeleteClick);
     row.appendChild(el);
 

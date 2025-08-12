@@ -6,6 +6,17 @@
   font-style: normal;
 }
 
+
+:root {
+  --bright: #fff5f6;
+  --pink:#FFE5EA;
+  --dark-pink: #ffb6c1;
+  --darkest-pink: #361616;
+  --accent: #a61930;
+  
+}
+
+
 .tegaki-icon:before {
   font-family: 'tegaki';
   font-style: normal;
@@ -22,9 +33,6 @@
 .tegaki-plus:before { content: '\e801'; } /* '' */
 .tegaki-minus:before { content: '\e802'; } /* '' */
 .tegaki-pen:before { content: '\e803'; } /* '' */
-.tegaki-down-open:before { content: '\e804'; } /* '' */
-.tegaki-up-open:before { content: '\e805'; } /* '' */
-.tegaki-level-down:before { content: '\e806'; } /* '' */
 .tegaki-pencil:before { content: '\e807'; } /* '' */
 .tegaki-play:before { content: '\e808'; } /* '' */
 .tegaki-bucket:before { content: '\e809'; } /* '' */
@@ -32,7 +40,6 @@
 .tegaki-blur:before { content: '\e80b'; } /* '' */
 .tegaki-to-start:before { content: '\e80c'; } /* '' */
 .tegaki-watercolor:before { content: '\e80d'; } /* '' */
-.tegaki-tone:before { content: '\e80e'; } /* '' */
 .tegaki-airbrush:before { content: '\e80f'; } /* '' */
 .tegaki-fast-fw:before { content: '\e810'; } /* '' */
 .tegaki-fast-bw:before { content: '\e811'; } /* '' */
@@ -40,6 +47,187 @@
 .tegaki-right-open:before { content: '\e813'; } /* '' */
 .tegaki-eraser:before { content: '\f12d'; } /* '' */
 .tegaki-pipette:before { content: '\f1fb'; } /* '' */
+
+/*Custom Icons*/
+
+/*Eraser Tip Icons */
+#tegaki-tool-mode-tip-0:before {    
+    content: '';
+    background-image: url('/assets/ui/tip-pencil.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    width: 10px; 
+    height: 10px; 
+}
+#tegaki-tool-mode-tip-1:before {    
+    content: '';
+    background-image: url('/assets/ui/tip-brush.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    width: 10px; 
+    height: 10px; 
+}
+#tegaki-tool-mode-tip-2:before {    
+    content: '';
+    background-image: url('/assets/ui/tip-airbrush.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    width: 10px; 
+    height: 10px; 
+}
+
+
+/*Layers Icons*/
+.tegaki-delete {    
+    content: '';
+    background-image: url('/assets/ui/icon-trash.svg');
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    width: 30px; 
+    height: 30px; 
+}
+
+.tegaki-add-layer {    
+    content: '';
+    background-image: url('/assets/ui/icon-add-layer.svg');
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    width: 30px; 
+    height: 30px; 
+}
+
+.tegaki-level-down {    
+    content: '';
+    background-image: url('/assets/ui/icon-merge.svg');
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    width: 30px; 
+    height: 30px; 
+}
+
+.tegaki-down-open {     
+    content: '';
+    background-image: url('/assets/ui/icon-move-down.svg');
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    width: 30px; 
+    height: 30px; 
+  } 
+
+.tegaki-up-open{   
+    background-image: url('/assets/ui/icon-move-up.svg');
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    width: 30px; 
+    height: 30px; 
+  } 
+
+
+ /*Tool Icons*/ 
+
+.tegaki-tone { 
+    background-image: url('/assets/ui/icon-tone.svg');
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    width: 30px; 
+    height: 30px; 
+} 
+
+
+/*Menu Bar*/
+
+
+#tegaki-pinksea-logo {
+ width:40px;
+ border-right: 1px solid var(--dark-pink);
+ display:flex;
+ justify-content: center;
+ margin-right:6px;
+}
+
+#tegaki-pinksea-logo:before {
+  content:" ";
+  background-image: url('/assets/ui/icon-pinksea.svg');
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: inline-block;
+  width: 30px; 
+  height: 30px; 
+}
+
+#tegaki-undo-redo {
+  border-left: 1px solid var(--dark-pink);
+  border-right: 1px solid var(--dark-pink);
+  margin-left:6px;
+  display: flex;
+  align-items: center;
+}
+
+#tegaki-undo-btn {
+  border-right: 1px solid var(--dark-pink);
+}
+
+#tegaki-undo-btn:before {
+  content:" ";
+  background-image: url('/assets/ui/icon-undo.svg');
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: inline-block;
+  width: 30px; 
+  height: 30px; 
+}
+
+#tegaki-redo-btn:before {
+  content:" ";
+  background-image: url('/assets/ui/icon-redo.svg');
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: inline-block;
+  width: 30px; 
+  height: 30px; 
+}
+
+#tegaki-cancel-btn {
+  margin-left: auto;
+  border-left: 1px solid var(--dark-pink);
+  padding:0;
+  width:40px;
+  display:flex;
+  justify-content: center;
+
+}
+
+#tegaki-cancel-btn:before {
+  content:" ";
+  background-image: url('/assets/ui/icon-close.svg');
+  background-size: 20px 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: inline-block;
+  width: 30px; 
+  height: 30px; 
+}
 
 .tegaki-disabled,
 .tegaki-disabled::after,
@@ -76,8 +264,8 @@
   height: 100%;
   top: 0;
   left: 0;
-  background-color: #a3b1bf;
-  color: #222;
+  background-color: #FFB6C1;
+  color: #361616;
   font-family: arial, sans-serif;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -85,9 +273,9 @@
   user-select: none;
   z-index: 9999;
   display: grid;
-  grid-template-columns: 40px 1fr 160px;
-  grid-template-rows: 24px 1fr 18px;
-  grid-gap: 2px;
+ grid-template-columns: 40px 1fr 200px;
+  grid-template-rows: 40px 1fr 18px;
+  grid-gap: 1px;
 }
 
 #tegaki input {
@@ -95,7 +283,7 @@
 }
 
 #tegaki > div {
-  background-color: #8d99a6;
+  background-color: var(--pink);
 }
 
 #tegaki-menu-cnt {
@@ -103,6 +291,7 @@
   white-space: nowrap;
   overflow: hidden;
   display: flex;
+  align-items: center;
 }
 
 #tegaki-tools-cnt {
@@ -110,7 +299,12 @@
   padding: 4px;
 }
 
+#tegaki #tegaki-canvas-cnt {
+  background-color: var(--bright);
+}
+
 #tegaki-canvas-cnt {
+
   grid-area: 2 / 2 / 3 / 3;
   overflow: auto;
   display: flex;
@@ -133,7 +327,7 @@
 }
 
 #tegaki-status-replay {
-  color: #a61930;
+  color: var(--accent)
 }
 
 #tegaki-status-output {
@@ -142,16 +336,15 @@
 }
 
 #tegaki-status-version {
-  color: #adbdcc;
+  color: #361616;
   font-size: 11px;
   margin-left: auto;
 }
 
 #tegaki-menu-bar {
   font-size: 12px;
-  padding-left: 4px;
-  padding-right: 18px;
-  border-right: 2px solid #a3b1bf;
+  display:flex;
+  align-items: center;
 }
 
 .tegaki-replay-mode #tegaki-menu-bar {
@@ -175,8 +368,8 @@
   width: 100px;
   height: 24px;
   margin: 0 4px;
-  border-left: 1px solid #a3b1bf;
-  border-right: 1px solid #a3b1bf;
+  border-left: 1px solid var(--dark-pink);
+  border-right: 1px solid var(--dark-pink);
   /*background-color: rgba(0, 0, 0, 0.25);*/
 }
 
@@ -219,6 +412,7 @@
   font-size: 11px;
   margin-left: 4px;
   line-height: 24px;
+  display: flex;
 }
 
 .tegaki-toolmode-lbl {
@@ -230,8 +424,10 @@
 }
 
 .tegaki-toolmode-grp {
-  border-left: 1px solid #a3b1bf;
+  border-left: 1px solid var(--dark-pink);
   padding: 0 18px;
+  display:flex;
+  align-items: center;
 }
 
 #tegaki canvas {
@@ -243,7 +439,9 @@
 }
 
 .tegaki-tool-active {
-  color: #f2f3f4;
+
+  filter: brightness(0) saturate(100%) invert(72%) sepia(84%) saturate(4903%) hue-rotate(324deg) brightness(120%) contrast(110%); 
+
 }
 
 .tegaki-tool-btn {
@@ -254,7 +452,7 @@
 }
 
 .tegaki-tool-btn:hover {
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: rgba(255, 99, 99, 0.15);
 }
 
 .tegaki-tool-btn:before {
@@ -268,32 +466,33 @@
   cursor: default;
   text-decoration: none;
   display: inline-block;
-  padding: 0 6px;
+  padding: 0 12px;
   word-spacing: -1px;
   position: relative;
-  line-height: 24px;
-  height: 24px;
+  line-height: 30px;
+  height: 30px;
 }
 
 .tegaki-mb-btn:hover:not(.tegaki-disabled),
 .tegaki-ui-btn:hover:not(.tegaki-disabled) {
-  background-color: rgba(0, 0, 0, 0.10);
+   background-color: rgba(255, 99, 99, 0.15);
 }
 
 .tegaki-sw-btn {
   display: inline;
-  padding: 2px 6px;
+  padding: 0px 12px;
   margin: 0 2px;
-  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.15), -1px -1px 0 rgba(255, 255, 255, 0.15);
+  line-height: 30px;
+  
 }
 
 .tegaki-sw-btn:hover:not(.tegaki-sw-btn-a) {
-  background-color: rgba(0, 0, 0, 0.05);
+   background-color: rgba(255, 99, 99, 0.15);
 }
 
 .tegaki-sw-btn-a {
-  background-color: rgba(0, 0, 0, 0.1);
-  box-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(255, 255, 255, 0.15);
+  background-color: var(--dark-pink);
+  
 }
 
 #tegaki-toolmode-bar .tegaki-mb-btn-a {
@@ -303,6 +502,12 @@
 
 #tegaki-toolmode-bar .tegaki-mb-btn.tegaki-mb-btn-a:hover {
   color: inherit;
+}
+
+
+
+#tegaki-toolmode-ctrl-tip, #tegaki-tool-mode-tip-ctrl {
+  display:flex;
 }
 
 #tegaki-debug {
@@ -333,7 +538,7 @@
 #tegaki-layers {
   position: relative;
   font-size: 0;
-  box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.25);
+  border:1px solid rgb(152, 102, 102);
   contain: content;
 }
 
@@ -468,12 +673,14 @@
 
 .tegaki-range-lbl-xs {
   width: 20px;
-  font-size: 10px;
+  font-size: 12px;
+
 }
 
 .tegaki-label-xs {
-  font-size: 10px;
+  font-size: 12px;
   vertical-align: top;
+  margin-right:4px;
 }
 
 .tegaki-lbl-c::after {
@@ -505,13 +712,18 @@
 .tegaki-ctrlgrp-title {
   font-size: 12px;
   font-weight: bold;
-  margin-bottom: 6px;
-  background-color: #a3b1bf;
+  margin: 20px 0 13px;
+  background-color: var(--dark-pink);
   padding: 1px 4px;
+}
+
+#tegaki-ctrlgrp-zoom .tegaki-ctrlgrp-title {
+  margin-top: 0;
 }
 
 .tegaki-ctrlrow {
   font-size: 11px;
+
 }
 
 .tegaki-ctrlrow:not(:last-child) {
@@ -519,10 +731,38 @@
 }
 
 .tegaki-ctrl-range {
+
+  -webkit-appearance: none;  
+  appearance: none;
   width: calc(100% - 34px);
   padding: 0;
   margin: 0;
   height: 14px;
+  box-shadow:none;
+  border: 1px solid var(--dark-pink);
+  border-radius: 50px;
+}
+
+.tegaki-ctrl-range::-webkit-slider-thumb {
+  -webkit-appearance: none; 
+  appearance: none;
+  border-radius: 50px;;
+  width: 16px;
+  height:16px;
+  transform: scale(1.1);
+  background: var(--bright); 
+  cursor: pointer; 
+  border:1px solid var(--dark-pink);
+}
+
+.tegaki-ctrl-range::-moz-range-thumb {
+  border-radius: 50px;;
+  width: 16px;
+  height:16px;
+  transform: scale(1.1);
+  background: var(--bright); 
+  cursor: pointer; 
+  border:1px solid var(--dark-pink);
 }
 
 /* zoom ctrl group */
@@ -546,8 +786,8 @@
 
 .tegaki-color-grid {
   display: grid;
-  grid-gap: 4px;
-  margin-top: 6px;
+  grid-gap: 1px;
+  margin-top: 10px;
 }
 
 .tegaki-color-grid-20 {
@@ -561,7 +801,7 @@
 }
 
 .tegaki-color-btn {
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 1px var(--darkest-pink);
 }
 
 #tegaki-color,
@@ -569,9 +809,9 @@
   padding: 0;
   border: 0;
   display: block;
-  width: 28px;
-  height: 28px;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+  width: 30px;
+  height: 30px;
+  box-shadow: 0 0 0 1px var(--darkest-pink);
 }
 
 /* layers ctrl group */
@@ -590,22 +830,26 @@
 
 #tegaki-layers-ctrl {
   margin-top: 4px;
+  display: flex;
+  gap: 1px;
 }
+
+
 
 #tegaki-layers-grid {
   height: 84px;
   min-height: 84px;
   overflow: auto;
-  background-color: #8d99a6;
+  background-color: var(--pink);
   display: flex;
   flex-direction: column;
-  border: 1px solid #a3b1bf;
+  border: 1px solid var(--dark-pink);
   resize: vertical;
 }
 
 .tegaki-layers-cell {
   box-sizing: border-box;
-  box-shadow: 0 1px 0 0px #a3b1bf;
+  border-bottom:1px solid var(--dark-pink);
   padding: 0;
   height: 28px;
   flex-shrink: 0;
@@ -616,7 +860,7 @@
 
 .tegaki-layers-cell-s,
 .tegaki-layers-cell-a {
-  background-color: #a3b1bf7f;
+  background-color: var(--bright);
 }
 
 .tegaki-layers-cell-a {
