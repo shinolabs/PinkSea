@@ -21,8 +21,9 @@ public class MetaGeneratorService(
     public async Task<string> GetOekakiMetaFor(string did, string rkey)
     {
         var oekakiResponse = await query.GetOekaki(did, rkey);
+        var profileResponse = await query.GetProfile(did);
         return oekakiResponse != null
-            ? FormatOekakiResponse(oekakiResponse)
+            ? FormatOekakiResponse(oekakiResponse, profileResponse)
             : GetRegularMeta();
     }
     
@@ -62,24 +63,32 @@ public class MetaGeneratorService(
     /// Formats an oekaki response.
     /// </summary>
     /// <param name="resp">The response.</param>
+    /// <param name="profile">The profile of the author.</param>
     /// <returns>The formatted oekaki response.</returns>
-    private string FormatOekakiResponse(GetOekakiResponse resp)
+    private string FormatOekakiResponse(GetOekakiResponse resp, GetProfileResponse? profile)
     {
         var rkey = resp.Parent
             .AtProtoLink
             .Split('/')
             .Last();
         
+        var title = profile is { Nickname: not null }
+            ? $"{profile.Nickname} (@{resp.Parent.Author.Handle})"
+            : $"{resp.Parent.Author.Handle} (@{resp.Parent.Author.Handle})";
+        
         return $"""
                   {GenerateConfig()}
                   <link rel="alternate" href="{resp.Parent.AtProtoLink}" />
                   <link href="{options.Value.FrontEndEndpoint}/ap/note.json?did={resp!.Parent.Author.Did}&rkey={rkey}" rel="alternate" type="application/activity+json" />
                   <link href="{options.Value.FrontEndEndpoint}/oembed.json?url={options.Value.FrontEndEndpoint}/{resp.Parent.Author.Did}/oekaki/{rkey}" rel="alternate" type="application/json+oembed" />
+                  <link href="{options.Value.FrontEndEndpoint}/assets/img/logo-32x32.png" rel="icon" sizes="32x32" type="image/png" />
+                  <link href="{options.Value.FrontEndEndpoint}/assets/img/logo-16x16.png" rel="icon" sizes="16x16" type="image/png" />
                   <meta name="application-name" content="PinkSea">
                   <meta name="generator" content="PinkSea.Gateway">
                   <meta property="og:site_name" content="PinkSea" />
-                  <meta property="og:title" content="{resp!.Parent.Author.Handle}'s oekaki" />
-                  <meta property="profile:username" content="@{resp!.Parent.Author.Handle}" />
+                  <meta property="og:title" content="{title}" />
+                  <meta property="twitter:title" content="{title}" />
+                  <meta property="profile:username" content="{resp!.Parent.Author.Handle}" />
                   <meta property="og:type" content="website" />
                   <meta property="og:url" content="{options.Value.FrontEndEndpoint}/{resp.Parent.Author.Did}/oekaki/{rkey}" />
                   <meta property="og:image" content="{resp!.Parent.ImageLink}" />
@@ -102,6 +111,8 @@ public class MetaGeneratorService(
                 {GenerateConfig()}
                 <link rel="alternate" href="at://{resp.Did}/com.shinolabs.pinksea.profile/self" />
                 <link href="{options.Value.FrontEndEndpoint}/ap/actor.json?did={resp!.Did}" rel="alternate" type="application/activity+json" />
+                <link href="{options.Value.FrontEndEndpoint}/assets/img/logo-32x32.png" rel="icon" sizes="32x32" type="image/png" />
+                <link href="{options.Value.FrontEndEndpoint}/assets/img/logo-16x16.png" rel="icon" sizes="16x16" type="image/png" />
                 <meta name="application-name" content="PinkSea">
                 <meta name="generator" content="PinkSea.Gateway">
                 <meta property="og:site_name" content="PinkSea" />
