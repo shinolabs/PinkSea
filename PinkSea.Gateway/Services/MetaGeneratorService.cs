@@ -9,8 +9,7 @@ namespace PinkSea.Gateway.Services;
 /// The meta tag generator service.
 /// </summary>
 public class MetaGeneratorService(
-    IHttpClientFactory httpClientFactory,
-    IMemoryCache memoryCache,
+    PinkSeaQuery query,
     IOptions<GatewaySettings> options)
 {
     /// <summary>
@@ -19,32 +18,25 @@ public class MetaGeneratorService(
     /// <param name="did">The DID.</param>
     /// <param name="rkey">The record key of the oekaki.</param>
     /// <returns>The formatted meta tags.</returns>
-    public Task<string> GetOekakiMetaFor(string did, string rkey)
+    public async Task<string> GetOekakiMetaFor(string did, string rkey)
     {
-        const int cacheExpiry = 30;
-        const int cacheExpiryWhenFailed = 1;
-        const string endpointTemplate = "/xrpc/com.shinolabs.pinksea.getOekaki?did={0}&rkey={1}";
-        
-        return memoryCache.GetOrCreateAsync<string>($"{did}:{rkey}",
-            async cacheEntry =>
-            {
-                using var client = httpClientFactory.CreateClient("pinksea-xrpc");
-                try
-                {
-                    var resp = await client.GetFromJsonAsync<GetOekakiResponse>(string.Format(endpointTemplate, did, rkey));
-                
-                    cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cacheExpiry);
-                
-                    return resp is not null
-                        ? FormatOekakiResponse(resp)
-                        : "";
-                }
-                catch (HttpRequestException)
-                {
-                    cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cacheExpiryWhenFailed);
-                    return GetRegularMeta();
-                }
-            })!;
+        var oekakiResponse = await query.GetOekaki(did, rkey);
+        return oekakiResponse != null
+            ? FormatOekakiResponse(oekakiResponse)
+            : GetRegularMeta();
+    }
+    
+    /// <summary>
+    /// Gets the meta-tags for a given profile.
+    /// </summary>
+    /// <param name="did">The DID.</param>
+    /// <returns>The formatted meta-tags.</returns>
+    public async Task<string> GetProfileMetaFor(string did)
+    {
+        var profileResponse = await query.GetProfile(did);
+        return profileResponse != null
+            ? FormatProfileResponse(profileResponse)
+            : GetRegularMeta();
     }
 
     /// <summary>
@@ -78,19 +70,45 @@ public class MetaGeneratorService(
             .Split('/')
             .Last();
         
+        return $$"""
+                 {{GenerateConfig()}}
+                 <link rel="alternate" href="{{resp.Parent.AtProtoLink}}" />
+                 <link href="{{options.Value.FrontEndEndpoint}}/ap/note.json?did={{resp!.Parent.Author.Did}}&rkey={{rkey}}" rel="alternate" type="application/activity+json" />
+                 <meta name="application-name" content="PinkSea">
+                 <meta name="generator" content="PinkSea.Gateway">
+                 <meta property="og:site_name" content="PinkSea" />
+                 <meta property="og:title" content="{{resp!.Parent.Author.Handle}}'s oekaki" />
+                 <meta property="profile:username" content="@{{resp!.Parent.Author.Handle}}" />
+                 <meta property="og:type" content="website" />
+                 <meta property="og:url" content="{{options.Value.FrontEndEndpoint}}/{{resp.Parent.Author.Did}}/oekaki/{{rkey}}" />
+                 <meta property="og:image" content="{{resp!.Parent.ImageLink}}" />
+                 <meta property="og:description" content="{{resp!.Parent.Alt}}" />
+                 <meta name="theme-color" content="#FFB6C1">
+                 <meta name="twitter:card" content="summary_large_image">
+                 """;
+    }
+    
+    /// <summary>
+    /// Formats a profile response.
+    /// </summary>
+    /// <param name="resp">The response.</param>
+    /// <returns>The formatted profile response.</returns>
+    private string FormatProfileResponse(GetProfileResponse resp)
+    {
+        var description = resp.Description ?? "This user has no description.";
+        var avatarLink = resp.Avatar ?? $"{options.Value.FrontEndEndpoint}/assets/img/blank_avatar.png";
         return $"""
                 {GenerateConfig()}
-                <link rel="alternate" href="{resp.Parent.AtProtoLink}" />
+                <link rel="alternate" href="at://{resp.Did}/com.shinolabs.pinksea.profile/self" />
                 <meta name="application-name" content="PinkSea">
                 <meta name="generator" content="PinkSea.Gateway">
                 <meta property="og:site_name" content="PinkSea" />
-                <meta property="og:title" content="{resp!.Parent.Author.Handle}'s oekaki" />
+                <meta property="og:title" content="{resp.Nickname ?? resp.Handle}'s profile" />
                 <meta property="og:type" content="website" />
-                <meta property="og:url" content="{options.Value.FrontEndEndpoint}/{resp.Parent.Author.Did}/oekaki/{rkey}" />
-                <meta property="og:image" content="{resp!.Parent.ImageLink}" />
-                <meta property="og:description" content="{resp!.Parent.Alt}" />
+                <meta property="og:url" content="{options.Value.FrontEndEndpoint}/{resp.Did}" />
+                <meta property="og:image" content="{avatarLink}" />
+                <meta property="og:description" content="{description}" />
                 <meta name="theme-color" content="#FFB6C1">
-                <meta name="twitter:card" content="summary_large_image">
                 """;
     }
 
