@@ -70,22 +70,23 @@ public class MetaGeneratorService(
             .Split('/')
             .Last();
         
-        return $$"""
-                 {{GenerateConfig()}}
-                 <link rel="alternate" href="{{resp.Parent.AtProtoLink}}" />
-                 <link href="{{options.Value.FrontEndEndpoint}}/ap/note.json?did={{resp!.Parent.Author.Did}}&rkey={{rkey}}" rel="alternate" type="application/activity+json" />
-                 <meta name="application-name" content="PinkSea">
-                 <meta name="generator" content="PinkSea.Gateway">
-                 <meta property="og:site_name" content="PinkSea" />
-                 <meta property="og:title" content="{{resp!.Parent.Author.Handle}}'s oekaki" />
-                 <meta property="profile:username" content="@{{resp!.Parent.Author.Handle}}" />
-                 <meta property="og:type" content="website" />
-                 <meta property="og:url" content="{{options.Value.FrontEndEndpoint}}/{{resp.Parent.Author.Did}}/oekaki/{{rkey}}" />
-                 <meta property="og:image" content="{{resp!.Parent.ImageLink}}" />
-                 <meta property="og:description" content="{{resp!.Parent.Alt}}" />
-                 <meta name="theme-color" content="#FFB6C1">
-                 <meta name="twitter:card" content="summary_large_image">
-                 """;
+        return $"""
+                  {GenerateConfig()}
+                  <link rel="alternate" href="{resp.Parent.AtProtoLink}" />
+                  <link href="{options.Value.FrontEndEndpoint}/ap/note.json?did={resp!.Parent.Author.Did}&rkey={rkey}" rel="alternate" type="application/activity+json" />
+                  <link href="{options.Value.FrontEndEndpoint}/oembed.json?url={options.Value.FrontEndEndpoint}/{resp.Parent.Author.Did}/oekaki/{rkey}" rel="alternate" type="application/json+oembed" />
+                  <meta name="application-name" content="PinkSea">
+                  <meta name="generator" content="PinkSea.Gateway">
+                  <meta property="og:site_name" content="PinkSea" />
+                  <meta property="og:title" content="{resp!.Parent.Author.Handle}'s oekaki" />
+                  <meta property="profile:username" content="@{resp!.Parent.Author.Handle}" />
+                  <meta property="og:type" content="website" />
+                  <meta property="og:url" content="{options.Value.FrontEndEndpoint}/{resp.Parent.Author.Did}/oekaki/{rkey}" />
+                  <meta property="og:image" content="{resp!.Parent.ImageLink}" />
+                  <meta property="og:description" content="{resp!.Parent.Alt}" />
+                  <meta name="theme-color" content="#FFB6C1">
+                  <meta name="twitter:card" content="summary_large_image">
+                  """;
     }
     
     /// <summary>
@@ -100,6 +101,7 @@ public class MetaGeneratorService(
         return $"""
                 {GenerateConfig()}
                 <link rel="alternate" href="at://{resp.Did}/com.shinolabs.pinksea.profile/self" />
+                <link href="{options.Value.FrontEndEndpoint}/ap/actor.json?did={resp!.Did}" rel="alternate" type="application/activity+json" />
                 <meta name="application-name" content="PinkSea">
                 <meta name="generator" content="PinkSea.Gateway">
                 <meta property="og:site_name" content="PinkSea" />

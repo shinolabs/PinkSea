@@ -9,6 +9,7 @@ builder.Services.Configure<GatewaySettings>(
 builder.Services.AddScoped<MetaGeneratorService>();
 builder.Services.AddScoped<PinkSeaQuery>();
 builder.Services.AddScoped<ActivityPubRenderer>();
+builder.Services.AddScoped<OEmbedRenderer>();
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient(
     "pinksea-xrpc",
@@ -41,6 +42,12 @@ app.MapGet(
         return Results.Text(file, contentType: "text/html");
     });
 
+app.MapGet("/api/v1/status/{test}",
+    async ([FromRoute] string test, [FromServices] ActivityPubRenderer activityPubRenderer) =>
+    {
+        return Results.Ok("");
+    });
+
 app.MapGet("/ap/note.json",
     async ([FromQuery] string did, [FromQuery] string rkey, [FromServices] ActivityPubRenderer activityPubRenderer) =>
     {
@@ -63,6 +70,20 @@ app.MapGet("/ap/actor.json",
         }
 
         return Results.Json(response, contentType: "application/activity+json");
+    });
+
+app.MapGet("/oembed.json",
+    async ([FromQuery] string url, [FromServices] OEmbedRenderer oEmbedRenderer) =>
+    {
+        var uri = new Uri(url);
+        var split = uri.AbsolutePath.Split("/");
+        var response = await oEmbedRenderer.RenderOEmbedForOekaki(split[1], split[3]);
+        if (response is null)
+        {
+            return Results.NotFound();
+        }
+
+        return Results.Json(response, contentType: "application/json+oembed");
     });
 
 app.MapGet(
