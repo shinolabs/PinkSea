@@ -28,6 +28,12 @@ public class Note : IActivityStreamsObject
     /// </summary>
     [JsonPropertyName("attributedTo")]
     public string? AttributedTo { get; set; }
+
+    /// <summary>
+    /// The url of the note.
+    /// </summary>
+    [JsonPropertyName("url")]
+    public string? Url { get; set; }
     
     /// <summary>
     /// The content of the note.

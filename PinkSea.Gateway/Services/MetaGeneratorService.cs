@@ -53,7 +53,7 @@ public class MetaGeneratorService(
                 <meta property="og:site_name" content="PinkSea" />
                 <meta property="og:title" content="oekaki BBS" />
                 <meta property="og:type" content="website" />
-                <meta property="og:image" content="{options.Value.FrontEndEndpoint}/logo.png" />
+                <meta property="og:image" content="{options.Value.FrontEndEndpoint}/assets/img/logo.png" />
                 <meta property="og:description" content="PinkSea is an Oekaki BBS running as an AT Protocol application. Log in and draw!" />
                 <meta name="theme-color" content="#FFB6C1">
                 """;
@@ -107,6 +107,11 @@ public class MetaGeneratorService(
     {
         var description = resp.Description ?? "This user has no description.";
         var avatarLink = resp.Avatar ?? $"{options.Value.FrontEndEndpoint}/assets/img/blank_avatar.png";
+        
+        var title = resp.Nickname is not null
+            ? $"{resp.Nickname} (@{resp.Handle})"
+            : $"{resp.Handle} (@{resp.Handle})";
+        
         return $"""
                 {GenerateConfig()}
                 <link rel="alternate" href="at://{resp.Did}/com.shinolabs.pinksea.profile/self" />
@@ -116,7 +121,8 @@ public class MetaGeneratorService(
                 <meta name="application-name" content="PinkSea">
                 <meta name="generator" content="PinkSea.Gateway">
                 <meta property="og:site_name" content="PinkSea" />
-                <meta property="og:title" content="{resp.Nickname ?? resp.Handle}'s profile" />
+                <meta property="og:title" content="{title}" />
+                <meta property="twitter:title" content="{title}" />
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content="{options.Value.FrontEndEndpoint}/{resp.Did}" />
                 <meta property="og:image" content="{avatarLink}" />

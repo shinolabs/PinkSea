@@ -33,6 +33,32 @@ public class PinkSeaQuery(
             })!;
     }
 
+    public async Task<GetParentForReplyResponse?> GetPossibleParentForOekaki(string did, string rkey)
+    {
+        const int cacheExpiry = 30;
+        const int cacheExpiryWhenFailed = 1;
+        const string endpointTemplate = "/xrpc/com.shinolabs.pinksea.getParentForReply?did={0}&rkey={1}";
+        
+        return await memoryCache.GetOrCreateAsync<GetParentForReplyResponse?>($"parent:{did}:{rkey}",
+            async cacheEntry =>
+            {
+                using var client = httpClientFactory.CreateClient("pinksea-xrpc");
+                try
+                {
+                    var resp = await client.GetFromJsonAsync<GetParentForReplyResponse>(string.Format(endpointTemplate, did, rkey));
+                
+                    cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cacheExpiry);
+
+                    return resp;
+                }
+                catch
+                {
+                    cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cacheExpiryWhenFailed);
+                    return null;
+                }
+            })!;
+    }
+
     public async Task<GetOekakiResponse?> GetOekaki(string did, string rkey)
     {
         const int cacheExpiry = 30;
