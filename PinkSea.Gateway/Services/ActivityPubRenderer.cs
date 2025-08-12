@@ -14,6 +14,11 @@ public class ActivityPubRenderer(
         if (oekakiResponse is null)
             return null;
 
+        var maybeParent = await query.GetPossibleParentForOekaki(did, rkey);
+        var parentLink = maybeParent is not null
+            ? $"{options.Value.FrontEndEndpoint}/ap/note.json?did={maybeParent.AuthorDid}&rkey={maybeParent.RecordKey}"
+            : null;
+        
         return new Note
         {
             Id = $"{options.Value.FrontEndEndpoint}/ap/note.json?did={did}&rkey={rkey}",
@@ -28,7 +33,9 @@ public class ActivityPubRenderer(
                 }
             ],
             Sensitive = oekakiResponse.Parent.Nsfw,
-            AttributedTo = $"{options.Value.FrontEndEndpoint}/ap/actor.json?did={did}"
+            AttributedTo = $"{options.Value.FrontEndEndpoint}/ap/actor.json?did={did}",
+            InReplyTo = parentLink,
+            Url = $"{options.Value.FrontEndEndpoint}/{did}/oekaki/{rkey}"
         };
     }
 
@@ -47,7 +54,8 @@ public class ActivityPubRenderer(
             {
                 Url = profileResponse.Avatar ?? $"{options.Value.FrontEndEndpoint}/assets/img/blank_avatar.png"
             },
-            Bio = profileResponse.Description ?? "This user has no description."
+            Bio = profileResponse.Description ?? "This user has no description.",
+            Url = $"{options.Value.FrontEndEndpoint}/{did}"
         };
     }
 }
