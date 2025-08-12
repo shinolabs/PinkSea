@@ -18,4 +18,10 @@ public class Author
     /// </summary>
     [JsonPropertyName("handle")]
     public required string Handle { get; set; }
+    
+    /// <summary>
+    /// The nickname selected by the user.
+    /// </summary>
+    [JsonPropertyName("nick")]
+    public string? Nickname { get; set; }
 }
