@@ -41,11 +41,11 @@ public class ActivityPubRenderer(
         return new Actor
         {
             Id = $"{options.Value.FrontEndEndpoint}/ap/actor.json?did={did}",
-            Name = profileResponse.Nickname ?? profileResponse.Handle,
-            PreferredUsername = "",
+            Name = profileResponse.Nickname,
+            PreferredUsername = profileResponse.Handle,
             Icon = new Image
             {
-                Url = profileResponse.Avatar ?? $"{options.Value.FrontEndEndpoint}/assets/blank_avatar.png"
+                Url = profileResponse.Avatar ?? $"{options.Value.FrontEndEndpoint}/assets/img/blank_avatar.png"
             },
             Bio = profileResponse.Description ?? "This user has no description."
         };
