@@ -5546,6 +5546,12 @@ var TegakiUI = {
     frag = $T.el('div');
     frag.id = 'tegaki-menu-bar';
 
+    /* Creates a hidden element so that the eraser brush tips can preload.
+    If there's more assets that need preload in the future, maybe handling this on init with JS might be better?*/ 
+    var preLoader = $T.el('span');
+    preLoader.id = 'tegaki-preloader';
+    frag.appendChild(preLoader);
+
 
     var pinkSeaLogo = $T.el('span');
     pinkSeaLogo.id = 'tegaki-pinksea-logo';

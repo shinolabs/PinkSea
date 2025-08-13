@@ -154,6 +154,16 @@
 
 /*Menu Bar*/
 
+#tegaki-preloader {
+  position:absolute;
+  width:0;
+  height:0;
+  opacity:0;
+  background-image: 
+    url('/assets/ui/tip-pencil.svg'),
+    url('/assets/ui/tip-brush.svg'),
+    url('/assets/ui/tip-airbnrush.svg');
+}
 
 #tegaki-pinksea-logo {
  width:40px;
