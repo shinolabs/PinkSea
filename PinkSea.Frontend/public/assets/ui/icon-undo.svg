@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="100%" height="100%" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-    <g transform="matrix(1,0,0,1,-71.9005,-57.5642)">
-        <g id="undo" transform="matrix(0.441273,0,0,0.441273,150.158,30.3516)">
+<svg width="100%" height="100%" viewBox="0 0 27 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,-74.3442,-63.4853)">
+        <g id="undo" transform="matrix(0.372324,0,0,0.275796,140.374,46.4774)">
             <rect x="-177.344" y="61.668" width="72.517" height="72.517" style="fill:none;"/>
-            <g transform="matrix(3.76366,3.97403e-32,-3.97403e-32,3.76366,-472.09,-171.154)">
+            <g transform="matrix(4.46064,6.35844e-32,-4.70996e-32,6.02186,-533.387,-332.603)">
                 <path d="M83.116,70.514L84.618,72.015C84.97,72.368 84.97,72.94 84.618,73.292C84.265,73.645 83.693,73.645 83.34,73.292L80.295,70.247C79.942,69.894 79.942,69.322 80.295,68.969L83.335,65.929C83.688,65.576 84.26,65.576 84.612,65.929C84.965,66.281 84.965,66.854 84.612,67.206L83.111,68.707L91.557,68.707C92.699,68.707 93.795,69.161 94.603,69.969C95.411,70.777 95.864,71.873 95.864,73.015L95.864,73.017C95.864,74.159 95.411,75.255 94.603,76.063C93.795,76.871 92.699,77.325 91.557,77.325L87.272,77.325C86.773,77.325 86.369,76.92 86.369,76.422C86.369,75.923 86.773,75.518 87.272,75.518L91.557,75.518C92.22,75.518 92.856,75.255 93.325,74.786C93.795,74.317 94.058,73.68 94.058,73.017L94.058,73.015C94.058,72.352 93.795,71.716 93.325,71.246C92.856,70.777 92.22,70.514 91.557,70.514L83.116,70.514Z" style="fill:rgb(54,22,22);"/>
             </g>
         </g>
