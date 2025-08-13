@@ -48,7 +48,7 @@ public class ActivityPubRenderer(
         return new Actor
         {
             Id = $"{options.Value.FrontEndEndpoint}/ap/actor.json?did={did}",
-            Name = profileResponse.Nickname,
+            Name = profileResponse.Nickname ?? $"@{profileResponse.Handle}",
             PreferredUsername = profileResponse.Handle,
             Icon = new Image
             {
