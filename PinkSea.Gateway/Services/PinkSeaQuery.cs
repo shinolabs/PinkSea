@@ -3,10 +3,18 @@ using PinkSea.Gateway.Lexicons;
 
 namespace PinkSea.Gateway.Services;
 
+/// <summary>
+/// A helper service for querying the PinkSea appview.
+/// </summary>
 public class PinkSeaQuery(
     IHttpClientFactory httpClientFactory,
     IMemoryCache memoryCache)
 {
+    /// <summary>
+    /// Gets a profile for a given DID.
+    /// </summary>
+    /// <param name="did">The DID.</param>
+    /// <returns>The profile, if found.</returns>
     public async Task<GetProfileResponse?> GetProfile(string did)
     {
         const int cacheExpiry = 30;
@@ -34,6 +42,12 @@ public class PinkSeaQuery(
             })!;
     }
 
+    /// <summary>
+    /// Gets a possible parent for a given oekaki.
+    /// </summary>
+    /// <param name="did">The DID of the author.</param>
+    /// <param name="rkey">The record key of the oekaki.</param>
+    /// <returns>The possible parent for the oekaki.</returns>
     public async Task<GetParentForReplyResponse?> GetPossibleParentForOekaki(string did, string rkey)
     {
         const int cacheExpiry = 30;
@@ -61,6 +75,12 @@ public class PinkSeaQuery(
             })!;
     }
 
+    /// <summary>
+    /// Gets the oekaki data for a given DID and record key.
+    /// </summary>
+    /// <param name="did">The DID of the author.</param>
+    /// <param name="rkey">The record key of the oekaki.</param>
+    /// <returns>The oekaki, if found.</returns>
     public async Task<GetOekakiResponse?> GetOekaki(string did, string rkey)
     {
         const int cacheExpiry = 30;
@@ -88,6 +108,11 @@ public class PinkSeaQuery(
             })!;
     }
 
+    /// <summary>
+    /// Ensures that the given string is a DID, trying to resolve it as a handle if not.
+    /// </summary>
+    /// <param name="did">The DID or a handle.</param>
+    /// <returns>The resulting DID.</returns>
     private async Task<string> EnsureDid(string did)
     {
         if (did.StartsWith("did:", StringComparison.OrdinalIgnoreCase))

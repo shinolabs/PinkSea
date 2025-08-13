@@ -4,10 +4,19 @@ using PinkSea.Gateway.Models;
 
 namespace PinkSea.Gateway.Services;
 
+/// <summary>
+/// Service that renders PinkSea oekaki and users as ActivityPub notes and actors.
+/// </summary>
 public class ActivityPubRenderer(
     PinkSeaQuery query,
     IOptions<GatewaySettings> options)
 {
+    /// <summary>
+    /// Renders an oekaki as a note.
+    /// </summary>
+    /// <param name="did">The DID of the author.</param>
+    /// <param name="rkey">The record key of the oekaki.</param>
+    /// <returns>The rendered note, if applicable.</returns>
     public async Task<Note?> RenderNoteForOekaki(string did, string rkey)
     {
         var oekakiResponse = await query.GetOekaki(did, rkey);
@@ -39,6 +48,11 @@ public class ActivityPubRenderer(
         };
     }
 
+    /// <summary>
+    /// Renders a profile as an actor.
+    /// </summary>
+    /// <param name="did">The DID of the profile.</param>
+    /// <returns>The actor, if applicable.</returns>
     public async Task<Actor?> RenderActorForProfile(string did)
     {
         var profileResponse = await query.GetProfile(did);
