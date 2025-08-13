@@ -19,6 +19,7 @@ public class PinkSeaQuery(
                 using var client = httpClientFactory.CreateClient("pinksea-xrpc");
                 try
                 {
+                    did = await EnsureDid(did);
                     var resp = await client.GetFromJsonAsync<GetProfileResponse>(string.Format(endpointTemplate, did));
                 
                     cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cacheExpiry);
@@ -45,6 +46,7 @@ public class PinkSeaQuery(
                 using var client = httpClientFactory.CreateClient("pinksea-xrpc");
                 try
                 {
+                    did = await EnsureDid(did);
                     var resp = await client.GetFromJsonAsync<GetParentForReplyResponse>(string.Format(endpointTemplate, did, rkey));
                 
                     cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cacheExpiry);
@@ -71,6 +73,7 @@ public class PinkSeaQuery(
                 using var client = httpClientFactory.CreateClient("pinksea-xrpc");
                 try
                 {
+                    did = await EnsureDid(did);
                     var resp = await client.GetFromJsonAsync<GetOekakiResponse>(string.Format(endpointTemplate, did, rkey));
                 
                     cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cacheExpiry);
@@ -83,5 +86,24 @@ public class PinkSeaQuery(
                     return null;
                 }
             })!;
+    }
+
+    private async Task<string> EnsureDid(string did)
+    {
+        if (did.StartsWith("did:", StringComparison.OrdinalIgnoreCase))
+            return did;
+        
+        const string endpointTemplate = "/xrpc/com.atproto.identity.resolveHandle?handle={0}";
+
+        using var client = httpClientFactory.CreateClient("pinksea-xrpc");
+        try
+        {
+            var resp = await client.GetFromJsonAsync<ResolveHandleResponse>(string.Format(endpointTemplate, did));
+            return resp!.Did;
+        }
+        catch
+        {
+            return did;
+        }
     }
 }

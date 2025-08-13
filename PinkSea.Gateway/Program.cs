@@ -3,7 +3,6 @@ using PinkSea.Gateway.Models;
 using PinkSea.Gateway.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddHttpLogging(o => { });
 builder.Services.Configure<GatewaySettings>(
     builder.Configuration.GetSection("GatewaySettings"));
 builder.Services.AddScoped<MetaGeneratorService>();
@@ -19,7 +18,6 @@ builder.Services.AddHttpClient(
     });
 
 var app = builder.Build();
-app.UseHttpLogging();
 app.UseStaticFiles();
 app.MapGet(
     "/{did}/oekaki/{rkey}", 
@@ -40,12 +38,6 @@ app.MapGet(
         file = file.Replace("<!-- META -->", await metaGenerator.GetProfileMetaFor(did));
 
         return Results.Text(file, contentType: "text/html");
-    });
-
-app.MapGet("/api/v1/status/{test}",
-    async ([FromRoute] string test, [FromServices] ActivityPubRenderer activityPubRenderer) =>
-    {
-        return Results.Ok("");
     });
 
 app.MapGet("/ap/note.json",
