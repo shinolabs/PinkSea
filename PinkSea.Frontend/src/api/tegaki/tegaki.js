@@ -5546,12 +5546,6 @@ var TegakiUI = {
     frag = $T.el('div');
     frag.id = 'tegaki-menu-bar';
 
-    /* Creates a hidden element so that the eraser brush tips can preload.
-    If there's more assets that need preload in the future, maybe handling this on init with JS might be better?*/ 
-    var preLoader = $T.el('span');
-    preLoader.id = 'tegaki-preloader';
-    frag.appendChild(preLoader);
-
 
     var pinkSeaLogo = $T.el('span');
     pinkSeaLogo.id = 'tegaki-pinksea-logo';
@@ -5581,7 +5575,7 @@ var TegakiUI = {
 
     btn = $T.el('span');
     btn.id = 'tegaki-undo-btn';
-    btn.className = 'tegaki-mb-btn';
+    btn.className = 'tegaki-mb-btn tegaki-ui-icon';
     btn.title = TegakiKeybinds.getCaption('undo');
     $T.on(btn, 'click', Tegaki.onUndoClick);
     undoRedoWrapper.appendChild(btn);
@@ -5592,7 +5586,7 @@ var TegakiUI = {
 
     btn = $T.el('span');
     btn.id = 'tegaki-redo-btn';
-    btn.className = 'tegaki-mb-btn';
+    btn.className = 'tegaki-mb-btn tegaki-ui-icon';
     btn.title = TegakiKeybinds.getCaption('redo');
     $T.on(btn, 'click', Tegaki.onRedoClick);
     undoRedoWrapper.appendChild(btn);
@@ -5775,7 +5769,7 @@ var TegakiUI = {
     var line = $T.el("span");
     line.className = 'tegaki-separator';
     var cancelButton = $T.el('span');
-    cancelButton.className = 'tegaki-mb-btn';
+    cancelButton.className = 'tegaki-mb-btn tegaki-ui-icon';
     cancelButton.id = 'tegaki-cancel-btn';
     $T.on(cancelButton, 'click', Tegaki.onCancelClick);
 
@@ -5802,7 +5796,7 @@ var TegakiUI = {
 
       el.setAttribute('title', lbl);
       el.id = 'tegaki-tool-btn-' + name;
-      el.className = 'tegaki-tool-btn tegaki-icon tegaki-' + name;
+      el.className = 'tegaki-tool-btn tegaki-icon tegaki-tool-icon tegaki-' + name;
 
       $T.on(el, 'click', Tegaki.onToolClick);
 
@@ -5890,20 +5884,20 @@ var TegakiUI = {
 
     el = $T.el('span');
     el.title = TegakiStrings().addLayer;
-    el.className = 'tegaki-ui-btn tegaki-icon tegaki-add-layer';
+    el.className = 'tegaki-ui-btn tegaki-ui-icon tegaki-add-layer';
     $T.on(el, 'click', Tegaki.onLayerAddClick);
     row.appendChild(el);
 
     el = $T.el('span');
     el.title = TegakiStrings().delLayers;
-    el.className = 'tegaki-ui-btn tegaki-icon tegaki-delete';
+    el.className = 'tegaki-ui-btn tegaki-ui-icon tegaki-delete';
     $T.on(el, 'click', Tegaki.onLayerDeleteClick);
     row.appendChild(el);
 
     el = $T.el('span');
     el.id = 'tegaki-layer-merge';
     el.title = TegakiStrings().mergeLayers;
-    el.className = 'tegaki-ui-btn tegaki-icon tegaki-level-down';
+    el.className = 'tegaki-ui-btn tegaki-ui-icon tegaki-level-down';
     $T.on(el, 'click', Tegaki.onMergeLayersClick);
     row.appendChild(el);
 
@@ -5911,14 +5905,14 @@ var TegakiUI = {
     el.id = 'tegaki-layer-up';
     el.title = TegakiStrings().moveLayerUp;
     el.setAttribute('data-up', '1');
-    el.className = 'tegaki-ui-btn tegaki-icon tegaki-up-open';
+    el.className = 'tegaki-ui-btn tegaki-ui-icon tegaki-up-open';
     $T.on(el, 'click', Tegaki.onMoveLayerClick);
     row.appendChild(el);
 
     el = $T.el('span');
     el.id = 'tegaki-layer-down';
     el.title = TegakiStrings().moveLayerDown;
-    el.className = 'tegaki-ui-btn tegaki-icon tegaki-down-open';
+    el.className = 'tegaki-ui-btn tegaki-ui-icon tegaki-down-open';
     $T.on(el, 'click', Tegaki.onMoveLayerClick);
     row.appendChild(el);
 
@@ -6023,14 +6017,14 @@ var TegakiUI = {
     ctrl = this.buildCtrlGroup('zoom', TegakiStrings().zoom);
 
     btn = $T.el('div');
-    btn.className = 'tegaki-ui-btn tegaki-icon tegaki-plus';
+    btn.className = 'tegaki-ui-btn tegaki-ui-icon tegaki-plus';
     btn.id = 'tegaki-zoomin-btn';
     btn.setAttribute('data-in', 1);
     $T.on(btn, 'click', Tegaki.onZoomChange);
     ctrl.appendChild(btn);
 
     btn = $T.el('div');
-    btn.className = 'tegaki-ui-btn tegaki-icon tegaki-minus';
+    btn.className = 'tegaki-ui-btn tegaki-ui-icon tegaki-minus';
     btn.id = 'tegaki-zoomout-btn';
     btn.setAttribute('data-out', 1);
     $T.on(btn, 'click', Tegaki.onZoomChange);
@@ -6067,14 +6061,14 @@ var TegakiUI = {
     btn.id = 'tegaki-palette-prev-btn';
     btn.title = TegakiStrings().switchPalette;
     btn.setAttribute('data-prev', '1');
-    btn.className = 'tegaki-ui-btn tegaki-icon tegaki-left-open tegaki-disabled';
+    btn.className = 'tegaki-ui-btn tegaki-ui-icon tegaki-left-open tegaki-disabled';
     $T.on(btn, 'click', Tegaki.onSwitchPaletteClick);
     el.appendChild(btn);
 
     btn = $T.el('span');
     btn.id = 'tegaki-palette-next-btn';
     btn.title = TegakiStrings().switchPalette;
-    btn.className = 'tegaki-ui-btn tegaki-icon tegaki-right-open';
+    btn.className = 'tegaki-ui-btn tegaki-ui-icon tegaki-right-open';
     $T.on(btn, 'click', Tegaki.onSwitchPaletteClick);
     el.appendChild(btn);
 

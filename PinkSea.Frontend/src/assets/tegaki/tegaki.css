@@ -29,24 +29,13 @@
   line-height: 1em;
 }
 
-.tegaki-cancel:before { content: '\e800'; } /* '' */
-.tegaki-plus:before { content: '\e801'; } /* '' */
-.tegaki-minus:before { content: '\e802'; } /* '' */
-.tegaki-pen:before { content: '\e803'; } /* '' */
-.tegaki-pencil:before { content: '\e807'; } /* '' */
+/*Default Tegaki Icons using Tegaki Font.  When we implement replay these can get swapped out*/
 .tegaki-play:before { content: '\e808'; } /* '' */
-.tegaki-bucket:before { content: '\e809'; } /* '' */
 .tegaki-pause:before { content: '\e80a'; } /* '' */
-.tegaki-blur:before { content: '\e80b'; } /* '' */
 .tegaki-to-start:before { content: '\e80c'; } /* '' */
 .tegaki-watercolor:before { content: '\e80d'; } /* '' */
-.tegaki-airbrush:before { content: '\e80f'; } /* '' */
 .tegaki-fast-fw:before { content: '\e810'; } /* '' */
 .tegaki-fast-bw:before { content: '\e811'; } /* '' */
-.tegaki-left-open:before { content: '\e812'; } /* '' */
-.tegaki-right-open:before { content: '\e813'; } /* '' */
-.tegaki-eraser:before { content: '\f12d'; } /* '' */
-.tegaki-pipette:before { content: '\f1fb'; } /* '' */
 
 /*Custom Icons*/
 
@@ -83,10 +72,12 @@
 }
 
 
-/*Layers Icons*/
-.tegaki-delete {    
-    content: '';
-    background-image: url('/assets/ui/icon-trash.svg');
+
+
+
+ /*Base Icon Size*/ 
+
+ .tegaki-ui-icon {
     background-size: 20px 20px;
     background-repeat: no-repeat;
     background-position: center;
@@ -95,10 +86,8 @@
     height: 30px; 
 }
 
-.tegaki-add-layer {    
-    content: '';
-    background-image: url('/assets/ui/icon-add-layer.svg');
-    background-size: 20px 20px;
+.tegaki-tool-icon {
+    background-size: 23px 23px;
     background-repeat: no-repeat;
     background-position: center;
     display: inline-block;
@@ -106,83 +95,48 @@
     height: 30px; 
 }
 
-.tegaki-level-down {    
-    content: '';
-    background-image: url('/assets/ui/icon-merge.svg');
-    background-size: 20px 20px;
-    background-repeat: no-repeat;
-    background-position: center;
-    display: inline-block;
-    width: 30px; 
-    height: 30px; 
-}
 
-.tegaki-down-open {     
-    content: '';
-    background-image: url('/assets/ui/icon-move-down.svg');
-    background-size: 20px 20px;
-    background-repeat: no-repeat;
-    background-position: center;
-    display: inline-block;
-    width: 30px; 
-    height: 30px; 
-  } 
+/*Tool Icons*/
+.tegaki-tone {background-image: url('/assets/ui/icon-tone.svg');} 
+.tegaki-pipette {background-image: url('/assets/ui/icon-pipette.svg');}
+.tegaki-blur {background-image: url('/assets/ui/icon-blur.svg');} 
+.tegaki-eraser {background-image: url('/assets/ui/icon-eraser.svg');} 
+.tegaki-pencil {background-image: url('/assets/ui/icon-pencil.svg'); } 
+.tegaki-pen {background-image: url('/assets/ui/icon-pen.svg'); } 
+.tegaki-airbrush {background-image: url('/assets/ui/icon-airbrush.svg'); } 
+.tegaki-bucket {background-image: url('/assets/ui/icon-fillbucket.svg'); } 
 
-.tegaki-up-open{   
-    background-image: url('/assets/ui/icon-move-up.svg');
-    background-size: 20px 20px;
-    background-repeat: no-repeat;
-    background-position: center;
-    display: inline-block;
-    width: 30px; 
-    height: 30px; 
-  } 
+/*Control Side Bar Icons*/
+.tegaki-delete {background-image: url('/assets/ui/icon-trash.svg');}
+.tegaki-add-layer {background-image: url('/assets/ui/icon-add-layer.svg');}
+.tegaki-level-down {background-image: url('/assets/ui/icon-merge.svg');}
+.tegaki-plus {background-image: url('/assets/ui/icon-zoom-in.svg');} 
+.tegaki-minus {background-image: url('/assets/ui/icon-zoom-out.svg');} 
+.tegaki-down-open {background-image: url('/assets/ui/icon-down.svg');} 
+.tegaki-up-open{background-image: url('/assets/ui/icon-up.svg');} 
+.tegaki-left-open {background-image: url('/assets/ui/icon-left.svg'); width:20px; height:20px; background-size: 15px 15px;} 
+.tegaki-right-open {background-image: url('/assets/ui/icon-right.svg'); width:20px; height:20px; background-size: 15px 15px;} 
+
+/*Menu Icons*/
+#tegaki-undo-btn {background-image: url('/assets/ui/icon-undo.svg'); width:20px;}
+#tegaki-redo-btn {background-image: url('/assets/ui/icon-redo.svg');  width:20px;}
+#tegaki-cancel-btn { background-image: url('/assets/ui/icon-close.svg'); width: 20px; } 
+#tegaki-pinksea-logo {background-image: url('/assets/ui/icon-pinksea.svg');}
 
 
- /*Tool Icons*/ 
-
-.tegaki-tone { 
-    background-image: url('/assets/ui/icon-tone.svg');
-    background-size: 20px 20px;
-    background-repeat: no-repeat;
-    background-position: center;
-    display: inline-block;
-    width: 30px; 
-    height: 30px; 
-} 
-
-
-/*Menu Bar*/
-
-#tegaki-preloader {
-  position:absolute;
-  width:0;
-  height:0;
-  opacity:0;
-  background-image: 
-    url('/assets/ui/tip-pencil.svg'),
-    url('/assets/ui/tip-brush.svg'),
-    url('/assets/ui/tip-airbnrush.svg');
-}
 
 #tegaki-pinksea-logo {
- width:40px;
- border-right: 1px solid var(--dark-pink);
- display:flex;
- justify-content: center;
- margin-right:6px;
-}
-
-#tegaki-pinksea-logo:before {
-  content:" ";
-  background-image: url('/assets/ui/icon-pinksea.svg');
+  width:40px;
+  height: 30px; 
+  border-right: 1px solid var(--dark-pink);
+  display:flex;
+  justify-content: center;
+  margin-right:6px;
   background-size: 20px 20px;
   background-repeat: no-repeat;
   background-position: center;
-  display: inline-block;
-  width: 30px; 
-  height: 30px; 
 }
+
 
 #tegaki-undo-redo {
   border-left: 1px solid var(--dark-pink);
@@ -194,27 +148,7 @@
   padding:0 6px;
 }
 
-#tegaki-undo-btn:before {
-  content:" ";
-  background-image: url('/assets/ui/icon-undo.svg');
-  background-size: 20px 20px;
-  background-repeat: no-repeat;
-  background-position: center;
-  display: inline-block;
-  width: 20px; 
-  height: 30px; 
-}
 
-#tegaki-redo-btn:before {
-  content:" ";
-  background-image: url('/assets/ui/icon-redo.svg');
-  background-size: 20px 20px;
-  background-repeat: no-repeat;
-  background-position: center;
-  display: inline-block;
-  width: 20px; 
-  height: 30px; 
-}
 
 #tegaki-cancel-wrapper {
   margin-left: auto;
@@ -226,16 +160,7 @@
 
 
 
-#tegaki-cancel-btn:before {
-  content:" ";
-  background-image: url('/assets/ui/icon-close.svg');
-  background-size: 20px 20px;
-  background-repeat: no-repeat;
-  background-position: center;
-  display: inline-block;
-  width: 20px; 
-  height: 30px; 
-}
+
 
 .tegaki-disabled,
 .tegaki-disabled::after,
@@ -550,6 +475,13 @@
   image-rendering: -webkit-optimize-contrast;
   image-rendering: pixelated;
   -ms-interpolation-mode: nearest-neighbor;
+}
+
+#tegaki-tools-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-top: 3px;
 }
 
 .tegaki-tool-active {
