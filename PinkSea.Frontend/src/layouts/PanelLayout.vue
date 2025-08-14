@@ -171,7 +171,8 @@ const getCreateSomethingButtonName = computed(() => {
 
 .container aside {
   display: unset;
-  width: 260px;
+  max-width: 260px;
+  width: 100%;
   height: 100vh;
   background-size: 8px 8px;
   background-image: repeating-linear-gradient(45deg, #FFB6C1 0, #FFB6C1 0.8px, #FFFFFF 0, #FFFFFF 50%);

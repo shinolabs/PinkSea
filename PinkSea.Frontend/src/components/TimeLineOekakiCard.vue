@@ -97,4 +97,10 @@ const openInNewTab = () => {
     width: calc(100% - 30px);
   }
 }
+
+@media (min-width: 768px) and (max-width: 932px) {
+  .oekaki-card {
+    width: calc((100% / 2) - 25px);
+  }
+}
 </style>
