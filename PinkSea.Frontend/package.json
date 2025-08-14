@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@atcute/client": "^2.0.3",
+    "hammerjs": "^2.0.8",
     "i18next": "^23.16.5",
     "i18next-vue": "^5.0.0",
     "pinia": "^2.2.6",
