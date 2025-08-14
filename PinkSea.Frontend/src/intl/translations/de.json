@@ -98,9 +98,9 @@
         "close": "Schließen",
         "finish": "Fertig",
         "tip": "Tip",
-        "pen": "Stift",
+        "brush": "Pinsel",
         "bucket": "Fülleimer",
-        "tone": "Ton",
+        "tone": "Raster",
         "gapless": "Lückenlos",
         "pause": "Pause",
         "slower": "Langsamer",
@@ -114,14 +114,14 @@
         "promptHeight": "Leinwandhöhe in Pixel",
         "confirmCancel": "Bist du dir sicher? Deine Arbeit wird nicht gespeichert.",
         "confirmChangeCanvas": "Bist du dir sicher? Änderungen an der Leinwand werden alle deiner Layer und vergangenen Tätigkeiten nicht speichern sowohl als auch deine Bildschirmaufnahme deaktivieren.",
-        "layers": "Layer",
+        "layers": "Ebenen",
         "eraser": "Radierer",
-        "addLayer": "Layer hinzufügen",
-        "delLayers": "Layer löschen",
-        "mergeLayers": "Layer zusammenführen",
+        "addLayer": "Ebene hinzufügen",
+        "delLayers": "Ebene löschen",
+        "mergeLayers": "Ebene zusammenführen",
         "moveLayerUp": "Hochziehen",
         "moveLayerDown": "Runterziehen",
         "pressure": "Druck",
-        "preserveAlpha": "Alpha behalten"
+        "preserveAlpha": "Transparente Pixel sperren"
     }
 }
