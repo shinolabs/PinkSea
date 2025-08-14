@@ -12,7 +12,7 @@
   --pink:#FFE5EA;
   --dark-pink: #ffb6c1;
   --darkest-pink: #361616;
-  --accent: #a61930;
+  --accent: #ff6e6e;
   
 }
 
@@ -29,7 +29,9 @@
   line-height: 1em;
 }
 
-/*Default Tegaki Icons using Tegaki Font.  When we implement replay these can get swapped out*/
+/*Default Tegaki icons using Tegaki Font. 
+Currently not used. When implementing replay, 
+we can make more custom icons and swap these out too*/
 .tegaki-play:before { content: '\e808'; } /* '' */
 .tegaki-pause:before { content: '\e80a'; } /* '' */
 .tegaki-to-start:before { content: '\e80c'; } /* '' */
@@ -37,7 +39,7 @@
 .tegaki-fast-fw:before { content: '\e810'; } /* '' */
 .tegaki-fast-bw:before { content: '\e811'; } /* '' */
 
-/*Custom Icons*/
+/*Custom Pinksea Icons*/
 
 /*Eraser Tip Icons */
 #tegaki-tool-mode-tip-0:before {    
@@ -72,11 +74,7 @@
 }
 
 
-
-
-
- /*Base Icon Size*/ 
-
+ /*Base Icon Sizes*/ 
  .tegaki-ui-icon {
     background-size: 20px 20px;
     background-repeat: no-repeat;
@@ -84,7 +82,13 @@
     display: inline-block;
     width: 30px; 
     height: 30px; 
+    cursor: pointer;
 }
+
+.tegaki-ui-icon.tegaki-disabled {
+  cursor: default;
+}
+
 
 .tegaki-tool-icon {
     background-size: 23px 23px;
@@ -93,6 +97,7 @@
     display: inline-block;
     width: 30px; 
     height: 30px; 
+    cursor: pointer;
 }
 
 
@@ -197,8 +202,8 @@
   height: 100%;
   top: 0;
   left: 0;
-  background-color: #FFB6C1;
-  color: #361616;
+  background-color: var(--dark-pink);
+  color: var(--darkest-pink);
   font-family: arial, sans-serif;
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -269,7 +274,7 @@
 }
 
 #tegaki-status-version {
-  color: #361616;
+  color: var(--dark-pink);
   font-size: 11px;
   margin-left: auto;
 }
@@ -373,13 +378,13 @@
 
 
 
-/* Hide the default checkbox */
+/* Hide the default checkbox*/
 .tegaki-checkbox-input {
   opacity: 0;
   position: absolute;
 }
 
-/* Custom checkbox appearance */
+/* Custom checkbox */
 .tegaki-checkbox-icon {
   width: 12px;
   height: 12px;
@@ -389,7 +394,7 @@
   background: var(--bright);
   position: relative;
   transition: all 0.15s ease;
-  flex-shrink: 0; /* Prevent shrinking */
+  flex-shrink: 0; 
 }
 
 /* Checked state */
@@ -408,63 +413,10 @@
   line-height: 1;
 }
 
-/* Label styling */
+/* Label*/
 .tegaki-checkbox-label {
   user-select: none;
   cursor: pointer;
-}
-
-/*.tegaki-checkbox-wrapper input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-*/
-/* Create a custom checkbox */
-.checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 25px;
-  width: 25px;
-  background-color: #eee;
-}
-
-/* On mouse-over, add a grey background color */
-.tegaki-checkbox-wrapper:hover input ~ .checkmark {
-  background-color: #ccc;
-}
-
-/* When the checkbox is checked, add a blue background */
-.tegaki-checkbox-wrapper input:checked ~ .checkmark {
-  background-color: #2196F3;
-}
-
-/* Create the checkmark/indicator (hidden when not checked) */
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-
-/* Show the checkmark when checked */
-.tegaki-checkbox-wrapper input:checked ~ .checkmark:after {
-  display: block;
-}
-
-/* Style the checkmark/indicator */
-.tegaki-checkbox-wrapper .checkmark:after {
-  left: 9px;
-  top: 5px;
-  width: 5px;
-  height: 10px;
-  border: solid white;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
 }
 
 
@@ -484,6 +436,7 @@
   padding-top: 3px;
 }
 
+/*Colors the tool red-pink when active*/
 .tegaki-tool-active {
 
   filter: brightness(0) saturate(100%) invert(72%) sepia(84%) saturate(4903%) hue-rotate(324deg) brightness(120%) contrast(110%); 
@@ -766,7 +719,7 @@
   font-weight: bold;
   margin: 20px 0 13px;
   background-color: var(--dark-pink);
-  padding: 1px 4px;
+  padding: 2px 4px;
 }
 
 #tegaki-ctrlgrp-zoom .tegaki-ctrlgrp-title {
@@ -840,6 +793,7 @@
   display: grid;
   grid-gap: 1px;
   margin-top: 10px;
+  padding-right:10px;
 }
 
 .tegaki-color-grid-20 {
