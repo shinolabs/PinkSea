@@ -2,9 +2,13 @@
 import { ref, useTemplateRef } from 'vue'
 import i18next from 'i18next'
 import { xrpc } from '@/api/atproto/client'
+import Modal from './Modal.vue';
 
 const handle = ref<string>('')
 const password = ref<string>('');
+
+const modal = useTemplateRef("modal")
+const errorReason = ref<string>("")
 
 const loginButton = useTemplateRef<HTMLButtonElement>("login-button");
 
@@ -26,7 +30,8 @@ const beginOAuth = async () => {
       document.location = data.redirect;
     }
   } catch (e) {
-    alert(`Failed to log in: ${e}`);
+    modal.value?.show();
+    errorReason.value = `${e}`;
     loginButton.value!.disabled = false;
   }
 }
@@ -41,6 +46,18 @@ const beginOAuth = async () => {
     <br />
     <button v-on:click.prevent="beginOAuth" ref="login-button">{{ $t("menu.atp_login") }}</button>
   </div>
+
+  <Modal ref="modal">
+    <template #header>
+      There was an error logging in!
+    </template>
+    <template #body>
+      <p>{{ errorReason }}</p>
+      <button v-on:click="modal?.dismiss()">
+        Close
+      </button>
+    </template>
+  </Modal>
 </template>
 
 <style scoped></style>
