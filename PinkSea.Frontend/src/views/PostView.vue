@@ -9,7 +9,6 @@ import PostViewOekakiParentCard from '@/components/oekaki/PostViewOekakiParentCa
 import PostViewOekakiChildCard from '@/components/oekaki/PostViewOekakiChildCard.vue'
 import RespondBox from '@/components/RespondBox.vue'
 import Loader from '@/components/Loader.vue'
-import PostViewOekakiTombstoneCard from '@/components/ErrorCard.vue'
 import type { OekakiTombstone } from '@/models/oekaki-tombstone'
 import ErrorCard from '@/components/ErrorCard.vue'
 import { getRecordKeyFromAtUri } from '@/api/atproto/helpers'
