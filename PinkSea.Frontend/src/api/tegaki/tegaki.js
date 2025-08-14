@@ -501,7 +501,7 @@ export class TegakiPencil extends TegakiBrush {
 
     this.name = 'pencil';
 
-    this.keybind = 'b';
+    this.keybind = 'p';
 
     this.step = 0.01;
 
@@ -662,9 +662,9 @@ export class TegakiPen extends TegakiBrush {
 
     this.id = 2;
 
-    this.name = 'pen';
+    this.name = 'brush';
 
-    this.keybind = 'p';
+    this.keybind = 'b';
 
     this.step = 0.05;
 
@@ -4032,7 +4032,7 @@ export var Tegaki = {
 
     Tegaki.activePointerId = e.pointerId;
 
-    Tegaki.activePointerIsPen = e.pointerType === 'pen';
+    Tegaki.activePointerIsPen = e.pointerType === 'brush';
 
     if (Tegaki.activeLayer === null) {
       if (e.target.parentNode === Tegaki.layersCnt) {

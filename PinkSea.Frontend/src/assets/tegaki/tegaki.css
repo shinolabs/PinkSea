@@ -107,7 +107,7 @@ we can make more custom icons and swap these out too*/
 .tegaki-blur {background-image: url('/assets/ui/icon-blur.svg');} 
 .tegaki-eraser {background-image: url('/assets/ui/icon-eraser.svg');} 
 .tegaki-pencil {background-image: url('/assets/ui/icon-pencil.svg'); } 
-.tegaki-pen {background-image: url('/assets/ui/icon-pen.svg'); } 
+.tegaki-brush {background-image: url('/assets/ui/icon-pen.svg'); } 
 .tegaki-airbrush {background-image: url('/assets/ui/icon-airbrush.svg'); } 
 .tegaki-bucket {background-image: url('/assets/ui/icon-fillbucket.svg'); } 
 
