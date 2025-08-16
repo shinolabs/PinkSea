@@ -1147,7 +1147,6 @@ export class TegakiPipette extends TegakiTool {
       ctx = Tegaki.flatten().getContext('2d');
     }
     else {
-      ctx = Tegaki.activeLayer.ctx;
     }
 
     c = $T.getColorAt(ctx, posX, posY);
@@ -1654,6 +1653,7 @@ var TegakiCursor = {
   lastSize: 0,
 
   init: function(w, h) {
+    
     var el;
 
     el = $T.el('canvas');
@@ -3494,6 +3494,43 @@ export var Tegaki = {
     Tegaki.onCancelCb();
   },
 
+  //Toggles  light/dark mode and changes icon of toggle button
+  onThemeToggle: function() {
+
+
+  const toggleButton = document.getElementById('tegaki-theme-toggle');
+  const htmlElement = document.documentElement;
+  const isLightMode = toggleButton.classList.contains('tegaki-light-mode');
+  
+  if (isLightMode) {
+    // Switch to dark mode
+    toggleButton.classList.remove('tegaki-light-mode');
+    toggleButton.classList.add('tegaki-dark-mode');
+    htmlElement.dataset.theme = 'dark';
+  } else {
+    // Switch to light mode
+    toggleButton.classList.remove('tegaki-dark-mode');
+    toggleButton.classList.add('tegaki-light-mode');
+    htmlElement.dataset.theme = 'light';
+  }
+
+  },
+
+  setTheme: function(theme) {
+  const toggleButton = document.getElementById('tegaki-theme-toggle');
+  const htmlElement = document.documentElement;
+  
+  htmlElement.dataset.theme = theme;
+  
+  if (theme === 'dark') {
+    toggleButton.classList.remove('tegaki-light-mode');
+    toggleButton.classList.add('tegaki-dark-mode');
+  } else {
+    toggleButton.classList.remove('tegaki-dark-mode');
+    toggleButton.classList.add('tegaki-light-mode');
+  }
+},
+
   onCloseViewerClick: function() {
     Tegaki.replayViewer.destroy();
     Tegaki.destroy();
@@ -4126,13 +4163,15 @@ var TegakiColorPalettes = [
   '#873e84', '#4a3052', '#7b5480', '#a6859f', '#d9bdc8', 
   '#aee2ff', '#8db7ff', '#3a74ff'
   ],
-
-  [
-    '#ffffff', '#000000', '#888888', '#b47575', '#c096c0',
-    '#fa9696', '#8080ff', '#ffb6ff', '#e7e58d', '#25c7c9',
-    '#99cb7b', '#e7962d', '#f9ddcf', '#fcece2'
+[
+  '#000000', '#00021c', '#1c284d', '#343473', '#2d5280',
+  '#4d7a99', '#7497a6', '#a3ccd9', '#f0edd8', '#ffffff', '#732866',
+  '#a6216e', '#d94c87', '#d9214f', '#f25565', '#f27961',
+  '#993649', '#b36159', '#f09c60', '#b38f24', '#b3b324',
+  '#f7c93e', '#17735f', '#119955', '#67b31b', '#1ba683',
+  '#47cca9', '#96e3c9', '#2469b3', '#0b8be6', '#0bafe6',
+  '#f28d85', '#f0bb90'
   ],
-
   [
     '#000000', '#ffffff', '#7f7f7f', '#c3c3c3', '#880015', '#b97a57', '#ed1c24',
     '#ffaec9', '#ff7f27', '#ffc90e', '#fff200', '#efe4b0', '#22b14c', '#b5e61d',
@@ -4158,14 +4197,9 @@ var TegakiColorPalettes = [
   '#c878af', '#cc99ff', '#fa6e79', '#ffa2ac', '#ffd1d5',
   '#f6e8e0', '#ffffff'
 ], 
-[
-  '#000000', '#00021c', '#1c284d', '#343473', '#2d5280',
-  '#4d7a99', '#7497a6', '#a3ccd9', '#f0edd8', '#ffffff', '#732866',
-  '#a6216e', '#d94c87', '#d9214f', '#f25565', '#f27961',
-  '#993649', '#b36159', '#f09c60', '#b38f24', '#b3b324',
-  '#f7c93e', '#17735f', '#119955', '#67b31b', '#1ba683',
-  '#47cca9', '#96e3c9', '#2469b3', '#0b8be6', '#0bafe6',
-  '#f28d85', '#f0bb90'
+
+   [
+  '#F6F6F6', '#FFEDE9', '#FFB7C2', '#DE5E81', '#3F3F3F'
   ]
 
 ];
@@ -5513,7 +5547,7 @@ var TegakiUI = {
     }
 
     el.appendChild(TegakiUI.buildToolModeBar());
-    el.appendChild(TegakiUI.buildCancelBtn());
+    el.appendChild(TegakiUI.buildRightMenu());
 
     bg.appendChild(el);
 
@@ -5523,7 +5557,17 @@ var TegakiUI = {
     cnt = $T.el('div');
     cnt.id = 'tegaki-tools-cnt';
 
+
+    //UI Theme Toggle Button
+    var themeToggle = $T.el("span");
+    themeToggle.id = 'tegaki-theme-toggle';
+    themeToggle.className = 'tegaki-tool-btn tegaki-ui-icon tegaki-light-mode'
+    $T.on(themeToggle, 'click', Tegaki.onThemeToggle);
+
+   
+
     cnt.appendChild(TegakiUI.buildToolsMenu());
+    cnt.appendChild(themeToggle);
 
     bg.appendChild(cnt);
 
@@ -5795,7 +5839,8 @@ var TegakiUI = {
     return cnt;
   },
   
-  buildCancelBtn: function() {
+  buildRightMenu: function() {
+
     var wrapper = $T.el("div");
     wrapper.id = "tegaki-cancel-wrapper";
     var line = $T.el("span");
@@ -5805,6 +5850,7 @@ var TegakiUI = {
     cancelButton.id = 'tegaki-cancel-btn';
     $T.on(cancelButton, 'click', Tegaki.onCancelClick);
 
+  
     wrapper.appendChild(line);
     wrapper.appendChild(cancelButton);
     return wrapper;
@@ -5834,6 +5880,8 @@ var TegakiUI = {
 
       grp.appendChild(el);
     }
+
+
 
     return grp;
   },
