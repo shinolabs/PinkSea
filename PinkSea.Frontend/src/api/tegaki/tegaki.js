@@ -1653,6 +1653,7 @@ var TegakiCursor = {
   lastSize: 0,
 
   init: function(w, h) {
+    
     var el;
 
     el = $T.el('canvas');
@@ -3493,16 +3494,42 @@ export var Tegaki = {
     Tegaki.onCancelCb();
   },
 
-  //Toggles from light mode to dark mode and changes icon of toggle button
+  //Toggles  light/dark mode and changes icon of toggle button
   onThemeToggle: function() {
-    const toggleButton = document.getElementById('tegaki-theme-toggle');
-    const htmlElement = document.documentElement;
-    
-    const useDarkMode = toggleButton.classList.toggle('tegaki-dark-mode');
-    toggleButton.classList.toggle('tegaki-light-mode', !useDarkMode);
-    
-    htmlElement.dataset.theme = useDarkMode ? 'dark' : 'light';
+
+
+  const toggleButton = document.getElementById('tegaki-theme-toggle');
+  const htmlElement = document.documentElement;
+  const isLightMode = toggleButton.classList.contains('tegaki-light-mode');
+  
+  if (isLightMode) {
+    // Switch to dark mode
+    toggleButton.classList.remove('tegaki-light-mode');
+    toggleButton.classList.add('tegaki-dark-mode');
+    htmlElement.dataset.theme = 'dark';
+  } else {
+    // Switch to light mode
+    toggleButton.classList.remove('tegaki-dark-mode');
+    toggleButton.classList.add('tegaki-light-mode');
+    htmlElement.dataset.theme = 'light';
+  }
+  
   },
+
+  setTheme: function(theme) {
+  const toggleButton = document.getElementById('tegaki-theme-toggle');
+  const htmlElement = document.documentElement;
+  
+  htmlElement.dataset.theme = theme;
+  
+  if (theme === 'dark') {
+    toggleButton.classList.remove('tegaki-light-mode');
+    toggleButton.classList.add('tegaki-dark-mode');
+  } else {
+    toggleButton.classList.remove('tegaki-dark-mode');
+    toggleButton.classList.add('tegaki-light-mode');
+  }
+},
 
   onCloseViewerClick: function() {
     Tegaki.replayViewer.destroy();
