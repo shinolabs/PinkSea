@@ -7,7 +7,9 @@
 }
 
 
-:root {
+:root, 
+
+[data-theme="light"] {
   --light: #fff5f6;
   --medium:#FFE5EA;
   --dark: #ffb6c1;
@@ -35,6 +37,14 @@
   --tool-active: brightness(0) saturate(100%) invert(87%) sepia(5%) saturate(849%) hue-rotate(290deg) brightness(108%) contrast(101%);;
 }
 
+
+#tegaki *, #tegaki {
+  transition: 
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease
+}
 
 .tegaki-icon:before {
   font-family: 'tegaki';
@@ -135,7 +145,7 @@ we can make more custom icons and swap these out too*/
 .tegaki-airbrush {background-image: url('/assets/ui/icon-airbrush.svg'); } 
 .tegaki-bucket {background-image: url('/assets/ui/icon-fillbucket.svg'); } 
 
-/*Control Side Bar Icons*/
+/*Control UI Icons*/
 .tegaki-delete {background-image: url('/assets/ui/icon-trash.svg');}
 .tegaki-add-layer {background-image: url('/assets/ui/icon-add-layer.svg');}
 .tegaki-level-down {background-image: url('/assets/ui/icon-merge.svg');}
@@ -145,6 +155,8 @@ we can make more custom icons and swap these out too*/
 .tegaki-up-open{background-image: url('/assets/ui/icon-up.svg');} 
 .tegaki-left-open {background-image: url('/assets/ui/icon-left.svg'); width:20px; height:20px; background-size: 15px 15px;} 
 .tegaki-right-open {background-image: url('/assets/ui/icon-right.svg'); width:20px; height:20px; background-size: 15px 15px;} 
+.tegaki-dark-mode {background-image: url('/assets/ui/icon-light-mode.svg'); margin:0;} 
+.tegaki-light-mode {background-image: url('/assets/ui/icon-dark-mode.svg'); margin:0;} 
 
 /*Menu Icons*/
 #tegaki-undo-btn {background-image: url('/assets/ui/icon-undo.svg'); width:20px;}
@@ -260,6 +272,9 @@ we can make more custom icons and swap these out too*/
 #tegaki-tools-cnt {
   grid-area: 2 / 1 / 4 / 2;
   padding: 4px;
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 #tegaki #tegaki-canvas-cnt {
@@ -421,11 +436,6 @@ we can make more custom icons and swap these out too*/
   flex-shrink: 0; 
 }
 
-/* Checked state */
-.tegaki-checkbox-input:checked + .tegaki-checkbox-icon {
-  background: var(--bright);
-}
-
 /* Checkmark */
 .tegaki-checkbox-input:checked + .tegaki-checkbox-icon::after {
   content: '✓';
@@ -437,7 +447,7 @@ we can make more custom icons and swap these out too*/
   line-height: 1;
 }
 
-/* Label*/
+/* Checkmark Label*/
 .tegaki-checkbox-label {
   user-select: none;
   cursor: pointer;
@@ -460,18 +470,16 @@ we can make more custom icons and swap these out too*/
   padding-top: 3px;
 }
 
-/*Colors the tool red-pink when active*/
+/*Colors the tool when active*/
 .tegaki-tool-active {
-
   filter: var(--tool-active);
-
 }
 
 .tegaki-tool-btn {
   width: 32px;
   height: 32px;
   display: block;
-  margin: auto;
+ 
 }
 
 .tegaki-tool-btn:hover {
