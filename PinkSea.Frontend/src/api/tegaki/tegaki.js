@@ -1147,7 +1147,6 @@ export class TegakiPipette extends TegakiTool {
       ctx = Tegaki.flatten().getContext('2d');
     }
     else {
-      ctx = Tegaki.activeLayer.ctx;
     }
 
     c = $T.getColorAt(ctx, posX, posY);
@@ -5834,6 +5833,8 @@ var TegakiUI = {
 
       grp.appendChild(el);
     }
+
+    
 
     return grp;
   },
