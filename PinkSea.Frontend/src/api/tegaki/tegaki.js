@@ -1143,11 +1143,9 @@ export class TegakiPipette extends TegakiTool {
   draw(posX, posY) {
     var c, ctx;
 
-    if (true) {
-      ctx = Tegaki.flatten().getContext('2d');
-    }
-    else {
-    }
+   
+  ctx = Tegaki.flatten().getContext('2d');
+    
 
     c = $T.getColorAt(ctx, posX, posY);
 
