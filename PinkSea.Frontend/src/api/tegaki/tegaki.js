@@ -2,6 +2,7 @@
 
 import i18n from '@/intl/i18n.ts'
 import { usePersistedStore } from '@/state/store.ts';
+import Hammer from 'hammerjs';
 
 function TegakiStrings() {
   let currentLanguage = usePersistedStore().lang
@@ -2772,6 +2773,8 @@ export var Tegaki = {
 
   saveReplay: false,
 
+  hammerManager: null,
+
   open: function(opts = {}) {
     var self = Tegaki;
 
@@ -2853,7 +2856,9 @@ export var Tegaki = {
   init: function() {
     var self = Tegaki;
 
+    self.initTabsForMobile();
     self.createCanvas();
+    self.initGestures();
 
     self.updateLayersCntSize();
 
@@ -2869,6 +2874,89 @@ export var Tegaki = {
 
     TegakiUI.updateUndoRedo(0, 0);
     TegakiUI.updateZoomLevel();
+  },
+
+  initTabsForMobile: function() {
+    const self = Tegaki;
+    const headers = $T.cls("tegaki-ctrlgrp-clickable");
+
+    for (const header of headers) {
+      header.addEventListener("click", (ev) => {
+        const hadVisibility = header.parentElement.classList.contains('tegaki-group-visible');
+        for (const h2 of headers) {
+          h2.parentElement.classList.remove("tegaki-group-visible");
+        }
+
+        if (!hadVisibility) {
+          header.parentElement.classList.add("tegaki-group-visible");
+        }
+      });
+    }
+  },
+
+  nuclearRemoveTouchHandlersBecauseSafariSucks: function(obj) {
+    const touchHandler = (ev) => {
+      ev.preventDefault();
+    }
+    obj.addEventListener('touchstart', touchHandler, {passive:false})
+    obj.addEventListener('touchmove', touchHandler, {passive:false})
+    obj.addEventListener('touchend', touchHandler, {passive:false})
+    obj.addEventListener('touchcancel', touchHandler, {passive:false})
+  },
+
+  initGestures: function() {
+    const self = Tegaki;
+    const obj = $T.id("tegaki-canvas-cnt");
+    self.nuclearRemoveTouchHandlersBecauseSafariSucks(obj);
+
+    self.hammerManager = new Hammer(obj);
+    let pan = new Hammer.Pan({ enable: true, pointers: 2, threshold: 0 });
+    let pinch = new Hammer.Pinch({ enable: true, threshold: 0.2 });
+    pinch.recognizeWith(pan);
+    self.hammerManager.add([pan, pinch]);
+
+    let pinchZoomStart = 0;
+    let pinchScrollLeft = 0;
+    let pinchScrollTop = 0;
+    let pinchCenterX = 0;
+    let pinchCenterY = 0;
+
+    self.hammerManager.on('pinchstart', (ev) => {
+      pinchZoomStart = self.zoomFactor;
+
+      pinchScrollLeft = obj.scrollLeft;
+      pinchScrollTop  = obj.scrollTop;
+
+      const rect = obj.getBoundingClientRect();
+      pinchCenterX = ev.center.x - rect.left + obj.scrollLeft;
+      pinchCenterY = ev.center.y - rect.top  + obj.scrollTop;
+    });
+
+    self.hammerManager.on('pinchmove', (ev) => {
+      let newZoom = pinchZoomStart * ev.scale;
+      newZoom = Math.max(0.5, Math.min(10, newZoom));
+      let scaleRatio = newZoom / pinchZoomStart;
+
+      obj.scrollLeft = pinchScrollLeft + pinchCenterX * (scaleRatio - 1);
+      obj.scrollTop  = pinchScrollTop  + pinchCenterY * (scaleRatio - 1);
+
+      self.setZoomFactorRaw(newZoom);
+    });
+
+    let scrollXStart = 0;
+    let scrollYStart = 0;
+
+    self.hammerManager.on('panstart', () => {
+      Tegaki.isPainting = false;
+      scrollXStart = obj.scrollLeft;
+      scrollYStart = obj.scrollTop;
+    });
+
+    self.hammerManager.on('panmove', (ev) => {
+      Tegaki.isPainting = false;
+      obj.scrollLeft = scrollXStart - ev.deltaX;
+      obj.scrollTop  = scrollYStart - ev.deltaY;
+    });
   },
 
   initFromReplay: function() {
@@ -3009,6 +3097,7 @@ export var Tegaki = {
     }
     else {
       $T.off(document, 'visibilitychange', Tegaki.onVisibilityChange);
+      self.destroyGestures();
     }
 
     $T.off(self.bg, 'contextmenu', self.onDummy);
@@ -3177,6 +3266,16 @@ export var Tegaki = {
     Tegaki.destroyBuffers();
 
     Tegaki.visible = false;
+  },
+
+  destroyGestures: function() {
+    var self = Tegaki;
+    self.hammerManager.off('panstart');
+    self.hammerManager.off('panmove');
+    self.hammerManager.off('pinchstart');
+    self.hammerManager.off('pinchmove');
+    self.hammerManager.destroy();
+    self.hammerManager = null;
   },
 
   flatten: function(ctx) {
@@ -3377,7 +3476,11 @@ export var Tegaki = {
     }
 
     Tegaki.zoomLevel = level;
-    Tegaki.zoomFactor = Tegaki.zoomFactorList[idx];
+    Tegaki.setZoomFactorRaw(Tegaki.zoomFactorList[idx]);
+  },
+
+  setZoomFactorRaw: function(factor) {
+    Tegaki.zoomFactor = factor;
 
     TegakiUI.updateZoomLevel();
 
@@ -3993,6 +4096,11 @@ export var Tegaki = {
   },
 
   onPointerMove: function(e) {
+    if (Tegaki.fingers.size > 1) {
+      e.preventDefault();
+      return;
+    }
+
     var events, x, y, tool, ts, p;
 
     if (Tegaki.cursor) {
@@ -4054,7 +4162,28 @@ export var Tegaki = {
     }
   },
 
+  // The set containing the currently tracked pointers.
+  fingers: new Set(),
+
   onPointerDown: function(e) {
+    Tegaki.fingers.add(e.pointerId);
+    if (Tegaki.fingers.size > 1) {
+      // Undo the last blob that's been drawn.
+      if (Tegaki.isPainting) {
+        Tegaki.recordEvent(TegakiEventDrawCommit, e.timeStamp);
+        Tegaki.tool.commit();
+        TegakiUI.updateLayerPreview(Tegaki.activeLayer);
+        TegakiHistory.pendingAction.addCanvasState(Tegaki.activeLayer.imageData, 1);
+        TegakiHistory.push(TegakiHistory.pendingAction);
+        Tegaki.isPainting = false;
+
+        TegakiHistory.undo();
+      }
+
+      e.preventDefault();
+      return;
+    }
+
     var x, y, tool, p;
 
     if (Tegaki.cursor) {
@@ -4122,6 +4251,8 @@ export var Tegaki = {
   },
 
   onPointerUp: function(e) {
+    Tegaki.fingers.delete(e.pointerId);
+
     Tegaki.activePointerId = e.pointerId;
 
     Tegaki.activePointerIsPen = false;
@@ -5903,7 +6034,7 @@ var TegakiUI = {
     return [canvasCnt, layersCnt];
   },
 
-  buildCtrlGroup: function(id, title) {
+  buildCtrlGroup: function(id, title, clickable) {
     var cnt, el;
 
     cnt = $T.el('div');
@@ -5916,6 +6047,9 @@ var TegakiUI = {
     if (title !== undefined) {
       el = $T.el('div');
       el.className = 'tegaki-ctrlgrp-title';
+      if (clickable) {
+        el.classList.add('tegaki-ctrlgrp-clickable');
+      }
       el.textContent = title;
       cnt.appendChild(el);
     }
@@ -5926,7 +6060,7 @@ var TegakiUI = {
   buildLayersCtrlGroup: function() {
     var el, ctrl, row, cnt;
 
-    ctrl = this.buildCtrlGroup('layers', TegakiStrings().layers);
+    ctrl = this.buildCtrlGroup('layers', TegakiStrings().layers, true);
 
     // Layer options row
     row = $T.el('div');
@@ -6002,7 +6136,7 @@ var TegakiUI = {
   buildSizeCtrlGroup: function() {
     var el, ctrl, row;
 
-    ctrl = this.buildCtrlGroup('size', TegakiStrings().size);
+    ctrl = this.buildCtrlGroup('size', TegakiStrings().size, false);
 
     row = $T.el('div');
     row.className = 'tegaki-ctrlrow';
@@ -6032,7 +6166,7 @@ var TegakiUI = {
   buildAlphaCtrlGroup: function() {
     var el, ctrl, row;
 
-    ctrl = this.buildCtrlGroup('alpha', TegakiStrings().alpha);
+    ctrl = this.buildCtrlGroup('alpha', TegakiStrings().alpha, false);
 
     row = $T.el('div');
     row.className = 'tegaki-ctrlrow';
@@ -6062,7 +6196,7 @@ var TegakiUI = {
   buildFlowCtrlGroup: function() {
     var el, ctrl, row;
 
-    ctrl = this.buildCtrlGroup('flow', TegakiStrings().flow);
+    ctrl = this.buildCtrlGroup('flow', TegakiStrings().flow, false);
 
     row = $T.el('div');
     row.className = 'tegaki-ctrlrow';
@@ -6092,7 +6226,7 @@ var TegakiUI = {
   buildZoomCtrlGroup: function() {
     var el, btn, ctrl;
 
-    ctrl = this.buildCtrlGroup('zoom', TegakiStrings().zoom);
+    ctrl = this.buildCtrlGroup('zoom', TegakiStrings().zoom, false);
 
     btn = $T.el('div');
     btn.className = 'tegaki-ui-btn tegaki-ui-icon tegaki-plus';
@@ -6120,7 +6254,7 @@ var TegakiUI = {
 
     edge = / Edge\//i.test(window.navigator.userAgent);
 
-    ctrl = this.buildCtrlGroup('color', TegakiStrings().color);
+    ctrl = this.buildCtrlGroup('color', TegakiStrings().color, true);
 
     cnt = $T.el('div');
     cnt.id = 'tegaki-color-ctrl';
