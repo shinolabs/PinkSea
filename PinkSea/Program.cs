@@ -36,6 +36,7 @@ builder.Services.AddScoped<BlueskyIntegrationService>();
 builder.Services.AddScoped<FirstTimeRunAssistantService>();
 builder.Services.AddScoped<SearchService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<PreferencesService>();
 builder.Services.AddTransient<FeedBuilder>();
 builder.Services.AddDbContext<PinkSeaDbContext>();
 
@@ -48,7 +49,7 @@ builder.Services.AddJetStream(o =>
 {
     o.Endpoint = builder.Configuration["AppViewConfig:JetStreamEndpoint"];
     o.CursorFilePath = builder.Configuration["AppViewConfig:CursorFilePath"];
-    o.WantedCollections = ["com.shinolabs.pinksea.oekaki", "com.shinolabs.pinksea.profile"];
+    o.WantedCollections = ["com.shinolabs.pinksea.oekaki", "com.shinolabs.pinksea.profile", "com.shinolabs.pinksea.preferences"];
 });
 
 builder.Services.AddScoped<IJetStreamEventHandler, OekakiJetStreamEventHandler>();

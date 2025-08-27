@@ -60,6 +60,11 @@ public class UserModel
     /// The links this user owns.
     /// </summary>
     public virtual ICollection<UserLinkModel>? Links { get; set; }
+
+    /// <summary>
+    /// The preferences this user has.
+    /// </summary>
+    public virtual ICollection<UserPreferenceModel>? Preferences { get; set; }
     
     /// <summary>
     /// The oekaki this user has made.
