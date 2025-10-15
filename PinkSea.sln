@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PinkSea.AtProto.Server", "P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PinkSea.AtProto.Shared", "PinkSea.AtProto.Shared\PinkSea.AtProto.Shared.csproj", "{AEE524FB-E9E9-43EF-8597-5C243F5C509C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PinkSea.AtProto.Tests", "PinkSea.AtProto.Tests\PinkSea.AtProto.Tests.csproj", "{BB0D26DD-7E89-4170-BA69-D4AD9EA40318}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{AEE524FB-E9E9-43EF-8597-5C243F5C509C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEE524FB-E9E9-43EF-8597-5C243F5C509C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEE524FB-E9E9-43EF-8597-5C243F5C509C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB0D26DD-7E89-4170-BA69-D4AD9EA40318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB0D26DD-7E89-4170-BA69-D4AD9EA40318}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB0D26DD-7E89-4170-BA69-D4AD9EA40318}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB0D26DD-7E89-4170-BA69-D4AD9EA40318}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
