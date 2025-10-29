@@ -33,7 +33,11 @@ public class JwtSigningProvider : IJwtSigningProvider, IDisposable
         var handler = new JwtSecurityTokenHandler();
         var token = handler.CreateJwtSecurityToken(descriptor);
 
-        token.Header.Add("kid", signingData.Key.KeyId);
+        if (!token.Header.ContainsKey("kid"))
+        {
+            token.Header.Add("kid", signingData.Key.KeyId);
+        }
+        
         return handler.WriteToken(token);
     }
 

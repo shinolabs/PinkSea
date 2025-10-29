@@ -46,11 +46,10 @@ public class DomainDidResolver(
         if (record is null)
             return null;
 
-        var answer = record.Text.First();
-        if (!answer.StartsWith("did="))
-            return null;
-
-        return answer.Replace("did=", "");
+        var answer = record.Text.FirstOrDefault();
+        return answer?.StartsWith("did=") != true
+            ? null
+            : answer.Replace("did=", "");
     }
 
     /// <summary>

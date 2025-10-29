@@ -1,6 +1,6 @@
 using PinkSea.AtProto.Helpers;
 
-namespace PinkSea.AtProto.Tests.UnitTests.Helpers;
+namespace PinkSea.AtProto.Tests.Helpers;
 
     [TestFixture]
     public class AtLinkHelperTests
