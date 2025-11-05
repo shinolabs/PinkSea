@@ -2,9 +2,14 @@ import { defineStore } from 'pinia'
 import { xrpc } from '@/api/atproto/client';
 import { usePersistedStore } from './store';
 import type { Preferences } from '@/models/preferences';
+import { UsernameDisplayType } from '@/models/username-display-type';
+import { watch } from 'vue';
 
 type FrontendPreferences = {
-    editorDarkMode: boolean
+    editorDarkMode: boolean,
+    blurNsfw: boolean,
+    hideNsfw: boolean,
+    usernameDisplayType: UsernameDisplayType
 }
 
 export const usePdsPreferencesStore = defineStore(
@@ -12,7 +17,10 @@ export const usePdsPreferencesStore = defineStore(
     {
         state: () => {
             return {
-                editorDarkMode: false
+                editorDarkMode: false,
+                blurNsfw: true,
+                hideNsfw: false,
+                usernameDisplayType: UsernameDisplayType.NicknameWithHandle
             } as FrontendPreferences
         },
         actions: {
@@ -61,6 +69,20 @@ export const usePdsPreferencesStore = defineStore(
                         "Authorization": `Bearer ${persistedStore.token}`
                     }
                 });
+            },
+
+            autoSync() {
+                watch(
+                    () => JSON.parse(JSON.stringify(this.$state)),
+                    (newState, oldState) => {
+                        for (const key in newState) {
+                            if (newState[key] !== oldState?.[key]) {
+                                this.set(key as keyof typeof newState, newState[key])
+                            }
+                        }
+                    },
+                    { deep: true }
+                )
             }
         }
     });
