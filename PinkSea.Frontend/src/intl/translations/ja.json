@@ -1,20 +1,25 @@
 {
   "sidebar": {
     "title": "PinkSea",
-    "tag": "oekaki BBS",
+    "tag": "お絵かきBBS",
     "shinolabs": "プロジェクト shinonome laboratories"
   },
   "menu": {
     "greeting": "@{{name}} さん、こんにちは！",
     "invitation": "ログインしてお絵かきしよう！",
     "input_placeholder": "@あなたのID.bsky.social",
+    "password": "パスワード（オプション）",
     "atp_login": "ログイン",
     "my_oekaki": "投稿記録",
     "recent": "最近の投稿",
     "settings": "設定",
     "logout": "ログアウト",
     "create_something": "お絵かきする",
-    "password": "パスワード（オプション）"
+    "restore_drawing": "作品を復元",
+    "oauth2_info": "パスワードを空欄にすると、OAuth2を使用してログインします。一般的にパスワードを使用した方式よりも安全です。",
+    "search": "検索",
+    "search_placeholder": "検索したい語句を入力",
+    "search_go": "検索"
   },
   "breadcrumb": {
     "recent": "最近の投稿",
@@ -22,27 +27,40 @@
     "settings": "PinkSeaの設定",
     "user_profile": "{{handle}} のプロフィール",
     "user_post": "{{handle}} の投稿",
-    "tagged": "#{{tag}} タグの投稿一覧"
+    "tagged": "#{{tag}} タグの投稿一覧",
+    "search": "「{{value}}」の検索結果"
+  },
+  "search": {
+    "posts_tab": "投稿",
+    "tags_tab": "タグ",
+    "profiles_tab": "プロフィール"
   },
   "timeline": {
     "by_before_handle": "作者 ",
-    "by_after_handle": ""
+    "by_after_handle": "",
+    "nothing_here": "まだ投稿がありません・・・ (╥﹏╥)"
   },
   "post": {
     "response_from_before_handle": "次の投稿への返信 ",
     "response_from_after_handle": "",
-    "response_from_at_date": " の "
+    "response_from_at_date": " の ",
+    "this_post_no_longer_exists": "この投稿は削除されました。"
   },
   "response_box": {
     "login_to_respond": "ログインして返信！",
     "click_to_respond": "クリックしてお絵かき画面を表示",
     "open_painter": "お絵かき画面を表示",
     "reply": "返信！",
-    "cancel": "キャンセル"
+    "cancel": "キャンセル",
+    "edit": "編集"
   },
   "settings": {
     "category_general": "総合",
     "general_language": "言語",
+    "general_handle_display": "ニックネームの表示形式",
+    "general_only_handle": "ハンドルのみ",
+    "general_nickname_with_handle": "ニックネーム (@ハンドル)",
+    "general_only_nickname": "ニックネームのみ",
 
     "category_sensitive": "センシティブな投稿",
     "sensitive_blur_nsfw": "NSFWな投稿を「ぼかして」表示",
@@ -51,13 +69,47 @@
   "painter": {
     "do_you_want_to_restore": "直前の作品をアップロードする時にエラーが発生しました。保存された作品を復元しますか？",
     "could_not_send_post": "直前の作品をアップロードする際にエラーが発生しました。作品はブラウザ内に保存されているため、後でもう一度投稿をお試しください。",
+    "your_session_has_expired": "セッションの有効期限が切れました。再度ログインしてください。作品はブラウザ内に保存されているため、後でもう一度投稿をお試しください。",
     "add_a_description": "画像の説明文をここに記入",
     "tag": "タグ",
+    "crosspost_to_bluesky": "Blueskyにも投稿する",
     "upload": "投稿！",
-    "crosspost_to_bluesky": "BlueSkyにも投稿する"
+    "upload_description": "説明",
+    "upload_tags": "タグ",
+    "upload_social": "ソーシャル",
+    "upload_confirm": "確認",
+    "edit": "編集",
+    "edit_go_back_to_editor": "エディターに戻る",
+    "hint_description": "短い説明文を付けることで、この作品についての意図を提供できます。（任意）",
+    "hint_tags": "最大5つのタグを付けて、他の人があなたの作品を見つけやすくできます！例：キャラクター名 (\"koiwai_yotsuba\")、作品名 (\"yotsubato!\"、\"oc\")、作品の情報 (\"portrait\") など。（任意）",
+    "hint_nsfw": "ヌードや性的な表現を含む場合は、チェックを入れてください。",
+    "hint_xpost": "チェックを入れると、画像とPinkSeaへのリンクを含むポストを自動的にBlueSkyに作成します。",
+    "hint_confirm": "準備ができたら、上のボタンをクリックして画像を公開しましょう！",
+    "hint_edit": "アップロード前に画像を調整する必要がありますか？ボタンをクリックしてエディターに戻ります。"
   },
   "profile": {
-    "bluesky_profile": "Bluesky上のプロフィール"
+    "posts_tab": "投稿",
+    "replies_tab": "返信",
+    "bluesky_profile": "Bluesky上のプロフィール",
+    "edit_profile": "プロフィールを編集",
+    "this_user_has_no_description": "このユーザーには説明文がありません。"
+  },
+  "profile_edit": {
+    "how_others_will_see_you": "他の人からこのように見えます。",
+    "basic_data": "基本情報",
+    "nickname": "ニックネーム",
+    "nickname_description": "他の人があなたを識別するための名前です。デフォルトではハンドルと同じになります。",
+    "your_bio": "自己紹介",
+    "your_bio_description": "これはあなたのプロフィールページで表示される自己紹介文です。デフォルトでは空欄です。",
+    "avatar": "アバター",
+    "avatar_description": "アバターに設定したい作品を選んでください！",
+    "links": "リンク",
+    "link_name": "名前",
+    "link_name_description": "作成するリンクの名前を入力してください。",
+    "link_url": "URL",
+    "link_url_description": "作成するリンクのURLを入力してください。",
+    "link_add": "リンクを追加",
+    "save_changes": "変更を保存"
   },
   "tegakijs": {
     "badDimensions": "無効なキャンバスサイズです。",
@@ -103,7 +155,7 @@
     "pressure": "筆圧感知",
     "preserveAlpha": "アルファ値の保持",
 
-    "pen": "ペン",
+    "brush": "ブラシ",
     "pencil": "鉛筆",
     "airbrush": "エアブラシ",
     "pipette": "スポイト",
