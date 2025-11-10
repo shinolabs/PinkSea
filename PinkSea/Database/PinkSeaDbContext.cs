@@ -42,6 +42,11 @@ public class PinkSeaDbContext(
     /// </summary>
     public DbSet<ConfigurationModel> Configuration { get; set; } = null!;
     
+    /// <summary>
+    /// The preferences table.
+    /// </summary>
+    public DbSet<UserPreferenceModel> Preferences { get; set; } = null!;
+    
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -54,7 +59,7 @@ public class PinkSeaDbContext(
                 o.Author.AppViewBlocked ||
                 o.Author.RepoStatus != UserRepoStatus.Active));
         });
-        
+
         if (Database.ProviderName != "Microsoft.EntityFrameworkCore.Sqlite")
             return;
         

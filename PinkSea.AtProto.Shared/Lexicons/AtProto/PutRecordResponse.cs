@@ -24,11 +24,11 @@ public class PutRecordResponse
     /// The commit of the record.
     /// </summary>
     [JsonPropertyName("commit")]
-    public required Commit Commit { get; set; }
+    public Commit? Commit { get; set; }
     
     /// <summary>
     /// The validation result of the record.
     /// </summary>
     [JsonPropertyName("validationStatus")]
-    public required string ValidationStatus { get; set; }
+    public string? ValidationStatus { get; set; }
 }

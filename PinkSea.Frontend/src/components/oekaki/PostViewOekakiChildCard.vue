@@ -2,14 +2,12 @@
 import { computed } from 'vue'
 import type { Oekaki } from '@/models/oekaki'
 import PostViewOekakiImageContainer from '@/components/oekaki/PostViewOekakiImageContainer.vue'
-import { usePersistedStore } from '@/state/store'
 import { useRouter } from 'vue-router'
-import { xrpc } from '@/api/atproto/client'
 import { formatDate, getRecordKeyFromAtUri } from '@/api/atproto/helpers'
 import PostActions from '@/components/PostActions.vue'
 import Username from '../profile/Username.vue'
-import OekakiMetaContainer from './OekakiMetaContainer.vue'
 import Avatar from '../profile/Avatar.vue'
+import { usePdsPreferencesStore } from '@/state/preferences'
 
 const props = defineProps<{
   oekaki: Oekaki,
@@ -17,7 +15,7 @@ const props = defineProps<{
 }>()
 
 const router = useRouter();
-const persistedStore = usePersistedStore();
+const preferencesStore = usePdsPreferencesStore()
 
 const authorProfileLink = computed(() => `/${props.oekaki.author.did}`);
 const creationTime = computed(() => {
@@ -38,7 +36,7 @@ const redirectToParent = async () => {
 </script>
 
 <template>
-  <div :class="classList" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
+  <div :class="classList" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !preferencesStore.hideNsfw)">
     <div class="oekaki-child-info">
       <Avatar :image="props.oekaki.author.avatar" :size="20" />
       <div class="oekaki-info-text">

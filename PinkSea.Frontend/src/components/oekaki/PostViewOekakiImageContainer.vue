@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { computed, useTemplateRef } from 'vue'
 import type { Oekaki } from '@/models/oekaki'
-import { usePersistedStore } from '@/state/store'
+import { usePdsPreferencesStore } from '@/state/preferences';
 
 const props = defineProps<{
   oekaki: Oekaki
 }>()
 
-const persistedStore = usePersistedStore();
+const preferencesStore = usePdsPreferencesStore()
 const nsfwRef = useTemplateRef<HTMLDivElement>("nsfw-cover");
 const imageLink = computed(() => `url(${props.oekaki.image})`)
 const altText = computed(() => props.oekaki.alt ?? "");
@@ -21,7 +21,7 @@ const hideNSFWBlur = () => {
   <div class="oekaki-image-container">
     <div class="oekaki-image">
       <img :src="props.oekaki.image" :alt="altText" :title="altText" />
-      <div class="oekaki-nsfw-cover" ref="nsfw-cover" :title="altText" v-if="props.oekaki.nsfw && persistedStore.blurNsfw">
+      <div class="oekaki-nsfw-cover" ref="nsfw-cover" :title="altText" v-if="props.oekaki.nsfw && preferencesStore.blurNsfw">
         <div class="oekaki-nsfw-blur" v-on:click.prevent="hideNSFWBlur">
           NSFW
         </div>

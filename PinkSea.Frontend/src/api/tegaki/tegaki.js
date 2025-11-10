@@ -2,6 +2,7 @@
 
 import i18n from '@/intl/i18n.ts'
 import { usePersistedStore } from '@/state/store.ts';
+import { usePdsPreferencesStore } from '@/state/preferences.ts'
 
 function TegakiStrings() {
   let currentLanguage = usePersistedStore().lang
@@ -2847,6 +2848,8 @@ export var Tegaki = {
       }
     }
 
+    self.initTheme();
+
     self.visible = true;
   },
 
@@ -2884,6 +2887,14 @@ export var Tegaki = {
     self.bgColor = $T.RgbToHex(...r.bgColor);
 
     self.toolColor = $T.RgbToHex(...r.toolColor);
+  },
+
+  initTheme: function() {
+    console.log("initTheme")
+    const store = usePdsPreferencesStore()
+    console.log(store.editorDarkMode)
+    const theme = store.editorDarkMode === true ? 'dark' : 'light';
+    this.setTheme(theme)
   },
 
   initToolsFromReplay: function() {
@@ -3493,7 +3504,7 @@ export var Tegaki = {
   },
 
   //Toggles  light/dark mode and changes icon of toggle button
-  onThemeToggle: function() {
+  onThemeToggle: async function() {
 
 
   const toggleButton = document.getElementById('tegaki-theme-toggle');
@@ -3511,6 +3522,9 @@ export var Tegaki = {
     toggleButton.classList.add('tegaki-light-mode');
     htmlElement.dataset.theme = 'light';
   }
+
+  const store = usePdsPreferencesStore()
+  await store.set('editorDarkMode', isLightMode)
 
   },
 
