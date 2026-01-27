@@ -4,6 +4,7 @@ using PinkSea.AtProto.Server.Xrpc;
 using PinkSea.AtProto.Shared.Lexicons.Types;
 using PinkSea.AtProto.Shared.Xrpc;
 using PinkSea.Database.Models;
+using PinkSea.Extensions;
 using PinkSea.Lexicons.Objects;
 using PinkSea.Lexicons.Queries;
 using PinkSea.Models;
@@ -60,7 +61,7 @@ public class GetProfileQueryHandler(
         }
 
         var links = userModel.Links?
-                        .Select(l => new Link { Url = l.Url, Name = l.Name })
+                        .Select(l => new Link { Url = l.Url.EnsureHttpUrl(), Name = l.Name })
                         .ToList() ?? [];
 
         var profile = new GetProfileQueryResponse

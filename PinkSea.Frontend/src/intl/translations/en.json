@@ -61,7 +61,6 @@
     "general_only_handle": "Only handles",
     "general_nickname_with_handle": "Nickname (@handle)",
     "general_only_nickname": "Only nicknames",
-
     "category_sensitive": "sensitive media",
     "sensitive_blur_nsfw": "Blur NSFW posts",
     "sensitive_hide_nsfw": "Don't display NSFW posts"
@@ -108,7 +107,8 @@
     "link_url": "Url",
     "link_url_description": "This is the url of the link you're creating.",
     "link_add": "Add link",
-    "save_changes": "Save your changes"
+    "save_changes": "Save your changes",
+    "only_http_supported": "Only HTTP or HTTPS links are supported."
   },
   "tegakijs": {
     "badDimensions": "Invalid dimensions.",
@@ -122,7 +122,6 @@
     "hiddenActiveLayer": "The active layer is not visible.",
     "confirmCancel": "Are you sure? Your work will be lost.",
     "confirmChangeCanvas": "Are you sure? Changing the canvas will clear all layers and history and disable replay recording.",
-
     "color": "Color",
     "size": "Size",
     "alpha": "Opacity",
@@ -131,7 +130,6 @@
     "layers": "Layers",
     "switchPalette": "Switch color palette",
     "paletteSlotReplace": "Right click to replace with the current color",
-
     "layer": "Layer",
     "addLayer": "Add layer",
     "delLayers": "Delete layers",
@@ -139,7 +137,6 @@
     "moveLayerUp": "Move up",
     "moveLayerDown": "Move down",
     "toggleVisibility": "Toggle visibility",
-
     "newCanvas": "New",
     "open": "Open",
     "save": "Save",
@@ -149,11 +146,9 @@
     "redo": "Redo",
     "close": "Close",
     "finish": "Finish",
-
     "tip": "Tip",
     "pressure": "Pressure",
     "preserveAlpha": "Preserve Alpha",
-
     "brush": "Brush",
     "pencil": "Pencil",
     "airbrush": "Airbrush",
@@ -162,7 +157,6 @@
     "eraser": "Eraser",
     "bucket": "Bucket",
     "tone": "Tone",
-
     "gapless": "Gapless",
     "play": "Play",
     "pause": "Pause",

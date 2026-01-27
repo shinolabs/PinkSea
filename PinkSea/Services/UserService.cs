@@ -8,6 +8,7 @@ using PinkSea.AtProto.Shared.Lexicons.Types;
 using PinkSea.AtProto.Xrpc.Client;
 using PinkSea.Database;
 using PinkSea.Database.Models;
+using PinkSea.Extensions;
 using PinkSea.Lexicons.Records;
 
 namespace PinkSea.Services;
@@ -205,7 +206,7 @@ public class UserService(
             {
                 UserDid = user.Did,
                 User = user,
-                Url = link.Link,
+                Url = link.Link.EnsureHttpUrl(),
                 Name = link.Name
             })
             .ToList();

@@ -18,7 +18,6 @@ namespace PinkSea.Xrpc;
 public class GetOekakiQueryHandler(
     PinkSeaDbContext dbContext,
     FeedBuilder feedBuilder,
-    UserService userService,
     IOptions<AppViewConfig> opts)
     : IXrpcQuery<GetOekakiQueryRequest, GetOekakiQueryResponse>
 {

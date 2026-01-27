@@ -1,3 +1,4 @@
+using PinkSea.Extensions;
 using PinkSea.Lexicons.Records;
 
 namespace PinkSea.Validators;
@@ -22,7 +23,10 @@ public class ProfileValidator
                 if (link.Name is { Length: > 50 })
                     return false;
 
-                if (!Uri.TryCreate(link.Link, UriKind.RelativeOrAbsolute, out _))
+                if (!Uri.TryCreate(link.Link.EnsureHttpUrl(), UriKind.Absolute, out var uri))
+                    return false;
+
+                if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
                     return false;
             }
         }
