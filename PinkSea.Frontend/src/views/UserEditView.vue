@@ -1,71 +1,84 @@
 <script setup lang="ts">
-import { xrpc } from '@/api/atproto/client';
-import Avatar from '@/components/profile/Avatar.vue';
-import SettingsGroup from '@/components/SettingsGroup.vue';
-import UserCard from '@/components/UserCard.vue';
-import PanelLayout from '@/layouts/PanelLayout.vue';
-import type { Oekaki } from '@/models/oekaki';
-import type Profile from '@/models/profile';
-import { useIdentityStore, usePersistedStore } from '@/state/store';
-import { onMounted, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { xrpc } from '@/api/atproto/client'
+import Avatar from '@/components/profile/Avatar.vue'
+import SettingsGroup from '@/components/SettingsGroup.vue'
+import UserCard from '@/components/UserCard.vue'
+import PanelLayout from '@/layouts/PanelLayout.vue'
+import type { Oekaki } from '@/models/oekaki'
+import type Profile from '@/models/profile'
+import { useIdentityStore, usePersistedStore } from '@/state/store'
+import { onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import i18next from 'i18next'
 
 const identityStore = useIdentityStore()
 const persistedStore = usePersistedStore()
-const profile = ref<Profile | null>(null);
+const profile = ref<Profile | null>(null)
 
-const linkUrl = ref<string>("");
-const linkName = ref<string>("");
+const linkUrl = ref<string>('')
+const linkName = ref<string>('')
 
 const router = useRouter()
 
-const avatarList = ref<Oekaki[]>([]);
+const avatarList = ref<Oekaki[]>([])
 
 const updateProfile = async () => {
     try {
-        const { data } = await xrpc.get("com.shinolabs.pinksea.getProfile", { params: { did: identityStore.did as string } });
-        profile.value = data;
+        const { data } = await xrpc.get('com.shinolabs.pinksea.getProfile', {
+            params: { did: identityStore.did as string },
+        })
+        profile.value = data
 
         console.log(profile.value)
 
-        await fetchPossibleAvatars();
+        await fetchPossibleAvatars()
     } catch (e) {
         console.error("Couldn't fetch our own profile, lol. " + e)
     }
-};
+}
 
 const fetchPossibleAvatars = async () => {
-    avatarList.value = [];
+    avatarList.value = []
 
-    let lastCursor: Date | undefined = undefined;
+    let lastCursor: Date | undefined = undefined
     while (true) {
         try {
-            const { data } = await xrpc.get("com.shinolabs.pinksea.getAuthorFeed", { params: { did: identityStore.did as string, since: lastCursor } });
-            avatarList.value = [
-                ...avatarList.value,
-                ...data.oekaki
-            ];
+            const { data } = await xrpc.get(
+                'com.shinolabs.pinksea.getAuthorFeed',
+                {
+                    params: {
+                        did: identityStore.did as string,
+                        since: lastCursor,
+                    },
+                },
+            )
+            avatarList.value = [...avatarList.value, ...data.oekaki]
 
             if (data.oekaki.length < 1) {
-                break;
+                break
             }
 
-            lastCursor = data.oekaki[data.oekaki.length - 1].creationTime;
+            lastCursor = data.oekaki[data.oekaki.length - 1].creationTime
         } catch (e) {
             console.error("Couldn't fetch our own profile, lol.")
         }
     }
-};
+}
 
 const addLink = (name: string, url: string) => {
+    if (url.indexOf(':') >= 0 && !url.startsWith('http')) {
+        alert(i18next.t('profile_edit.only_http_supported'))
+        return
+    }
+
     profile.value!.links = [
         ...profile.value!.links!,
         {
             name,
-            url
-        }
-    ];
-};
+            url,
+        },
+    ]
+}
 
 const buildAvatarRef = () => {
     if (profile.value?.avatar === undefined) {
@@ -80,13 +93,13 @@ const buildAvatarRef = () => {
 
     return {
         uri: avatar!.at,
-        cid: avatar!.cid
+        cid: avatar!.cid,
     }
 }
 
 const sendChanges = async () => {
     try {
-        await xrpc.call("com.shinolabs.pinksea.putProfile", {
+        await xrpc.call('com.shinolabs.pinksea.putProfile', {
             data: {
                 profile: {
                     nickname: profile.value?.nick,
@@ -94,37 +107,34 @@ const sendChanges = async () => {
                     links: profile.value?.links!.map(l => {
                         return {
                             link: l.url,
-                            name: l.name
+                            name: l.name,
                         }
                     }),
-                    avatar: buildAvatarRef()
-                }
+                    avatar: buildAvatarRef(),
+                },
             },
             headers: {
-                "Authorization": `Bearer ${persistedStore.token}`
-            }
+                Authorization: `Bearer ${persistedStore.token}`,
+            },
         })
 
         router.push(`/${profile.value?.did}`)
     } catch (e) {
         alert(e)
     }
-};
+}
 
 const removeLink = (index: number) => {
     profile.value?.links!.splice(index, 1)
 }
 
-watch(identityStore, updateProfile);
-onMounted(updateProfile);
-
+watch(identityStore, updateProfile)
+onMounted(updateProfile)
 </script>
 
 <template>
     <PanelLayout>
-        <div v-if="profile === null">
-            loading...
-        </div>
+        <div v-if="profile === null">loading...</div>
         <div class="main-container" v-else>
             <SettingsGroup intl-key="profile_edit.how_others_will_see_you">
                 <div class="user-card-padding">
@@ -137,24 +147,36 @@ onMounted(updateProfile);
                     <tbody>
                         <tr>
                             <td class="settings-row-heading">
-                                <div>{{ $t("profile_edit.nickname") }}</div>
+                                <div>{{ $t('profile_edit.nickname') }}</div>
                             </td>
                             <td>
-                                <input type="text" placeholder="" v-model="profile.nick" maxlength="64" />
+                                <input
+                                    type="text"
+                                    placeholder=""
+                                    v-model="profile.nick"
+                                    maxlength="64"
+                                />
                                 <div class="settings-description">
-                                    {{ $t("profile_edit.nickname_description") }}
+                                    {{
+                                        $t('profile_edit.nickname_description')
+                                    }}
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td class="settings-row-heading">
-                                <div>{{ $t("profile_edit.your_bio") }}</div>
+                                <div>{{ $t('profile_edit.your_bio') }}</div>
                             </td>
                             <td>
-                                <textarea placeholder="Your description (256 characters max)"
-                                    v-model="profile.description" maxlength="256"></textarea>
+                                <textarea
+                                    placeholder="Your description (256 characters max)"
+                                    v-model="profile.description"
+                                    maxlength="256"
+                                ></textarea>
                                 <div class="settings-description">
-                                    {{ $t("profile_edit.your_bio_description") }}
+                                    {{
+                                        $t('profile_edit.your_bio_description')
+                                    }}
                                 </div>
                             </td>
                         </tr>
@@ -164,16 +186,35 @@ onMounted(updateProfile);
 
             <SettingsGroup intl-key="profile_edit.avatar">
                 <div v-if="avatarList.length > 0" class="avatar-list">
-                    <div :class="profile.avatar === undefined || profile.avatar === null ? 'selected' : ''">
-                        <Avatar image="/assets/img/blank_avatar.png" v-on:click.prevent="profile.avatar = undefined"
-                            :size="128" />
+                    <div
+                        :class="
+                            profile.avatar === undefined ||
+                            profile.avatar === null
+                                ? 'selected'
+                                : ''
+                        "
+                    >
+                        <Avatar
+                            image="/assets/img/blank_avatar.png"
+                            v-on:click.prevent="profile.avatar = undefined"
+                            :size="128"
+                        />
                     </div>
-                    <div v-for="oekaki of avatarList" :class="oekaki.image === profile.avatar ? 'selected' : ''">
-                        <Avatar :image="oekaki.image" v-on:click.prevent="profile.avatar = oekaki.image" :size="128" />
+                    <div
+                        v-for="oekaki of avatarList"
+                        :class="
+                            oekaki.image === profile.avatar ? 'selected' : ''
+                        "
+                    >
+                        <Avatar
+                            :image="oekaki.image"
+                            v-on:click.prevent="profile.avatar = oekaki.image"
+                            :size="128"
+                        />
                     </div>
                 </div>
                 <div class="settings-description">
-                    {{ $t("profile_edit.avatar_description") }}
+                    {{ $t('profile_edit.avatar_description') }}
                 </div>
             </SettingsGroup>
 
@@ -182,35 +223,56 @@ onMounted(updateProfile);
                     <tbody>
                         <tr>
                             <td class="settings-row-heading">
-                                <div>{{ $t("profile_edit.link_name") }}</div>
+                                <div>{{ $t('profile_edit.link_name') }}</div>
                             </td>
                             <td>
-                                <input type="text" placeholder="Example" v-model="linkName" maxlength="50" />
+                                <input
+                                    type="text"
+                                    placeholder="Example"
+                                    v-model="linkName"
+                                    maxlength="50"
+                                />
                                 <div class="settings-description">
-                                    {{ $t("profile_edit.link_name_description") }}
+                                    {{
+                                        $t('profile_edit.link_name_description')
+                                    }}
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td class="settings-row-heading">
-                                <div>{{ $t("profile_edit.link_url") }}</div>
+                                <div>{{ $t('profile_edit.link_url') }}</div>
                             </td>
                             <td>
-                                <input type="text" placeholder="https://example.com/..." v-model="linkUrl" />
+                                <input
+                                    type="text"
+                                    placeholder="https://example.com/..."
+                                    v-model="linkUrl"
+                                />
                                 <div class="settings-description">
-                                    {{ $t("profile_edit.link_url_description") }}
+                                    {{
+                                        $t('profile_edit.link_url_description')
+                                    }}
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <button v-on:click.prevent="addLink(linkName, linkUrl)">{{ $t("profile_edit.link_add")
-                                    }}</button>
+                                <button
+                                    v-on:click.prevent="
+                                        addLink(linkName, linkUrl)
+                                    "
+                                >
+                                    {{ $t('profile_edit.link_add') }}
+                                </button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <div v-for="(link, index) of profile.links" class="link-display">
+                <div
+                    v-for="(link, index) of profile.links"
+                    class="link-display"
+                >
                     <div class="link-name">
                         {{ link.name }}
                     </div>
@@ -220,7 +282,9 @@ onMounted(updateProfile);
                     <button v-on:click.prevent="removeLink(index)">x</button>
                 </div>
             </SettingsGroup>
-            <button v-on:click.prevent="sendChanges()">{{ $t("profile_edit.save_changes") }}</button>
+            <button v-on:click.prevent="sendChanges()">
+                {{ $t('profile_edit.save_changes') }}
+            </button>
         </div>
     </PanelLayout>
 </template>
@@ -231,7 +295,7 @@ onMounted(updateProfile);
     overflow: hidden;
 }
 
-.main-container>fieldset {
+.main-container > fieldset {
     margin-bottom: 20px;
 }
 
@@ -240,13 +304,13 @@ onMounted(updateProfile);
     overflow-y: scroll;
 }
 
-.avatar-list>div {
+.avatar-list > div {
     padding: 5px;
     display: inline-block;
 }
 
 .selected {
-    background-color: #FFB6C1 !important;
+    background-color: #ffb6c1 !important;
 }
 
 .settings-row-heading {
@@ -260,7 +324,7 @@ onMounted(updateProfile);
 
 textarea {
     width: 100%;
-    border: 1px solid #FFB6C1;
+    border: 1px solid #ffb6c1;
 }
 
 .user-card-padding {
@@ -268,12 +332,12 @@ textarea {
 }
 
 .link-display {
-    background-color: #FFE5EA;
+    background-color: #ffe5ea;
     padding: 10px;
     margin-bottom: 5px;
 }
 
-.link-display>button {
+.link-display > button {
     float: right;
 }
 
@@ -287,7 +351,7 @@ textarea {
     font-size: 10pt;
 }
 
-.link-display>div {
+.link-display > div {
     display: inline-block;
 }
 </style>

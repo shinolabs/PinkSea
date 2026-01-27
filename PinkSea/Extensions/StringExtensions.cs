@@ -38,4 +38,17 @@ public static class StringExtensions
             _ => UserRepoStatus.Unknown
         };
     }
+
+    /// <summary>
+    /// Ensures that a given string is an HTTP url.
+    /// </summary>
+    /// <param name="url">The url.</param>
+    /// <returns>The formatted URL to be an HTTP url.</returns>
+    public static string EnsureHttpUrl(this string url)
+    {
+        if (url.StartsWith("http"))
+            return url;
+
+        return $"https://{url}";
+    }
 }
