@@ -10,6 +10,7 @@ import { useIdentityStore, usePersistedStore } from '@/state/store'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import i18next from 'i18next'
+import { useAlert } from '@/api/modals/alert'
 
 const identityStore = useIdentityStore()
 const persistedStore = usePersistedStore()
@@ -21,6 +22,8 @@ const linkName = ref<string>('')
 const router = useRouter()
 
 const avatarList = ref<Oekaki[]>([])
+
+const { showErrorAlert } = useAlert()
 
 const updateProfile = async () => {
     try {
@@ -59,7 +62,7 @@ const fetchPossibleAvatars = async () => {
             }
 
             lastCursor = data.oekaki[data.oekaki.length - 1].creationTime
-        } catch (e) {
+        } catch {
             console.error("Couldn't fetch our own profile, lol.")
         }
     }
@@ -67,7 +70,7 @@ const fetchPossibleAvatars = async () => {
 
 const addLink = (name: string, url: string) => {
     if (url.indexOf(':') >= 0 && !url.startsWith('http')) {
-        alert(i18next.t('profile_edit.only_http_supported'))
+        showErrorAlert('profile_edit.only_http_supported')
         return
     }
 
@@ -205,6 +208,7 @@ onMounted(updateProfile)
                         :class="
                             oekaki.image === profile.avatar ? 'selected' : ''
                         "
+                        v-bind:key="oekaki.at"
                     >
                         <Avatar
                             :image="oekaki.image"
@@ -272,6 +276,7 @@ onMounted(updateProfile)
                 <div
                     v-for="(link, index) of profile.links"
                     class="link-display"
+                    v-bind:key="link.url"
                 >
                     <div class="link-name">
                         {{ link.name }}

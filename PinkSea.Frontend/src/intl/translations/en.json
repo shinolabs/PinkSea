@@ -21,6 +21,12 @@
     "search_placeholder": "Search for a tag",
     "search_go": "Go"
   },
+  "login": {
+    "passwordfailure": "Invalid identifier or password.",
+    "oauthfailure": "There server encountered an error while trying to begin the OAuth2 login procedure.",
+    "unknownerror": "The server encountered an unknown error while trying to log you in. Ensure your username is a valid domain.",
+    "clienterror": "The client application encountered an internal error while trying to begin the login flow. Check the console for more logs."
+  },
   "breadcrumb": {
     "recent": "recent",
     "painter": "painter",
@@ -166,5 +172,14 @@
     "recordingEnabled": "Recording replay",
     "errorLoadReplay": "Could not load the replay: ",
     "loadingReplay": "Loading replay…"
+  },
+  "modal": {
+    "generic_warning": "Warning",
+    "generic_error": "Error",
+    "generic_info": "Information",
+    "generic_question": "Question",
+    "ok": "OK",
+    "yes": "Yes",
+    "no": "No"
   }
 }

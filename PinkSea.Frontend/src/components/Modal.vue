@@ -1,20 +1,27 @@
 <script setup lang="ts">
-import { useTemplateRef } from 'vue';
+import { onMounted, useTemplateRef } from 'vue'
 
-const dialog = useTemplateRef("dialog");
+const emit = defineEmits(['dismissed'])
+const dialog = useTemplateRef('dialog')
+
 const show = () => {
-    dialog.value?.showModal();
-};
+    dialog.value?.showModal()
+}
 
 const dismiss = () => {
-    dialog.value?.close();
-};
+    dialog.value?.close()
+}
 
 defineExpose({
     show,
-    dismiss
+    dismiss,
 })
 
+onMounted(() => {
+    dialog.value?.addEventListener('close', () => {
+        emit('dismissed')
+    })
+})
 </script>
 
 <template>
@@ -47,8 +54,6 @@ dialog p {
     text-align: initial;
 }
 
-/* loc just-in-case */
-
 #dlg-content {
     padding: 0px 16px 12px 16px;
     border-bottom: 6px double #ffb6c1;
@@ -60,11 +65,11 @@ dialog strong {
     background: #ffb6c1;
     color: #263b48;
     padding: 0px 4px 4px 4px;
-    box-shadow: 0px 2px #FFDADF;
+    box-shadow: 0px 2px #ffdadf;
 }
 
 ::backdrop {
-    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZSURBVBhXY1Sz9tjHwMBwnQHImMrAwMAAACTCA37lqSVSAAAAAElFTkSuQmCC");
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZSURBVBhXY1Sz9tjHwMBwnQHImMrAwMAAACTCA37lqSVSAAAAAElFTkSuQmCC');
     background-repeat: repeat;
 }
 </style>
