@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import type { Author } from '@/models/author';
 import { UsernameDisplayType } from '@/models/username-display-type';
-import { usePersistedStore } from '@/state/store';
+import { usePdsPreferencesStore } from '@/state/preferences';
 import { computed } from 'vue';
 
-const store = usePersistedStore()
+const preferencesStore = usePdsPreferencesStore()
 
 const props = defineProps<{
     author: Author
@@ -15,9 +15,9 @@ const username = computed(() => {
         return `@${props.author.handle}`
     }
 
-    if (store.usernameDisplayType == UsernameDisplayType.NicknameWithHandle) {
+    if (preferencesStore.usernameDisplayType == UsernameDisplayType.NicknameWithHandle) {
         return `${props.author.nickname}`
-    } else if (store.usernameDisplayType == UsernameDisplayType.OnlyNickname) {
+    } else if (preferencesStore.usernameDisplayType == UsernameDisplayType.OnlyNickname) {
         return props.author.nickname
     } else {
         return `@${props.author.handle}`
@@ -25,7 +25,7 @@ const username = computed(() => {
 })
 
 const displayHandle = computed(() => {
-    return store.usernameDisplayType == UsernameDisplayType.NicknameWithHandle &&
+    return preferencesStore.usernameDisplayType == UsernameDisplayType.NicknameWithHandle &&
         props.author.nickname !== undefined
 })
 

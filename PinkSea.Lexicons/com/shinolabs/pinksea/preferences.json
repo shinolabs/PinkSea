@@ -1,0 +1,43 @@
+{
+  "$schema": "https://internect.info/lexicon-schema.json",
+  "lexicon": 1,
+  "id": "com.shinolabs.pinksea.preferences",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A list of user preferences.",
+      "record": {
+        "type": "object",
+        "required": [
+          "values"
+        ],
+        "properties": {
+          "values": {
+            "type": "array",
+            "description": "The preferences for this user",
+            "items": {
+              "type": "ref",
+              "ref": "#preference"
+            }
+          }
+        }
+      }
+    },
+    "preference": {
+      "type": "object",
+      "description": "A custom user preference.",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "The key of the preference.",
+          "maxLength": 512
+        },
+        "value": {
+          "type": "string",
+          "description": "The value of the preference.",
+          "maxLength": 2048
+        }
+      }
+    }
+  }
+}

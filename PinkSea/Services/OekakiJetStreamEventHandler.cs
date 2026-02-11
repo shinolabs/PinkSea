@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
-using Org.BouncyCastle.Asn1.X509;
 using PinkSea.AtProto.Resolvers.Did;
 using PinkSea.AtProto.Streaming.JetStream;
 using PinkSea.AtProto.Streaming.JetStream.Events;
@@ -18,6 +17,7 @@ namespace PinkSea.Services;
 public class OekakiJetStreamEventHandler(
     OekakiService oekakiService,
     UserService userService,
+    PreferencesService preferencesService,
     IDidResolver didResolver,
     IHttpClientFactory httpClientFactory,
     ILogger<OekakiJetStreamEventHandler> logger,
@@ -85,6 +85,9 @@ public class OekakiJetStreamEventHandler(
                 "com.shinolabs.pinksea.profile" => ProcessCreatedProfile(
                     commit,
                     @event.Did),
+                "com.shinolabs.pinksea.preferences" => ProcessCreatedPreferences(
+                    commit,
+                    @event.Did),
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -94,6 +97,9 @@ public class OekakiJetStreamEventHandler(
             return commit.Collection switch
             {
                 "com.shinolabs.pinksea.profile" => ProcessCreatedProfile(
+                    commit,
+                    @event.Did),
+                "com.shinolabs.pinksea.preferences" => ProcessCreatedPreferences(
                     commit,
                     @event.Did),
                 _ => throw new ArgumentOutOfRangeException()
@@ -108,6 +114,9 @@ public class OekakiJetStreamEventHandler(
                     commit,
                     @event.Did),
                 "com.shinolabs.pinksea.profile" => ProcessDeletedProfile(
+                    commit,
+                    @event.Did),
+                "com.shinolabs.pinksea.preferences" => ProcessDeletedPreferences(
                     commit,
                     @event.Did),
                 _ => throw new ArgumentOutOfRangeException()
@@ -162,6 +171,23 @@ public class OekakiJetStreamEventHandler(
     }
     
     /// <summary>
+    /// Processes a newly created or updated preferences.
+    /// </summary>
+    /// <param name="commit">The commit that created the preferences.</param>
+    /// <param name="authorDid">The DID of the profile's author.</param>
+    private async Task ProcessCreatedPreferences(
+        AtProtoCommit commit,
+        string authorDid)
+    {
+        var user = await userService.GetUserByDid(authorDid) ?? await userService.Create(authorDid);
+        var preferences = commit.Record!
+            .Value
+            .Deserialize<Preferences>()!;
+
+        await preferencesService.ImportRepoPreferences(user, preferences);
+    }
+    
+    /// <summary>
     /// Processes a deleted profile.
     /// </summary>
     /// <param name="commit">The commit that deleted this profile.</param>
@@ -196,6 +222,23 @@ public class OekakiJetStreamEventHandler(
         await oekakiService.MarkOekakiAsDeleted(
             authorDid,
             commit.RecordKey);
+    }
+    
+    /// <summary>
+    /// Processes deleted oekaki.
+    /// </summary>
+    /// <param name="commit">The commit.</param>
+    /// <param name="authorDid">The author's DID.</param>
+    private async Task ProcessDeletedPreferences(
+        AtProtoCommit commit,
+        string authorDid)
+    {
+        var user = await userService.GetUserByDid(authorDid);
+        if (user is null)
+            return;
+        
+        // We just reset all the data with a blank profile.
+        await preferencesService.DeletePreferencesForUser(user);
     }
 
     /// <summary>

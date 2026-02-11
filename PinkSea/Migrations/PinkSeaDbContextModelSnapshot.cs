@@ -212,6 +212,33 @@ namespace PinkSea.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("PinkSea.Database.Models.UserPreferenceModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserDid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserDid");
+
+                    b.ToTable("Preferences");
+                });
+
             modelBuilder.Entity("PinkSea.Database.Models.OekakiModel", b =>
                 {
                     b.HasOne("PinkSea.Database.Models.UserModel", "Author")
@@ -268,6 +295,17 @@ namespace PinkSea.Migrations
                     b.Navigation("Avatar");
                 });
 
+            modelBuilder.Entity("PinkSea.Database.Models.UserPreferenceModel", b =>
+                {
+                    b.HasOne("PinkSea.Database.Models.UserModel", "User")
+                        .WithMany("Preferences")
+                        .HasForeignKey("UserDid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("PinkSea.Database.Models.OekakiModel", b =>
                 {
                     b.Navigation("TagOekakiRelations");
@@ -278,6 +316,8 @@ namespace PinkSea.Migrations
                     b.Navigation("Links");
 
                     b.Navigation("Oekaki");
+
+                    b.Navigation("Preferences");
                 });
 #pragma warning restore 612, 618
         }

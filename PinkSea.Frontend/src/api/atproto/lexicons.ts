@@ -59,6 +59,16 @@ declare module '@atcute/client/lexicons' {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace ComShinolabsPinkseaPutPreference {
+    interface Input {
+      key: string
+      value: string
+    }
+    interface Output {
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace ComShinolabsPinkseaDeleteOekaki {
     interface Input {
       rkey: string
@@ -133,6 +143,16 @@ declare module '@atcute/client/lexicons' {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace ComShinolabsPinkseaGetPreferences {
+    interface Output {
+      preferences: {
+        key: string,
+        value: string
+      }[]
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace ComShinolabsPinkseaGetSearchResults {
     interface Params {
       query: string,
@@ -188,6 +208,10 @@ declare module '@atcute/client/lexicons' {
     'com.shinolabs.pinksea.getSearchResults': {
       params: ComShinolabsPinkseaGetSearchResults.Params,
       output: ComShinolabsPinkseaGetSearchResults.Output
+    },
+    'com.shinolabs.pinksea.getPreferences': {
+      params: EmptyParams,
+      output: ComShinolabsPinkseaGetPreferences.Output
     }
   }
 
@@ -215,6 +239,10 @@ declare module '@atcute/client/lexicons' {
     'com.shinolabs.pinksea.beginLoginFlow': {
       input: ComShinolabsPinkseaBeginLoginFlow.Input,
       output: ComShinolabsPinkseaBeginLoginFlow.Output
+    },
+    'com.shinolabs.pinksea.putPreference': {
+      input: ComShinolabsPinkseaPutPreference.Input,
+      output: ComShinolabsPinkseaPutPreference.Output
     }
   }
 }

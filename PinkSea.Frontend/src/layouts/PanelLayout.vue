@@ -9,6 +9,7 @@ import { xrpc } from '@/api/atproto/client'
 import i18next from 'i18next'
 import I18n from '@/intl/i18n'
 import { useTranslation } from 'i18next-vue'
+import { usePdsPreferencesStore } from '@/state/preferences'
 
 const identityStore = useIdentityStore()
 const persistedStore = usePersistedStore()
@@ -50,6 +51,9 @@ onBeforeMount(async () => {
     } catch {
       persistedStore.token = null;
     }
+
+    const preferencesStore = usePdsPreferencesStore()
+    await preferencesStore.fetch()
   }
 });
 

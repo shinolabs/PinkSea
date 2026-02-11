@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import type { Oekaki } from '@/models/oekaki'
 import PostViewOekakiImageContainer from '@/components/oekaki/PostViewOekakiImageContainer.vue'
-import { usePersistedStore } from '@/state/store'
 import OekakiMetaContainer from './OekakiMetaContainer.vue'
+import { usePdsPreferencesStore } from '@/state/preferences';
 
 const props = defineProps<{
   oekaki: Oekaki
 }>()
 
-const persistedStore = usePersistedStore();
+const preferencesStore = usePdsPreferencesStore()
 </script>
 
 <template>
-  <div class="oekaki-card" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
+  <div class="oekaki-card" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !preferencesStore.hideNsfw)">
     <PostViewOekakiImageContainer :oekaki="props.oekaki" />
     <OekakiMetaContainer :oekaki="props.oekaki" :show-post-actions="true" />
   </div>

@@ -2,12 +2,12 @@
 import { computed } from 'vue'
 import type { Oekaki } from '@/models/oekaki'
 import { useRouter } from 'vue-router'
-import { usePersistedStore } from '@/state/store'
 import { buildOekakiUrlFromOekakiObject } from '@/api/atproto/helpers'
 import OekakiMetaContainer from './oekaki/OekakiMetaContainer.vue'
+import { usePdsPreferencesStore } from '@/state/preferences'
 
 const router = useRouter();
-const persistedStore = usePersistedStore();
+const preferencesStore = usePdsPreferencesStore()
 
 const props = defineProps<{
   oekaki: Oekaki
@@ -30,10 +30,10 @@ const openInNewTab = () => {
 </script>
 
 <template>
-  <div class="oekaki-card" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !persistedStore.hideNsfw)">
+  <div class="oekaki-card" v-if="!props.oekaki.nsfw || (props.oekaki.nsfw && !preferencesStore.hideNsfw)">
     <div class="oekaki-image" v-on:click.prevent="navigateToPost" v-on:mousedown.middle.stop.prevent="openInNewTab"
       :title="altText">
-      <div class="oekaki-nsfw-blur" v-if="props.oekaki.nsfw && persistedStore.blurNsfw">NSFW</div>
+      <div class="oekaki-nsfw-blur" v-if="props.oekaki.nsfw && preferencesStore.blurNsfw">NSFW</div>
     </div>
     <OekakiMetaContainer :oekaki="props.oekaki" :show-substitute-on-no-tags="true" />
   </div>
