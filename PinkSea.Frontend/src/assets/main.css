@@ -1,5 +1,6 @@
 @import './base.css';
 @import './tegaki/tegaki.css';
+@import './tegaki/tegaki.mobile.css';
 
 * {
     font-family: "MS PGothic", sans-serif;
